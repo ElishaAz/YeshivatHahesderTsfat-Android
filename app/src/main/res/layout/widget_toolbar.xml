@@ -22,7 +22,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/logo_splash" />
+                app:srcCompat="@drawable/yhtsfat_logo" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvAppNameToolbar"

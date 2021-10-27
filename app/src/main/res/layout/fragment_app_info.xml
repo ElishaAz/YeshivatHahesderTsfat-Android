@@ -1,8 +1,8 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineStart"
@@ -23,8 +23,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/defaultBgColor"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -32,9 +32,9 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="16dp"
-        tools:src="@drawable/logo_splash"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarAppInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarAppInfo"
+        tools:src="@drawable/yhtsfat_logo" />
 
     <TextView
         android:id="@+id/tvNameAppInfo"
@@ -71,7 +71,7 @@
         app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+            android:layout_width="215dp"
             android:layout_height="match_parent"
             android:clipToPadding="false">
 
@@ -103,8 +103,21 @@
                 app:layout_constraintTop_toTopOf="@id/ivWebsiteAppInfo"
                 app:srcCompat="@drawable/ic_google_play" />
 
+<!--            <androidx.appcompat.widget.AppCompatImageView-->
+<!--                android:id="@+id/ivInstagramAppInfo"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="16dp"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:clickable="true"-->
+<!--                android:focusable="true"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/ivGooglePlayAppInfo"-->
+<!--                app:layout_constraintStart_toEndOf="@id/ivGooglePlayAppInfo"-->
+<!--                app:layout_constraintTop_toTopOf="@id/ivGooglePlayAppInfo"-->
+<!--                app:srcCompat="@drawable/ic_instagram" />-->
+
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivInstagramAppInfo"
+                android:id="@+id/ivPhoneAppInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -114,21 +127,33 @@
                 app:layout_constraintBottom_toBottomOf="@id/ivGooglePlayAppInfo"
                 app:layout_constraintStart_toEndOf="@id/ivGooglePlayAppInfo"
                 app:layout_constraintTop_toTopOf="@id/ivGooglePlayAppInfo"
-                app:srcCompat="@drawable/ic_instagram" />
+                app:srcCompat="@drawable/ic_phone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivFacebookAppInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="@id/ivGooglePlayAppInfo"
+                app:layout_constraintStart_toEndOf="@+id/ivPhoneAppInfo"
+                app:layout_constraintTop_toTopOf="@id/ivGooglePlayAppInfo"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/ic_facebook" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivEmailAppInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="@id/ivInstagramAppInfo"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivInstagramAppInfo"
-                app:layout_constraintTop_toTopOf="@id/ivInstagramAppInfo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivFacebookAppInfo"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_email" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -139,13 +164,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/banner_ad_padding"
         app:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cvLinksAppInfo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingBottom="@dimen/banner_ad_padding"
-        android:clipToPadding="false"
         app:menu="@menu/app_info_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

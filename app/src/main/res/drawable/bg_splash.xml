@@ -9,7 +9,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/logo_splash" />
+            android:src="@drawable/yhtsfat_logo" />
     </item>
 
 </layer-list>

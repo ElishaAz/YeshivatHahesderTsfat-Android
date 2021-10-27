@@ -3,7 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/bg_splash.xml" value="0.18796296296296297" />
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/ic_facebook.xml" value="0.18796296296296297" />
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/ic_instagram.xml" value="0.18796296296296297" />
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/ic_phone.xml" value="0.18796296296296297" />
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/ic_yhtsfat_background.xml" value="0.22447916666666667" />
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/layout/fragment_app_info.xml" value="0.5863453815261044" />
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/layout/widget_toolbar.xml" value="0.1322463768115942" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/menu/toolbar_menu_about.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/mipmap-anydpi-v26/ic_yhtsfat.xml" value="0.22447916666666667" />
       </map>
     </option>
   </component>

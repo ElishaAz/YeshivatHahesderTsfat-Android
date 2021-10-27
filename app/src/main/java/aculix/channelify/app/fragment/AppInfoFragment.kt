@@ -8,6 +8,7 @@ import aculix.core.extensions.startEmailIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -22,11 +23,13 @@ class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        ivLogoAppInfo.load(R.drawable.logo_splash)
+        ivLogoAppInfo.load(R.drawable.yhtsfat_logo)
 
         onWebsiteClick()
         onGooglePlayClick()
-        onInstagramClick()
+//        onInstagramClick()
+        onPhoneClick()
+        onFacebookClick()
         onEmailClick()
         onNavigationViewMenuItemClick()
     }
@@ -63,25 +66,54 @@ class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
         }
     }
 
-    private fun onInstagramClick() {
-        ivInstagramAppInfo.setOnClickListener {
+    private fun onPhoneClick() {
+        ivPhoneAppInfo.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse(
+                "tel:${
+                    getString(R.string.text_phone_number)
+                }"
+            )
+            startActivity(intent)
+        }
+    }
+
+    private fun onFacebookClick() {
+        ivFacebookAppInfo.setOnClickListener {
             try {
-                // Try to open in the Instagram app
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("https://instagram.com/_u/${getString(R.string.text_instagram_user_name)}")
-                    )
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("fb://profile/${getString(R.string.text_facebook_user_id)}")
                 )
-            } catch (exception: android.content.ActivityNotFoundException) {
-                // Instagram app is not installed. Open URL in the browser.
+                startActivity(intent)
+            } catch (_: android.content.ActivityNotFoundException) {
                 context?.openUrl(
-                    "https://instagram.com/${getString(R.string.text_instagram_user_name)}",
+                    "https://www.facebook.com/${getString(R.string.text_facebook_username)}",
                     R.color.defaultBgColor
                 )
             }
         }
     }
+
+//    private fun onInstagramClick() {
+//        ivInstagramAppInfo.setOnClickListener {
+//            try {
+//                // Try to open in the Instagram app
+//                startActivity(
+//                    Intent(
+//                        Intent.ACTION_VIEW,
+//                        Uri.parse("https://instagram.com/_u/${getString(R.string.text_instagram_user_name)}")
+//                    )
+//                )
+//            } catch (exception: android.content.ActivityNotFoundException) {
+//                // Instagram app is not installed. Open URL in the browser.
+//                context?.openUrl(
+//                    "https://instagram.com/${getString(R.string.text_instagram_user_name)}",
+//                    R.color.defaultBgColor
+//                )
+//            }
+//        }
+//    }
 
     private fun onEmailClick() {
         ivEmailAppInfo.setOnClickListener {
