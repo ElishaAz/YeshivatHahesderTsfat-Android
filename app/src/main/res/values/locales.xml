@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="system_locale" translatable="false">system</string>
+    <string name="default_locale" translatable="false">iw</string>
+    <string-array name="locales">
+        <item>@string/system_locale</item>
+        <item>@string/default_locale</item>
+        <item>en</item>
+    </string-array>
+    <string-array name="settings_language_values">
+        <item>System Default</item>
+        <item>עברית</item>
+        <item>English</item>
+    </string-array>
+</resources>

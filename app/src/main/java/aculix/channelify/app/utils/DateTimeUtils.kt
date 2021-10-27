@@ -1,7 +1,9 @@
 package aculix.channelify.app.utils
 
+import aculix.channelify.app.locales.LocaleHelper
 import android.annotation.SuppressLint
 import com.github.marlonlom.utilities.timeago.TimeAgo
+import com.github.marlonlom.utilities.timeago.TimeAgoMessages
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,7 +18,10 @@ object DateTimeUtils {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
         sdf.timeZone = TimeZone.getTimeZone("GMT")
         val timeInMillis = sdf.parse(timeInIso8601).time
-        return TimeAgo.using(timeInMillis)
+        return TimeAgo.using(
+            timeInMillis,
+            TimeAgoMessages.Builder().withLocale(LocaleHelper.getLocale()).build()
+        )
     }
 
     /**
@@ -29,7 +34,7 @@ object DateTimeUtils {
         sdf.timeZone = TimeZone.getTimeZone("GMT")
         val date = sdf.parse(timeInIso8601)
 
-        val publishedDateSdf = SimpleDateFormat("MMM dd, yyyy ")
+        val publishedDateSdf = SimpleDateFormat("MMM dd, yyyy ", LocaleHelper.getLocale())
         return publishedDateSdf.format(date)
     }
 }

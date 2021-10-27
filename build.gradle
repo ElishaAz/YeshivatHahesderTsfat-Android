@@ -19,7 +19,7 @@ buildscript {
         lottieVersion = "3.1.0"
         materialDialogVersion = "3.3.0"
         materialThemeVersion = '1.1.0'
-        navVersion = "2.2.2"
+        navVersion = "2.3.5"
         roomVersion = "2.2.5"
         stfalconVersion = "0.1.0"
         timberVersion = "4.7.1"
@@ -31,7 +31,7 @@ buildscript {
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         classpath 'com.google.gms:google-services:4.3.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navVersion"

@@ -2,6 +2,7 @@ package aculix.channelify.app.activity
 
 import aculix.channelify.app.R
 import aculix.channelify.app.fragment.VideoDetailsFragment
+import aculix.channelify.app.locales.LocaleHelper
 import aculix.channelify.app.utils.FullScreenHelper
 import aculix.channelify.app.viewmodel.VideoPlayerViewModel
 import aculix.core.extensions.toast
@@ -25,9 +26,6 @@ import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
@@ -128,5 +126,10 @@ class VideoPlayerActivity : AppCompatActivity(R.layout.activity_video_player) {
                 fullScreenHelper.exitFullScreen()
             }
         })
+    }
+
+    // Locale changes
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase))
     }
 }

@@ -9,7 +9,7 @@ android {
     compileSdkVersion COMPILE_SDK_VERSION
 
     defaultConfig {
-        applicationId "aculix.channelify.app"
+        applicationId "tsfat.yeshivathahesder.channel"
         minSdkVersion 21
         targetSdkVersion TARGET_SDK_VERSION
         versionCode 7

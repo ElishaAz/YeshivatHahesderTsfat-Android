@@ -6,16 +6,19 @@ import androidx.fragment.app.Fragment
 import android.view.View
 
 import aculix.channelify.app.R
+import aculix.channelify.app.activity.MainActivity
+import aculix.channelify.app.locales.LocaleHelper
 import aculix.channelify.app.model.ChannelInfo
 import aculix.channelify.app.sharedpref.AppPref
 import aculix.channelify.app.utils.DateTimeUtils
 import aculix.channelify.app.viewmodel.AboutViewModel
 import aculix.core.extensions.*
 import aculix.core.helper.ResultWrapper
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -23,6 +26,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import coil.api.load
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import kotlinx.android.synthetic.main.fragment_about.*
 import kotlinx.android.synthetic.main.widget_toolbar.view.*
@@ -59,9 +63,9 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
             // Change theme menu item icon based on current theme
             val themeDrawable = if (AppPref.isLightThemeEnabled) ContextCompat.getDrawable(
-                context!!,
+                requireContext(),
                 R.drawable.ic_theme_light
-            ) else ContextCompat.getDrawable(context!!, R.drawable.ic_theme_dark)
+            ) else ContextCompat.getDrawable(requireContext(), R.drawable.ic_theme_dark)
             menu.findItem(R.id.miThemeAbout).icon = themeDrawable
 
             // Store configuration
@@ -89,7 +93,7 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
      * Fetches the info of channel
      */
     private fun fetchChannelInfo() {
-        if (isInternetAvailable(context!!)) {
+        if (isInternetAvailable(requireContext())) {
             viewModel.getChannelInfo()
         } else {
             showChannelInfoErrorState()
@@ -190,29 +194,58 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         }
     }
 
+    @SuppressLint("CheckResult")
     private fun showThemeChooserDialog() {
         val themeList = listOf(
             getString(R.string.dialog_theme_text_light),
             getString(R.string.dialog_theme_text_dark)
         )
+        val langList = resources.getStringArray(R.array.locales)
+        val langListNames = resources.getStringArray(R.array.settings_language_values).asList()
 
         val currentThemeIndex = if (AppPref.isLightThemeEnabled) 0 else 1
+        val currentLangIndex = if (langList.contains(AppPref.localeOverride))
+            langList.indexOf(AppPref.localeOverride) else 0
 
-        MaterialDialog(context!!).show {
-            title(R.string.dialog_theme_title)
-            listItemsSingleChoice(
-                items = themeList,
-                initialSelection = currentThemeIndex
-            ) { dialog, index, text ->
-                when (text) {
-                    getString(R.string.dialog_theme_text_light) -> {
-                        setTheme(AppCompatDelegate.MODE_NIGHT_NO)
-                    }
-                    getString(R.string.dialog_theme_text_dark) -> {
-                        setTheme(AppCompatDelegate.MODE_NIGHT_YES)
-                    }
+
+        MaterialDialog(requireContext()).show {
+            title(R.string.dialog_settings_title)
+            checkBoxPrompt(text = "Dark Theme", isCheckedDefault = !AppPref.isLightThemeEnabled) {
+                if (it) {
+                    setTheme(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    setTheme(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             }
+            listItemsSingleChoice(
+                items = langListNames,
+                initialSelection = currentLangIndex
+            ) { dialog, index, text ->
+                AppPref.localeOverride = langList[index]
+                LocaleHelper.setLocale(context, AppPref.localeOverride)
+                val parent = activity
+                if (parent is MainActivity)
+                    parent.checkLocaleChange()
+            }
+
+            negativeButton(R.string.dialog_negative_button) {
+            }
+            positiveButton(R.string.dialog_positive_button) {
+            }
+
+//            listItemsSingleChoice(
+//                items = themeList,
+//                initialSelection = currentThemeIndex
+//            ) { dialog, index, text ->
+//                when (text) {
+//                    getString(R.string.dialog_theme_text_light) -> {
+//                        setTheme(AppCompatDelegate.MODE_NIGHT_NO)
+//                    }
+//                    getString(R.string.dialog_theme_text_dark) -> {
+//                        setTheme(AppCompatDelegate.MODE_NIGHT_YES)
+//                    }
+//                }
+//            }
         }
     }
 

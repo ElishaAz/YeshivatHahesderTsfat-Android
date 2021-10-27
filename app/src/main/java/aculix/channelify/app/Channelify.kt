@@ -17,7 +17,7 @@ import java.util.*
 class Channelify : Application() {
 
     companion object {
-         var isAdEnabled = true
+        var isAdEnabled = false
     }
 
     override fun onCreate() {

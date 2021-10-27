@@ -12,3 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Sensitive information:
+/gradle.properties
+/app/google-services.json
