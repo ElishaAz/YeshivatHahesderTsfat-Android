@@ -18,11 +18,13 @@ class Channelify : Application() {
 
     companion object {
         var isAdEnabled = false
+        var isBackgroundViewEnabled = false
     }
 
     override fun onCreate() {
         super.onCreate()
         isAdEnabled = resources.getBoolean(R.bool.enable_ads)
+        isBackgroundViewEnabled = resources.getBoolean(R.bool.enable_background_view)
 
         initializeKotpref()
         setThemeMode()

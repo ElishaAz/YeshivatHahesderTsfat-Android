@@ -1,5 +1,6 @@
 package aculix.channelify.app.activity
 
+import aculix.channelify.app.Channelify
 import aculix.channelify.app.R
 import aculix.channelify.app.fragment.VideoDetailsFragment
 import aculix.channelify.app.locales.LocaleHelper
@@ -72,8 +73,17 @@ class VideoPlayerActivity : AppCompatActivity(R.layout.activity_video_player) {
         if (ytVideoPlayerView.isFullScreen()) ytVideoPlayerView.exitFullScreen() else super.onBackPressed()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (Channelify.isBackgroundViewEnabled)
+            ytVideoPlayerView.release()
+    }
+
     private fun initYouTubePlayer() {
-        lifecycle.addObserver(ytVideoPlayerView)
+        if (!Channelify.isBackgroundViewEnabled)
+            lifecycle.addObserver(ytVideoPlayerView)
+        else
+            ytVideoPlayerView.enableBackgroundPlayback(true)
 
         ytVideoPlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
