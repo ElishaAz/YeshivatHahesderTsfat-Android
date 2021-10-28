@@ -12,8 +12,8 @@ android {
         applicationId "tsfat.yeshivathahesder.channel"
         minSdkVersion 21
         targetSdkVersion TARGET_SDK_VERSION
-        versionCode 7
-        versionName "1.32"
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -135,6 +135,9 @@ dependencies {
     // Custom Tabs
     implementation "saschpe.android:customtabs:$saschpeCustomTabs"
     implementation "androidx.browser:browser:$browserVersion"
+
+    // Updates
+    implementation 'com.github.javiersantos:AppUpdater:2.7'
 
     // Modules
     implementation project(':core')

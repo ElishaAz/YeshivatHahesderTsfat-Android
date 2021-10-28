@@ -4,7 +4,7 @@
     <!-- App Related Info -->
     <string name="channel_id" translatable="false">UC5DnLKHtfzr7YG7KH7DtFMw</string>
     <string name="store_url" translatable="false">https://teespring.com/stores/the-engineers-cafe</string>
-    <string name="text_app_desc">Yeshivat HaHesder Tsfat long description.</string>
+    <string name="text_app_desc">Bait Midrash for Tora and Tefila</string>
     <string name="text_website_url" translatable="false">https://yhtsfat.org.il/</string>
     <string name="text_google_play_developer_id" translatable="false">00000000000000000000</string>
     <string name="text_google_play_developer_name" translatable="false">Yeshivat HaHesder Tsfat</string>
@@ -102,6 +102,8 @@
     <string name="text_fetch_video_details_wait_msg">Please wait while video details are fetched</string>
     <string name="dialog_negative_button">Cancel</string>
     <string name="dialog_positive_button">OK</string>
+
+    <string name="text_update_changelog_link" translatable="false">https://raw.githubusercontent.com/ElishaAz/YeshivatHahesderTsfat-Android/master/update-changelog.json</string>
 
 
 </resources>

@@ -2,9 +2,12 @@
 buildscript {
 
     ext {
+        VERSION_NAME = "v0.0.1"
+        VERSION_CODE = 1
+
         MIN_SDK_VERSION = 21
-        COMPILE_SDK_VERSION = 29
-        TARGET_SDK_VERSION = 29
+        COMPILE_SDK_VERSION = 30
+        TARGET_SDK_VERSION = 30
 
         archVersion = "2.2.0"
         browserVersion = "1.2.0"
@@ -28,7 +31,7 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.2'
@@ -42,7 +45,9 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        maven {
+            url "https://jitpack.io"
+        }
     }
 }
 

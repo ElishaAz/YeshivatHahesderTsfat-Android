@@ -12,6 +12,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.Display
+import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.google.android.gms.ads.*
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,6 +28,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initialLocale = AppPref.localeOverride
+
+        AppUpdater(this)
+            .setDisplay(Display.DIALOG)
+            .setCancelable(false)
+            .setUpdateFrom(UpdateFrom.JSON)
+            .setUpdateJSON(getString(R.string.text_update_changelog_link))
+            .showAppUpdated(true)
+            .start()
 
         val navController = findNavController(R.id.navHostFragment)
         bottomNavView.setupWithNavController(navController)
@@ -50,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         if (initialLocale != AppPref.localeOverride) {
             recreate();
             initialLocale = AppPref.localeOverride
-            Log.d("MainActivity","Locale changed!")
+            Log.d("MainActivity", "Locale changed!")
         }
     }
 

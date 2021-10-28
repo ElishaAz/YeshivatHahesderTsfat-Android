@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ישיבת ההסדר צפת</string>
-    <string name="text_app_desc">ישיבת ההסדר צפת הסבר ארוך</string>
+    <string name="text_app_desc">בית מדרש לתורה ותפילה</string>
     <string name="text_app_feedback_email_subject">משוב - ישיבת ההסדר צפת</string>
     <string name="text_video_description">הועלה ב %1$s […]</string>
     <string name="text_playlist_published_date">הועלה ב %1$s</string>
