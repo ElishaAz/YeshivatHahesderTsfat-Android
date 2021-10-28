@@ -85,10 +85,10 @@
     <string name="menu_feedback">Send us a feedback</string>
     <string name="menu_tos">Terms of Service</string>
     <string name="menu_privacy_policy">Privacy Policy</string>
+    <string name="menu_check_updae">Check for updates</string>
 
     <!-- Dialog -->
-    <string name="dialog_theme_text_light">Light</string>
-    <string name="dialog_theme_text_dark">Dark</string>
+    <string name="dialog_theme_text_dark">Dark Theme</string>
     <string name="dialog_settings_title">Settings</string>
     <string name="menu_store">Store</string>
     <string name="menu_app_info">App Info</string>
@@ -104,6 +104,14 @@
     <string name="dialog_positive_button">OK</string>
 
     <string name="text_update_changelog_link" translatable="false">https://raw.githubusercontent.com/ElishaAz/YeshivatHahesderTsfat-Android/master/update-changelog.json</string>
+    <string name="text_update_dismiss">Dismiss</string>
+    <string name="text_update_ok">Update</string>
+    <string name="text_update_available">New update available!</string>
+    <string name="text_update_hide">Don\'t show again</string>
+    <string name="text_update_unavailable">No new updates.</string>
+    <string name="text_update_available_content">There is a new version available to download.</string>
+    <string name="text_update_unavailable_content">There are no new versions available to download.</string>
+    <string name="menu_open_in_youtube">Open In Youtube</string>
 
 
 </resources>

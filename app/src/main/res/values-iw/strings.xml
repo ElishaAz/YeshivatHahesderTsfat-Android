@@ -3,7 +3,7 @@
     <string name="app_name">ישיבת ההסדר צפת</string>
     <string name="text_app_desc">בית מדרש לתורה ותפילה</string>
     <string name="text_app_feedback_email_subject">משוב - ישיבת ההסדר צפת</string>
-    <string name="text_video_description">הועלה ב %1$s […]</string>
+    <string name="text_video_description">הועלה ב %1$s \n\n%2$s</string>
     <string name="text_playlist_published_date">הועלה ב %1$s</string>
     <string name="text_commenter_name_time">%1$s • %2$s</string>
     <string name="text_commenter_name_time_edited">%1$s • %2$s (תוקן)</string>
@@ -26,8 +26,7 @@
     <string name="menu_feedback">שלח לנו משוב</string>
     <string name="menu_tos">תנאי שימוש</string>
     <string name="menu_privacy_policy">מדיניות פרטיות</string>
-    <string name="dialog_theme_text_light">בהיר</string>
-    <string name="dialog_theme_text_dark">כהה</string>
+    <string name="dialog_theme_text_dark">גוונים כההים</string>
     <string name="dialog_settings_title">הגדרות</string>
     <string name="menu_app_info">מידע על האפליקציה</string>
     <string name="fragment_app_info">מידע על האפליקציה</string>
@@ -56,4 +55,13 @@
     <string name="menu_settings">הגדרות</string>
     <string name="dialog_negative_button">ביטול</string>
     <string name="dialog_positive_button">אישור</string>
+    <string name="text_update_ok">עדכן</string>
+    <string name="text_update_dismiss">ביטול</string>
+    <string name="text_update_available">קיים עדכון לאפלייקציה!</string>
+    <string name="menu_check_updae">בדוק עדכונים</string>
+    <string name="text_update_hide">אל תראה שוב</string>
+    <string name="text_update_unavailable">לא קיים עדכון לאפלייקציה.</string>
+    <string name="text_update_available_content">יש גרסה חדשה להורדה.</string>
+    <string name="text_update_unavailable_content">אין גרסה חדשה להורדה.</string>
+    <string name="menu_open_in_youtube">פתח ביוטיוב</string>
 </resources>

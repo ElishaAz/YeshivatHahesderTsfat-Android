@@ -11,11 +11,13 @@ import aculix.channelify.app.locales.LocaleHelper
 import aculix.channelify.app.model.ChannelInfo
 import aculix.channelify.app.sharedpref.AppPref
 import aculix.channelify.app.utils.DateTimeUtils
+import aculix.channelify.app.utils.Tools
 import aculix.channelify.app.viewmodel.AboutViewModel
 import aculix.core.extensions.*
 import aculix.core.helper.ResultWrapper
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -28,6 +30,9 @@ import coil.api.load
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import com.github.javiersantos.appupdater.AppUpdater
+import com.github.javiersantos.appupdater.enums.Display
+import com.github.javiersantos.appupdater.enums.UpdateFrom
 import kotlinx.android.synthetic.main.fragment_about.*
 import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -71,11 +76,15 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
             // Store configuration
             menu.findItem(R.id.miStoreAbout).isVisible = resources.getBoolean(R.bool.enable_store)
 
+
             // MenuItem onclick
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.miStoreAbout -> {
                         context.openUrl(getString(R.string.store_url), R.color.defaultBgColor)
+                    }
+                    R.id.miCheckUpdate -> {
+                        Tools.showUpdateDialog(context, false)
                     }
                     R.id.miThemeAbout -> {
                         showThemeChooserDialog()
@@ -196,21 +205,16 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
     @SuppressLint("CheckResult")
     private fun showThemeChooserDialog() {
-        val themeList = listOf(
-            getString(R.string.dialog_theme_text_light),
-            getString(R.string.dialog_theme_text_dark)
-        )
         val langList = resources.getStringArray(R.array.locales)
         val langListNames = resources.getStringArray(R.array.settings_language_values).asList()
 
-        val currentThemeIndex = if (AppPref.isLightThemeEnabled) 0 else 1
         val currentLangIndex = if (langList.contains(AppPref.localeOverride))
             langList.indexOf(AppPref.localeOverride) else 0
 
 
         MaterialDialog(requireContext()).show {
             title(R.string.dialog_settings_title)
-            checkBoxPrompt(text = "Dark Theme", isCheckedDefault = !AppPref.isLightThemeEnabled) {
+            checkBoxPrompt(R.string.dialog_theme_text_dark, isCheckedDefault = !AppPref.isLightThemeEnabled) {
                 if (it) {
                     setTheme(AppCompatDelegate.MODE_NIGHT_YES)
                 } else {

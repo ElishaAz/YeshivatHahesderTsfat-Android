@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/miCheckUpdate"
+        android:icon="@drawable/ic_arrow_down_circle"
+        android:title="@string/menu_check_updae"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/miThemeAbout"
         android:icon="@drawable/ic_theme_light"
         android:title="@string/menu_settings"

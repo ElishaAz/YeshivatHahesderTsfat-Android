@@ -4,9 +4,11 @@ import aculix.channelify.app.Channelify
 import aculix.channelify.app.R
 import aculix.channelify.app.locales.LocaleHelper
 import aculix.channelify.app.sharedpref.AppPref
+import aculix.channelify.app.utils.Tools
 import aculix.channelify.app.utils.getAdaptiveBannerAdSize
 import aculix.core.extensions.makeGone
 import android.content.Context
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -29,13 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initialLocale = AppPref.localeOverride
 
-        AppUpdater(this)
-            .setDisplay(Display.DIALOG)
-            .setCancelable(false)
-            .setUpdateFrom(UpdateFrom.JSON)
-            .setUpdateJSON(getString(R.string.text_update_changelog_link))
-            .showAppUpdated(true)
-            .start()
+        Tools.showUpdateDialog(this, true)
 
         val navController = findNavController(R.id.navHostFragment)
         bottomNavView.setupWithNavController(navController)

@@ -8,6 +8,8 @@ import aculix.channelify.app.utils.DateTimeUtils
 import aculix.channelify.app.viewmodel.VideoDetailsViewModel
 import aculix.core.extensions.*
 import aculix.core.helper.ResultWrapper
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -162,6 +164,14 @@ class VideoDetailsFragment : Fragment() {
                 }
                 R.id.miShareBabVideoDetails -> {
                     shareVideoUrl()
+                    true
+                }
+                R.id.miOpenBabVideoDetails -> {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(getString(R.string.text_video_share_url, videoId))
+                    )
+                    startActivity(intent)
                     true
                 }
                 else -> false
