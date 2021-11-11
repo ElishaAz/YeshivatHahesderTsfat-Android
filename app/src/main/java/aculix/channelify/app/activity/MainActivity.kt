@@ -6,17 +6,14 @@ import aculix.channelify.app.locales.LocaleHelper
 import aculix.channelify.app.sharedpref.AppPref
 import aculix.channelify.app.utils.Tools
 import aculix.channelify.app.utils.getAdaptiveBannerAdSize
+import aculix.channelify.app.utils.media.MyNotificationManager
 import aculix.core.extensions.makeGone
 import android.content.Context
-import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.github.javiersantos.appupdater.AppUpdater
-import com.github.javiersantos.appupdater.enums.Display
-import com.github.javiersantos.appupdater.enums.UpdateFrom
 import com.google.android.gms.ads.*
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -32,6 +29,8 @@ class MainActivity : AppCompatActivity() {
         initialLocale = AppPref.localeOverride
 
         Tools.showUpdateDialog(this, true)
+        MyNotificationManager
+            .createNotificationChannel(this)
 
         val navController = findNavController(R.id.navHostFragment)
         bottomNavView.setupWithNavController(navController)

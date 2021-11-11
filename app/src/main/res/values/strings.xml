@@ -112,6 +112,8 @@
     <string name="text_update_available_content">There is a new version available to download.</string>
     <string name="text_update_unavailable_content">There are no new versions available to download.</string>
     <string name="menu_open_in_youtube">Open In Youtube</string>
+    <string name="channel_name">Media Playback</string>
+    <string name="channel_description">Media playback notifications</string>
 
 
 </resources>

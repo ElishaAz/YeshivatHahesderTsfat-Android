@@ -139,6 +139,10 @@ dependencies {
     // Updates
     implementation 'com.github.javiersantos:AppUpdater:2.7'
 
+    // ExoPlayer
+//    implementation 'com.google.android.exoplayer:exoplayer:2.X.X'
+
+
     // Modules
     implementation project(':core')
 }

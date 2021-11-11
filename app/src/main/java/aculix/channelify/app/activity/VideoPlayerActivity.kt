@@ -5,25 +5,17 @@ import aculix.channelify.app.R
 import aculix.channelify.app.fragment.VideoDetailsFragment
 import aculix.channelify.app.locales.LocaleHelper
 import aculix.channelify.app.utils.FullScreenHelper
+import aculix.channelify.app.utils.media.MediaSessionController
 import aculix.channelify.app.viewmodel.VideoPlayerViewModel
-import aculix.core.extensions.toast
 import android.annotation.SuppressLint
-import android.app.PictureInPictureParams
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
-import android.content.res.Configuration
-import android.os.Build
+import android.media.session.MediaSession
 import android.os.Bundle
-import android.util.Rational
-import android.view.ContextThemeWrapper
+import android.support.v4.media.session.MediaSessionCompat
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -54,6 +46,10 @@ class VideoPlayerActivity : AppCompatActivity(R.layout.activity_video_player) {
     lateinit var videoId: String
     private var videoElapsedTimeInSeconds = 0f
 
+
+    private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var sessionController: MediaSessionController<VideoPlayerActivity>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,13 +73,16 @@ class VideoPlayerActivity : AppCompatActivity(R.layout.activity_video_player) {
         super.onDestroy()
         if (Channelify.isBackgroundViewEnabled)
             ytVideoPlayerView.release()
+        sessionController.finish()
     }
 
     private fun initYouTubePlayer() {
         if (!Channelify.isBackgroundViewEnabled)
             lifecycle.addObserver(ytVideoPlayerView)
-        else
+        else {
             ytVideoPlayerView.enableBackgroundPlayback(true)
+        }
+
 
         ytVideoPlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
@@ -98,7 +97,17 @@ class VideoPlayerActivity : AppCompatActivity(R.layout.activity_video_player) {
         })
 
 
+
+        mediaSession = MediaSessionCompat(this, "YouTube")
+        sessionController = MediaSessionController(
+            this,
+            ytVideoPlayerView,
+            mediaSession,
+            VideoPlayerActivity::class.java
+        )
+
     }
+
 
     /**
      * Adds the forward and rewind action button to the Player
