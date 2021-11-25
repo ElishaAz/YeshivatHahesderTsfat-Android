@@ -1,7 +1,11 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+
 buildscript {
+    def keys = new Properties()
+    file("keys.properties").withInputStream { keys.load(it) }
 
     ext {
+        KEYS = keys
         VERSION_NAME = "v0.0.2"
         VERSION_CODE = 2
 
