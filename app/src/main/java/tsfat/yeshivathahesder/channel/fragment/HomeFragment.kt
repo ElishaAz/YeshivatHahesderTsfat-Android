@@ -230,9 +230,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         context,
                         playlistItem.contentDetails.videoId
                     )
-                } else if (playlistItem is PlaylistItemInfo.AudioItem) {
-                    AudioPlayerActivity.startActivity(context, playlistItem.contentDetails.audioId)
                 }
+//                else if (playlistItem is PlaylistItemInfo.AudioItem) {
+//                    AudioPlayerActivity.startActivity(context, playlistItem.contentDetails.audioId)
+//                }
             }
 
             false

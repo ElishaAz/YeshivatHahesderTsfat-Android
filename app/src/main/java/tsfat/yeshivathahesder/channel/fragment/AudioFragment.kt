@@ -30,8 +30,7 @@ class AudioFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        val intent = Intent(context, AudioMainActivity::class.java)
-        startActivity(intent)
+        AudioMainActivity.startActivity(context, "jazz_in_paris")
     }
 
     override fun onCreateView(

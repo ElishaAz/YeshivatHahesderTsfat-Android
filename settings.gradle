@@ -1,2 +1,2 @@
 include ':app', ':core', ':music_common'
-rootProject.name='Channelify'
+rootProject.name='YeshivatHaHesderTsfat-Android'

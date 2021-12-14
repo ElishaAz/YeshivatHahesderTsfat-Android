@@ -19,7 +19,8 @@ android {
 
     buildTypes {
         debug {
-            resValue "string", "youtube_api_key", KEYS.getProperty("YT_API_KEY")
+            resValue "string", "youtube_api_key", KEYS.YT_API_KEY
+            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
         }
 
         release {
@@ -27,7 +28,8 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            resValue "string", "youtube_api_key", KEYS.getProperty("YT_API_KEY")
+            resValue "string", "youtube_api_key", KEYS.YT_API_KEY
+            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
         }
     }
 

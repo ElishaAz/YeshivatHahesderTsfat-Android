@@ -44,13 +44,14 @@ class HomeItem(val playlistItem: PlaylistItemInfo.ItemBase?) :
                 }
                 videoPublishedAt.text =
                     DateTimeUtils.getTimeAgo(playlistItem.contentDetails.videoPublishedAt)
-            } else if (playlistItem is PlaylistItemInfo.AudioItem) {
-                playlistItem.snippet.let {
-                    videoTitle.text = it.title
-                }
-                videoPublishedAt.text =
-                    DateTimeUtils.getTimeAgo(playlistItem.contentDetails.publicationDate)
             }
+//            else if (playlistItem is PlaylistItemInfo.AudioItem) {
+//                playlistItem.snippet.let {
+//                    videoTitle.text = it.title
+//                }
+//                videoPublishedAt.text =
+//                    DateTimeUtils.getTimeAgo(playlistItem.contentDetails.publicationDate)
+//            }
         }
 
         override fun unbindView(item: HomeItem) {

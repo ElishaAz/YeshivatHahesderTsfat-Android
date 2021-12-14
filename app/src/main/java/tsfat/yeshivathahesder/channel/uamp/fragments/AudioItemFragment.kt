@@ -25,7 +25,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import tsfat.yeshivathahesder.channel.databinding.FragmentMediaitemListBinding
-import tsfat.yeshivathahesder.channel.uamp.MediaItemAdapter
+import tsfat.yeshivathahesder.channel.uamp.AudioItemAdapter
 import tsfat.yeshivathahesder.channel.uamp.utils.InjectorUtils
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
@@ -33,7 +33,7 @@ import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
 /**
  * A fragment representing a list of MediaItems.
  */
-class MediaItemFragment : Fragment() {
+class AudioItemFragment : Fragment() {
     private val mainActivityViewModel by activityViewModels<MainActivityViewModel> {
         InjectorUtils.provideMainActivityViewModel(requireContext())
     }
@@ -44,14 +44,14 @@ class MediaItemFragment : Fragment() {
     private lateinit var mediaId: String
     private lateinit var binding: FragmentMediaitemListBinding
 
-    private val listAdapter = MediaItemAdapter { clickedItem ->
+    private val listAdapter = AudioItemAdapter { clickedItem ->
         mainActivityViewModel.mediaItemClicked(clickedItem)
     }
 
     companion object {
-        fun newInstance(mediaId: String): MediaItemFragment {
+        fun newInstance(mediaId: String): AudioItemFragment {
 
-            return MediaItemFragment().apply {
+            return AudioItemFragment().apply {
                 arguments = Bundle().apply {
                     putString(MEDIA_ID_ARG, mediaId)
                 }
@@ -73,7 +73,7 @@ class MediaItemFragment : Fragment() {
         // Always true, but lets lint know that as well.
         mediaId = arguments?.getString(MEDIA_ID_ARG) ?: return
 
-        mediaItemFragmentViewModel.mediaItems.observe(viewLifecycleOwner,
+        mediaItemFragmentViewModel.audioItems.observe(viewLifecycleOwner,
             Observer { list ->
                 binding.loadingSpinner.visibility =
                     if (list?.isNotEmpty() == true) View.GONE else View.VISIBLE

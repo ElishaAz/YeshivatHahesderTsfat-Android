@@ -20,6 +20,7 @@ import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.recyclerview.widget.DiffUtil
+import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
 
 /**
@@ -31,14 +32,14 @@ import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
  * Objects of this class are built from [MediaItem]s in
  * [MediaItemFragmentViewModel.subscriptionCallback].
  */
-data class MediaItemData(
+data class AudioItem(
     val mediaId: String,
     val title: String,
     val subtitle: String,
     val albumArtUri: Uri,
     val browsable: Boolean,
     var playbackRes: Int
-) {
+) : PlaylistItemInfo.ItemBase() {
 
     companion object {
         /**
@@ -47,9 +48,9 @@ data class MediaItemData(
         const val PLAYBACK_RES_CHANGED = 1
 
         /**
-         * [DiffUtil.ItemCallback] for a [MediaItemData].
+         * [DiffUtil.ItemCallback] for a [AudioItem].
          *
-         * Since all [MediaItemData]s have a unique ID, it's easiest to check if two
+         * Since all [AudioItem]s have a unique ID, it's easiest to check if two
          * items are the same by simply comparing that ID.
          *
          * To check if the contents are the same, we use the same ID, but it may be the
@@ -66,21 +67,24 @@ data class MediaItemData(
          *   the payload in this case.
          * - If something else changed, then refresh the full item for simplicity.
          */
-        val diffCallback = object : DiffUtil.ItemCallback<MediaItemData>() {
+        val diffCallback = object : DiffUtil.ItemCallback<AudioItem>() {
             override fun areItemsTheSame(
-                oldItem: MediaItemData,
-                newItem: MediaItemData
+                oldItem: AudioItem,
+                newItem: AudioItem
             ): Boolean =
                 oldItem.mediaId == newItem.mediaId
 
-            override fun areContentsTheSame(oldItem: MediaItemData, newItem: MediaItemData) =
+            override fun areContentsTheSame(oldItem: AudioItem, newItem: AudioItem) =
                 oldItem.mediaId == newItem.mediaId && oldItem.playbackRes == newItem.playbackRes
 
-            override fun getChangePayload(oldItem: MediaItemData, newItem: MediaItemData) =
+            override fun getChangePayload(oldItem: AudioItem, newItem: AudioItem) =
                 if (oldItem.playbackRes != newItem.playbackRes) {
                     PLAYBACK_RES_CHANGED
                 } else null
         }
     }
+
+    override val id: String
+        get() = "RC-$mediaId"
 }
 

@@ -27,17 +27,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import tsfat.yeshivathahesder.channel.uamp.MediaItemData
+import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.uamp.common.EMPTY_PLAYBACK_STATE
 import tsfat.yeshivathahesder.channel.uamp.common.MusicServiceConnection
 import tsfat.yeshivathahesder.channel.uamp.common.NOTHING_PLAYING
-import tsfat.yeshivathahesder.channel.uamp.fragments.MediaItemFragment
+import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.isPlaying
 
 /**
- * [ViewModel] for [MediaItemFragment].
+ * [ViewModel] for [AudioItemFragment].
  */
 class MediaItemFragmentViewModel(
     private val mediaId: String,
@@ -48,8 +48,8 @@ class MediaItemFragmentViewModel(
      * Use a backing property so consumers of mediaItems only get a [LiveData] instance so
      * they don't inadvertently modify it.
      */
-    private val _mediaItems = MutableLiveData<List<MediaItemData>>()
-    val mediaItems: LiveData<List<MediaItemData>> = _mediaItems
+    private val _mediaItems = MutableLiveData<List<AudioItem>>()
+    val audioItems: LiveData<List<AudioItem>> = _mediaItems
 
     /**
      * Pass the status of the [MusicServiceConnection.networkFailure] through.
@@ -60,7 +60,7 @@ class MediaItemFragmentViewModel(
         override fun onChildrenLoaded(parentId: String, children: List<MediaItem>) {
             val itemsList = children.map { child ->
                 val subtitle = child.description.subtitle ?: ""
-                MediaItemData(
+                AudioItem(
                     child.mediaId!!,
                     child.description.title.toString(),
                     subtitle.toString(),
@@ -74,8 +74,8 @@ class MediaItemFragmentViewModel(
     }
 
     /**
-     * When the session's [PlaybackStateCompat] changes, the [mediaItems] need to be updated
-     * so the correct [MediaItemData.playbackRes] is displayed on the active item.
+     * When the session's [PlaybackStateCompat] changes, the [audioItems] need to be updated
+     * so the correct [AudioItem.playbackRes] is displayed on the active item.
      * (i.e.: play/pause button or blank)
      */
     private val playbackStateObserver = Observer<PlaybackStateCompat> {
@@ -87,9 +87,9 @@ class MediaItemFragmentViewModel(
     }
 
     /**
-     * When the session's [MediaMetadataCompat] changes, the [mediaItems] need to be updated
+     * When the session's [MediaMetadataCompat] changes, the [audioItems] need to be updated
      * as it means the currently active item has changed. As a result, the new, and potentially
-     * old item (if there was one), both need to have their [MediaItemData.playbackRes]
+     * old item (if there was one), both need to have their [AudioItem.playbackRes]
      * changed. (i.e.: play/pause button or blank)
      */
     private val mediaMetadataObserver = Observer<MediaMetadataCompat> {
@@ -112,10 +112,10 @@ class MediaItemFragmentViewModel(
      * ViewModel's [mediaId] changes.
      *
      * [MusicServiceConnection.playbackState] changes state based on the playback state of
-     * the player, which can change the [MediaItemData.playbackRes]s in the list.
+     * the player, which can change the [AudioItem.playbackRes]s in the list.
      *
      * [MusicServiceConnection.nowPlaying] changes based on the item that's being played,
-     * which can also change the [MediaItemData.playbackRes]s in the list.
+     * which can also change the [AudioItem.playbackRes]s in the list.
      */
     private val musicServiceConnection = musicServiceConnection.also {
         it.subscribe(mediaId, subscriptionCallback)
@@ -155,14 +155,14 @@ class MediaItemFragmentViewModel(
     private fun updateState(
         playbackState: PlaybackStateCompat,
         mediaMetadata: MediaMetadataCompat
-    ): List<MediaItemData> {
+    ): List<AudioItem> {
 
         val newResId = when (playbackState.isPlaying) {
             true -> R.drawable.ic_pause_black_24dp
             else -> R.drawable.ic_play_arrow_black_24dp
         }
 
-        return mediaItems.value?.map {
+        return audioItems.value?.map {
             val useResId = if (it.mediaId == mediaMetadata.id) newResId else NO_RES
             it.copy(playbackRes = useResId)
         } ?: emptyList()

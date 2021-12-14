@@ -25,25 +25,6 @@ data class PlaylistItemInfo(
 
     }
 
-    data class AudioItem(
-        val contentDetails: ContentDetails,
-        val snippet: Snippet
-    ) : ItemBase() {
-        data class ContentDetails(
-            val audioId: String,
-            val publicationDate: String
-        )
-
-        data class Snippet(
-            val title: String
-        )
-
-        override val id: String
-            get() = "RC-" + contentDetails.audioId;
-
-
-    }
-
     data class VideoItem(
         val contentDetails: ContentDetails,
         val snippet: Snippet

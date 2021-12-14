@@ -16,28 +16,43 @@
 
 package tsfat.yeshivathahesder.channel.uamp
 
+import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import tsfat.yeshivathahesder.channel.uamp.fragments.MediaItemFragment
-import tsfat.yeshivathahesder.channel.uamp.media.MusicService
-import tsfat.yeshivathahesder.channel.uamp.utils.Event
+import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.utils.InjectorUtils
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import timber.log.Timber
 import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.activity.AudioPlayerActivity
+import tsfat.yeshivathahesder.channel.uamp.fragments.NowPlayingFragment
 
 class AudioMainActivity : AppCompatActivity() {
+
+    companion object {
+        private const val AUDIO_ID = "audio_id"
+
+        fun startActivity(context: Context?, audioId: String) {
+            val intent = Intent(context, AudioMainActivity::class.java).apply {
+                putExtra(AUDIO_ID, audioId)
+            }
+            context?.startActivity(intent)
+        }
+    }
 
     private val viewModel by viewModels<MainActivityViewModel> {
         InjectorUtils.provideMainActivityViewModel(this)
     }
     private var castContext: CastContext? = null
+
+    private lateinit var audioId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,44 +67,53 @@ class AudioMainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_audio_main)
 
+        audioId = intent.getStringExtra(AudioPlayerActivity.AUDIO_ID)!!
+
         // Since UAMP is a music player, the volume controls should adjust the music volume while
         // in the app.
         volumeControlStream = AudioManager.STREAM_MUSIC
 
-        /**
-         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
-         * fragment swap.
-         */
-        viewModel.navigateToFragment.observe(this, Observer {
-            it?.getContentIfNotHandled()?.let { fragmentRequest ->
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(
-                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
-                )
-                if (fragmentRequest.backStack) transaction.addToBackStack(null)
-                transaction.commit()
+        viewModel.isConnected.observe(this, Observer {
+            if (it) {
+                viewModel.playMedia(audioId, pauseAllowed = false)
+                viewModel.showFragment(NowPlayingFragment.newInstance())
             }
         })
 
-        /**
-         * Observe changes to the [MainActivityViewModel.rootMediaId]. When the app starts,
-         * and the UI connects to [MusicService], this will be updated and the app will show
-         * the initial list of media items.
-         */
-        viewModel.rootMediaId.observe(this,
-            Observer<String> { rootMediaId ->
-                rootMediaId?.let { navigateToMediaItem(it) }
-            })
-
-        /**
-         * Observe [MainActivityViewModel.navigateToMediaItem] for [Event]s indicating
-         * the user has requested to browse to a different [MediaItemData].
-         */
-        viewModel.navigateToMediaItem.observe(this, Observer {
-            it?.getContentIfNotHandled()?.let { mediaId ->
-                navigateToMediaItem(mediaId)
-            }
-        })
+//        /**
+//         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
+//         * fragment swap.
+//         */
+//        viewModel.navigateToFragment.observe(this, Observer {
+//            it?.getContentIfNotHandled()?.let { fragmentRequest ->
+//                val transaction = supportFragmentManager.beginTransaction()
+//                transaction.replace(
+//                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
+//                )
+//                if (fragmentRequest.backStack) transaction.addToBackStack(null)
+//                transaction.commit()
+//            }
+//        })
+//
+//        /**
+//         * Observe changes to the [MainActivityViewModel.rootMediaId]. When the app starts,
+//         * and the UI connects to [MusicService], this will be updated and the app will show
+//         * the initial list of media items.
+//         */
+//        viewModel.rootMediaId.observe(this,
+//            Observer<String> { rootMediaId ->
+//                rootMediaId?.let { navigateToMediaItem(it) }
+//            })
+//
+//        /**
+//         * Observe [MainActivityViewModel.navigateToMediaItem] for [Event]s indicating
+//         * the user has requested to browse to a different [MediaItemData].
+//         */
+//        viewModel.navigateToMediaItem.observe(this, Observer {
+//            it?.getContentIfNotHandled()?.let { mediaId ->
+//                navigateToMediaItem(mediaId)
+//            }
+//        })
     }
 
     @Override
@@ -105,9 +129,9 @@ class AudioMainActivity : AppCompatActivity() {
     }
 
     private fun navigateToMediaItem(mediaId: String) {
-        var fragment: MediaItemFragment? = getBrowseFragment(mediaId)
+        var fragment: AudioItemFragment? = getBrowseFragment(mediaId)
         if (fragment == null) {
-            fragment = MediaItemFragment.newInstance(mediaId)
+            fragment = AudioItemFragment.newInstance(mediaId)
             // If this is not the top level media (root), we add it to the fragment
             // back stack, so that actionbar toggle and Back will work appropriately:
             viewModel.showFragment(fragment, !isRootId(mediaId), mediaId)
@@ -116,7 +140,7 @@ class AudioMainActivity : AppCompatActivity() {
 
     private fun isRootId(mediaId: String) = mediaId == viewModel.rootMediaId.value
 
-    private fun getBrowseFragment(mediaId: String): MediaItemFragment? {
-        return supportFragmentManager.findFragmentByTag(mediaId) as? MediaItemFragment
+    private fun getBrowseFragment(mediaId: String): AudioItemFragment? {
+        return supportFragmentManager.findFragmentByTag(mediaId) as? AudioItemFragment
     }
 }

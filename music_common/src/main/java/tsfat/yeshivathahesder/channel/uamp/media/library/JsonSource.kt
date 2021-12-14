@@ -217,4 +217,5 @@ class JsonMusic {
     var totalTrackCount: Long = 0
     var duration: Long = -1
     var site: String = ""
+    var googleDrive: Boolean = false
 }

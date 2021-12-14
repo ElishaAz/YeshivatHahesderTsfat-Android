@@ -25,15 +25,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.databinding.FragmentMediaitemBinding
-import tsfat.yeshivathahesder.channel.uamp.MediaItemData.Companion.PLAYBACK_RES_CHANGED
-import tsfat.yeshivathahesder.channel.uamp.fragments.MediaItemFragment
+import tsfat.yeshivathahesder.channel.uamp.AudioItem.Companion.PLAYBACK_RES_CHANGED
+import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 
 /**
- * [RecyclerView.Adapter] of [MediaItemData]s used by the [MediaItemFragment].
+ * [RecyclerView.Adapter] of [AudioItem]s used by the [AudioItemFragment].
  */
-class MediaItemAdapter(
-    private val itemClickedListener: (MediaItemData) -> Unit
-) : ListAdapter<MediaItemData, MediaViewHolder>(MediaItemData.diffCallback) {
+class AudioItemAdapter(
+    private val itemClickedListener: (AudioItem) -> Unit
+) : ListAdapter<AudioItem, MediaViewHolder>(AudioItem.diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -85,7 +85,7 @@ class MediaItemAdapter(
 
 class MediaViewHolder(
     binding: FragmentMediaitemBinding,
-    itemClickedListener: (MediaItemData) -> Unit
+    itemClickedListener: (AudioItem) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
     val titleView: TextView = binding.title
@@ -93,7 +93,7 @@ class MediaViewHolder(
     val albumArt: ImageView = binding.albumArt
     val playbackState: ImageView = binding.itemState
 
-    var item: MediaItemData? = null
+    var item: AudioItem? = null
 
     init {
         binding.root.setOnClickListener {
