@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/clCommentReplies"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTitleCommentReplies"
@@ -21,10 +20,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivCloseCommentReplies"
+        style="@style/VectorImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        style="@style/VectorImageButton"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitleCommentReplies"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvTitleCommentReplies"
@@ -42,13 +41,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleCommentReplies" />
-
-    <FrameLayout
-        android:id="@+id/adViewContainerCommentReplies"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

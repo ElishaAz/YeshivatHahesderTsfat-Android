@@ -1,13 +1,11 @@
 package tsfat.yeshivathahesder.channel.fragment
 
-import tsfat.yeshivathahesder.channel.Channelify
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.fastadapteritems.CommentItem
 import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
 import tsfat.yeshivathahesder.channel.model.Comment
 import tsfat.yeshivathahesder.channel.paging.Status
 import tsfat.yeshivathahesder.channel.utils.DividerItemDecorator
-import tsfat.yeshivathahesder.channel.utils.getAdaptiveBannerAdSize
 import tsfat.yeshivathahesder.channel.viewmodel.CommentsViewModel
 import tsfat.yeshivathahesder.core.extensions.makeGone
 import tsfat.yeshivathahesder.core.extensions.makeVisible
@@ -21,8 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.*
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericFastAdapter
@@ -34,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_comments.*
 import kotlinx.android.synthetic.main.item_comment.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+
 class CommentsFragment : Fragment() {
 
     private val viewModel by viewModel<CommentsViewModel>() // Lazy inject ViewModel
@@ -48,7 +45,6 @@ class CommentsFragment : Fragment() {
     private val SORT_BY_RELEVANCE = "relevance"
     private val SORT_BY_TIME = "time"
 
-    private lateinit var adView: AdView
     private var initialLayoutComplete = false
 
     override fun onCreateView(
@@ -71,8 +67,6 @@ class CommentsFragment : Fragment() {
 
         ivSortComments.setOnClickListener { onSortClick(it) }
         ivCloseComments.setOnClickListener { onCloseClick() }
-
-        if (Channelify.isAdEnabled) setupAd() else adViewContainerComments.makeGone()
     }
 
     override fun onSaveInstanceState(_outState: Bundle) {
@@ -83,18 +77,7 @@ class CommentsFragment : Fragment() {
 
     override fun onPause() {
         retrySnackbar?.dismiss() // Dismiss the retrySnackbar if already present
-        if (Channelify.isAdEnabled) adView.pause()
         super.onPause()
-    }
-
-    override fun onResume() {
-        if (Channelify.isAdEnabled) adView.resume()
-        super.onResume()
-    }
-
-    override fun onDestroy() {
-        if (Channelify.isAdEnabled) adView.destroy()
-        super.onDestroy()
     }
 
     private fun setupRecyclerView(savedInstanceState: Bundle?) {
@@ -128,7 +111,14 @@ class CommentsFragment : Fragment() {
         onViewRepliesClick()
 
         rvComments.layoutManager = LinearLayoutManager(context)
-        rvComments.addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(requireContext(), R.drawable.view_divider_item_decorator)!!))
+        rvComments.addItemDecoration(
+            DividerItemDecorator(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.view_divider_item_decorator
+                )!!
+            )
+        )
         rvComments.adapter = commentsAdapter
     }
 
@@ -250,20 +240,6 @@ class CommentsFragment : Fragment() {
                 findNavController().navigate(action)
             }
         })
-    }
-
-    private fun setupAd() {
-        adView = AdView(context)
-        adViewContainerComments.addView(adView)
-        adViewContainerComments.viewTreeObserver.addOnGlobalLayoutListener {
-            if (!initialLayoutComplete) {
-                initialLayoutComplete = true
-
-                adView.adUnitId = getString(R.string.comments_banner_ad_id)
-                adView.adSize = activity?.getAdaptiveBannerAdSize(adViewContainerComments)
-                adView.loadAd(AdRequest.Builder().build())
-            }
-        }
     }
 }
 
