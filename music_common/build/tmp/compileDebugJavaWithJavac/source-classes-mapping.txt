@@ -1,0 +1,2 @@
+tsfat/yeshivathahesder/channel/uamp/media/BuildConfig.java
+ tsfat.yeshivathahesder.channel.uamp.media.BuildConfig

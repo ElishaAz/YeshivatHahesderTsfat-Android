@@ -1,0 +1,65 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3  ~ Copyright 2017 Google Inc. All rights reserved.
+4  ~
+5  ~ Licensed under the Apache License, Version 2.0 (the "License");
+6  ~ you may not use this file except in compliance with the License.
+7  ~ You may obtain a copy of the License at
+8  ~
+9  ~     http://www.apache.org/licenses/LICENSE-2.0
+10  ~
+11  ~ Unless required by applicable law or agreed to in writing, software
+12  ~ distributed under the License is distributed on an "AS IS" BASIS,
+13  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+14  ~ See the License for the specific language governing permissions and
+15  ~ limitations under the License.
+16-->
+17<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+18    package="tsfat.yeshivathahesder.channel.uamp.media" >
+19
+20    <uses-sdk
+21        android:minSdkVersion="21"
+21-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml
+22        android:targetSdkVersion="30" />
+22-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml
+23
+24    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+24-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:21:5-77
+24-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:21:22-74
+25    <uses-permission android:name="android.permission.INTERNET" />
+25-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:22:5-67
+25-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:22:22-64
+26
+27    <application>
+27-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:24:5-45:19
+28
+29        <!--
+30             MediaSession, prior to API 21, uses a broadcast receiver to communicate with a
+31             media session. It does not have to be this broadcast receiver, but it must
+32             handle the action "channel.intent.action.MEDIA_BUTTON".
+33
+34             Additionally, this is used to resume the service from an inactive state upon
+35             receiving a media button event (such as "play").
+36        -->
+37        <receiver android:name="androidx.media.session.MediaButtonReceiver" >
+37-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:34:9-38:20
+37-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:34:19-76
+38            <intent-filter>
+38-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:35:13-37:29
+39                <action android:name="android.intent.action.MEDIA_BUTTON" />
+39-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:36:17-77
+39-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:36:25-74
+40            </intent-filter>
+41        </receiver>
+42
+43        <provider
+43-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:40:9-43:39
+44            android:name="tsfat.yeshivathahesder.channel.uamp.media.library.AlbumArtContentProvider"
+44-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:41:13-60
+45            android:authorities="tsfat.yeshivathahesder.channel.uamp"
+45-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:42:13-70
+46            android:exported="true" />
+46-->/home/elisha/Code/Android/YeshivatHahesderTsfat-Android/music_common/src/main/AndroidManifest.xml:43:13-36
+47    </application>
+48
+49</manifest>

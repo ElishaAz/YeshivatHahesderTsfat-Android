@@ -12,4 +12,5 @@
     <dimen name="toggle_button_size">24dp</dimen>
     <dimen name="commenter_name_time_size">12sp</dimen>
     <dimen name="thumbnail_height">200dp</dimen>
+    <dimen name="audio_thumbnail_height">100dp</dimen>
 </resources>

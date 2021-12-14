@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 ##--------------------------  Model classes  --------------------------
--keep class aculix.channelify.app.model.** { *; }
+-keep class tsfat.yeshivathahesder.channel.model.** { *; }
 
 
 #--------------------------  Coroutines --------------------------#

@@ -30,6 +30,13 @@ buildscript {
         roomVersion = "2.2.5"
         stfalconVersion = "0.1.0"
         timberVersion = "4.7.1"
+        gsonVersion = '2.8.5'
+
+        exoplayer_version = '2.11.5'
+        androidx_media_version = '1.0.1'
+        glide_version = '4.11.0'
+        junit_version = '4.13'
+        robolectric_version = '4.2'
     }
 
     repositories {

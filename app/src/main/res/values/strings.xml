@@ -3,7 +3,7 @@
 
     <!-- App Related Info -->
     <string name="channel_id" translatable="false">UC5DnLKHtfzr7YG7KH7DtFMw</string>
-    <string name="store_url" translatable="false">https://teespring.com/stores/the-engineers-cafe</string>
+    <string name="store_url" translatable="false">https://yhtsfat.org.il/</string>
     <string name="text_app_desc">Bait Midrash for Tora and Tefila</string>
     <string name="text_website_url" translatable="false">https://yhtsfat.org.il/</string>
     <string name="text_google_play_developer_id" translatable="false">00000000000000000000</string>
@@ -112,8 +112,21 @@
     <string name="text_update_available_content">There is a new version available to download.</string>
     <string name="text_update_unavailable_content">There are no new versions available to download.</string>
     <string name="menu_open_in_youtube">Open In Youtube</string>
-    <string name="channel_name">Media Playback</string>
+    <string name="channel_name" translatable="false">Media Playback</string>
     <string name="channel_description">Media playback notifications</string>
+
+    <!-- UAMP -->
+    <string name="skip_back_10s">Skip back 10s</string>
+    <string name="skip_forward_10s">Skip forward 10s</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+
+    <string name="menu_music_queue">Queue</string>
+    <string name="album_art_alt">Album art</string>
+    <string name="duration_unknown">--:--</string>
+    <string name="duration_format">%d:%02d</string>
+
+    <string name="cast_context_error">Failed to get Cast context. Try updating Google Play Services and restart the app.</string>
 
 
 </resources>

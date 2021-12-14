@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/commentsFragment"
-        android:name="aculix.channelify.app.fragment.CommentsFragment"
+        android:name="tsfat.yeshivathahesder.channel.fragment.CommentsFragment"
         android:label="CommentsFragment"
         tools:layout="@layout/fragment_comments">
         <argument
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/videoDetailsFragment"
-        android:name="aculix.channelify.app.fragment.VideoDetailsFragment"
+        android:name="tsfat.yeshivathahesder.channel.fragment.VideoDetailsFragment"
         android:label="fragment_video_details"
         tools:layout="@layout/fragment_video_details">
         <argument
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/commentRepliesFragment"
-        android:name="aculix.channelify.app.fragment.CommentRepliesFragment"
+        android:name="tsfat.yeshivathahesder.channel.fragment.CommentRepliesFragment"
         android:label="Replies"
         tools:layout="@layout/fragment_comment_replies" >
         <argument

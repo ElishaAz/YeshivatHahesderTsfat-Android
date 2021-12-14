@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "tsfat.yeshivathahesder.channel"
-        minSdkVersion 21
+        minSdkVersion MIN_SDK_VERSION
         targetSdkVersion TARGET_SDK_VERSION
         versionCode VERSION_CODE
         versionName VERSION_NAME
@@ -33,6 +33,10 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     viewBinding {
@@ -145,4 +149,5 @@ dependencies {
 
     // Modules
     implementation project(':core')
+    implementation project(':music_common')
 }
