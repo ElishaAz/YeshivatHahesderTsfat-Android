@@ -20,7 +20,7 @@ android {
     buildTypes {
         debug {
             resValue "string", "youtube_api_key", KEYS.YT_API_KEY
-            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
+//            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
         }
 
         release {
@@ -29,7 +29,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             resValue "string", "youtube_api_key", KEYS.YT_API_KEY
-            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
+//            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
         }
     }
 
@@ -136,7 +136,6 @@ dependencies {
     // Firebase
     implementation 'com.google.firebase:firebase-analytics:17.4.0'
     implementation 'com.google.firebase:firebase-messaging:20.1.6'
-//    implementation 'com.google.android.gms:play-services-ads:19.1.0'
 
     // Custom Tabs
     implementation "saschpe.android:customtabs:$saschpeCustomTabs"

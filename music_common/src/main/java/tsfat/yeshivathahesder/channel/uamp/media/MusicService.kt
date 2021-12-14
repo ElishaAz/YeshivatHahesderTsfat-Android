@@ -39,14 +39,6 @@ import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.toMediaQueueItem
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.toMediaSource
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.trackNumber
-import tsfat.yeshivathahesder.channel.uamp.media.library.AbstractMusicSource
-import tsfat.yeshivathahesder.channel.uamp.media.library.BrowseTree
-import tsfat.yeshivathahesder.channel.uamp.media.library.JsonSource
-import tsfat.yeshivathahesder.channel.uamp.media.library.MEDIA_SEARCH_SUPPORTED
-import tsfat.yeshivathahesder.channel.uamp.media.library.MusicSource
-import tsfat.yeshivathahesder.channel.uamp.media.library.UAMP_BROWSABLE_ROOT
-import tsfat.yeshivathahesder.channel.uamp.media.library.UAMP_EMPTY_ROOT
-import tsfat.yeshivathahesder.channel.uamp.media.library.UAMP_RECENT_ROOT
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ControlDispatcher
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -69,6 +61,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import tsfat.yeshivathahesder.channel.uamp.media.R
+import tsfat.yeshivathahesder.channel.uamp.media.library.*
 
 /**
  * This class is the entry point for browsing and playback commands from the APP's UI
@@ -156,13 +149,15 @@ open class MusicService : MediaBrowserServiceCompat() {
                 setSessionAvailabilityListener(UampCastSessionAvailabilityListener())
                 addListener(playerListener)
             }
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             // We wouldn't normally catch the generic `Exception` however
             // calling `CastContext.getSharedInstance` can throw various exceptions, all of which
             // indicate that Cast is unavailable.
             // Related internal bug b/68009560.
-            Log.i(TAG, "Cast is not available on this device. " +
-                    "Exception thrown when attempting to obtain CastContext. " + e.message)
+            Log.i(
+                TAG, "Cast is not available on this device. " +
+                        "Exception thrown when attempting to obtain CastContext. " + e.message
+            )
             null
         }
     }
@@ -209,7 +204,9 @@ open class MusicService : MediaBrowserServiceCompat() {
 
         // The media library is built from a remote JSON file. We'll create the source here,
         // and then use a suspend function to perform the download off the main thread.
-        mediaSource = JsonSource(source = remoteJsonSource)
+
+//        mediaSource = JsonSource(source = remoteJsonSource)
+        mediaSource = DriveSource(this, "1-4fu_bw8sOniSJqxqgtUdHlQRdscusFT")
         serviceScope.launch {
             mediaSource.load()
         }
@@ -512,7 +509,10 @@ open class MusicService : MediaBrowserServiceCompat() {
                 } else {
 
                     val playbackStartPositionMs =
-                        extras?.getLong(MEDIA_DESCRIPTION_EXTRAS_START_PLAYBACK_POSITION_MS, C.TIME_UNSET)
+                        extras?.getLong(
+                            MEDIA_DESCRIPTION_EXTRAS_START_PLAYBACK_POSITION_MS,
+                            C.TIME_UNSET
+                        )
                             ?: C.TIME_UNSET
 
                     preparePlaylist(

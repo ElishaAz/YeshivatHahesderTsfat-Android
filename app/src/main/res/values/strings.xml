@@ -17,12 +17,6 @@
     <string name="text_facebook_user_id" translatable="false">431771787016855</string>
     <string name="text_phone_number" translatable="false">046924646</string>
 
-    <!-- Admob -->
-    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="main_banner_ad_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="comments_banner_ad_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="comment_replies_banner_ad_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-
     <!-- Text -->
     <string name="text_comments">Comments</string>
     <string name="text_video_description">Published on %1$s \n\n%2$s</string>
@@ -128,6 +122,4 @@
     <string name="duration_format">%d:%02d</string>
 
     <string name="cast_context_error">Failed to get Cast context. Try updating Google Play Services and restart the app.</string>
-
-    <string name="google_drive_link_template" translatable="false">https://www.googleapis.com/drive/v3/files/{ID}?alt=media&amp;key={KEY}</string>
 </resources>

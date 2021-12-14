@@ -73,47 +73,47 @@ class AudioMainActivity : AppCompatActivity() {
         // in the app.
         volumeControlStream = AudioManager.STREAM_MUSIC
 
-        viewModel.isConnected.observe(this, Observer {
-            if (it) {
-                viewModel.playMedia(audioId, pauseAllowed = false)
-                viewModel.showFragment(NowPlayingFragment.newInstance())
+//        viewModel.isConnected.observe(this, Observer {
+//            if (it) {
+//                viewModel.playMedia(audioId, pauseAllowed = false)
+//                viewModel.showFragment(NowPlayingFragment.newInstance())
+//            }
+//        })
+
+        /**
+         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
+         * fragment swap.
+         */
+        viewModel.navigateToFragment.observe(this, Observer {
+            it?.getContentIfNotHandled()?.let { fragmentRequest ->
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(
+                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
+                )
+                if (fragmentRequest.backStack) transaction.addToBackStack(null)
+                transaction.commit()
             }
         })
 
-//        /**
-//         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
-//         * fragment swap.
-//         */
-//        viewModel.navigateToFragment.observe(this, Observer {
-//            it?.getContentIfNotHandled()?.let { fragmentRequest ->
-//                val transaction = supportFragmentManager.beginTransaction()
-//                transaction.replace(
-//                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
-//                )
-//                if (fragmentRequest.backStack) transaction.addToBackStack(null)
-//                transaction.commit()
-//            }
-//        })
-//
-//        /**
-//         * Observe changes to the [MainActivityViewModel.rootMediaId]. When the app starts,
-//         * and the UI connects to [MusicService], this will be updated and the app will show
-//         * the initial list of media items.
-//         */
-//        viewModel.rootMediaId.observe(this,
-//            Observer<String> { rootMediaId ->
-//                rootMediaId?.let { navigateToMediaItem(it) }
-//            })
-//
-//        /**
-//         * Observe [MainActivityViewModel.navigateToMediaItem] for [Event]s indicating
-//         * the user has requested to browse to a different [MediaItemData].
-//         */
-//        viewModel.navigateToMediaItem.observe(this, Observer {
-//            it?.getContentIfNotHandled()?.let { mediaId ->
-//                navigateToMediaItem(mediaId)
-//            }
-//        })
+        /**
+         * Observe changes to the [MainActivityViewModel.rootMediaId]. When the app starts,
+         * and the UI connects to [MusicService], this will be updated and the app will show
+         * the initial list of media items.
+         */
+        viewModel.rootMediaId.observe(this,
+            Observer<String> { rootMediaId ->
+                rootMediaId?.let { navigateToMediaItem(it) }
+            })
+
+        /**
+         * Observe [MainActivityViewModel.navigateToMediaItem] for [Event]s indicating
+         * the user has requested to browse to a different [MediaItemData].
+         */
+        viewModel.navigateToMediaItem.observe(this, Observer {
+            it?.getContentIfNotHandled()?.let { mediaId ->
+                navigateToMediaItem(mediaId)
+            }
+        })
     }
 
     @Override

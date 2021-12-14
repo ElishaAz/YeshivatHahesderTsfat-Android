@@ -2,7 +2,6 @@
 <resources>
     <bool name="enable_store">false</bool>
     <bool name="enable_search">true</bool>
-    <bool name="enable_ads">false</bool>
     <bool name="enable_background_view">false</bool>
     <bool name="enable_update_notify">true</bool>
 

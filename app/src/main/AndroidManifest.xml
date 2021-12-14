@@ -56,11 +56,6 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
 
-        <!-- Admob -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id" />
-
 
         <!-- UAMP: -->
 
@@ -85,7 +80,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".uamp.AudioMainActivity"/>
+        <activity android:name=".uamp.AudioMainActivity" />
 
     </application>
 

@@ -31,12 +31,19 @@ android {
 
         testOptions.unitTests.includeAndroidResources = true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+//        resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
     }
 
     buildTypes {
+        debug {
+            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
         }
     }
     compileOptions {

@@ -21,6 +21,7 @@ import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
 import android.support.v4.media.MediaMetadataCompat
+import android.util.Log
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.album
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.albumArtUri
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.artist
@@ -40,19 +41,23 @@ import tsfat.yeshivathahesder.channel.uamp.media.extensions.trackNumber
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import tsfat.yeshivathahesder.channel.uamp.media.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /**
  * Source of [MediaMetadataCompat] objects created from a basic JSON stream.
  *
- * The definition of the JSON is specified in the docs of [JsonMusic] in this file,
+ * The definition of the JSON is specified in the docs of [DriveMusic] in this file,
  * which is the object representation of it.
  */
-class JsonSource(private val source: Uri) : AbstractMusicSource() {
+class DriveSource(private val context: Context, private val baseID: String) :
+    AbstractMusicSource() {
 
     private var catalog: List<MediaMetadataCompat> = emptyList()
 
@@ -63,7 +68,7 @@ class JsonSource(private val source: Uri) : AbstractMusicSource() {
     override fun iterator(): Iterator<MediaMetadataCompat> = catalog.iterator()
 
     override suspend fun load() {
-        updateCatalog(source)?.let { updatedCatalog ->
+        updateCatalog(baseID)?.let { updatedCatalog ->
             catalog = updatedCatalog
             state = STATE_INITIALIZED
         } ?: run {
@@ -76,28 +81,18 @@ class JsonSource(private val source: Uri) : AbstractMusicSource() {
      * Function to connect to a remote URI and download/process the JSON file that corresponds to
      * [MediaMetadataCompat] objects.
      */
-    private suspend fun updateCatalog(catalogUri: Uri): List<MediaMetadataCompat>? {
+    private suspend fun updateCatalog(baseID: String): List<MediaMetadataCompat>? {
         return withContext(Dispatchers.IO) {
             val musicCat = try {
-                downloadJson(catalogUri)
+                downloadCatalog(baseID)
             } catch (ioException: IOException) {
                 return@withContext null
             }
-
-            // Get the base URI to fix up relative references later.
-            val baseUri = catalogUri.toString().removeSuffix(catalogUri.lastPathSegment ?: "")
-
             val mediaMetadataCompats = musicCat.music.map { song ->
-                // The JSON may have paths that are relative to the source of the JSON
-                // itself. We need to fix them up here to turn them into absolute paths.
-                catalogUri.scheme?.let { scheme ->
-                    if (!song.source.startsWith(scheme)) {
-                        song.source = baseUri + song.source
-                    }
-                    if (!song.image.startsWith(scheme)) {
-                        song.image = baseUri + song.image
-                    }
+                if (song.source.isBlank()) {
+                    song.source = idToUri(song.id)
                 }
+
                 val imageUri = AlbumArtContentProvider.mapUri(Uri.parse(song.image))
 
                 MediaMetadataCompat.Builder()
@@ -115,6 +110,12 @@ class JsonSource(private val source: Uri) : AbstractMusicSource() {
         }
     }
 
+    private fun idToUri(id: String, isFolder: Boolean = false): String {
+        val template = if (isFolder) context.getString(R.string.google_drive_folder_template)
+        else context.getString(R.string.google_drive_link_template)
+        return template.replace("{ID}", id)
+            .replace("{KEY}", context.getString(R.string.drive_api_key))
+    }
 
     /**
      * Attempts to download a catalog from a given Uri.
@@ -123,10 +124,33 @@ class JsonSource(private val source: Uri) : AbstractMusicSource() {
      * @return The catalog downloaded, or an empty catalog if an error occurred.
      */
     @Throws(IOException::class)
-    private fun downloadJson(catalogUri: Uri): JsonCatalog {
-        val catalogConn = URL(catalogUri.toString())
+    private fun downloadCatalog(baseID: String): DriveCatalog {
+        val files: MutableList<DriveMusic> = ArrayList<DriveMusic>()
+        val folders: Queue<DriveQuery> = LinkedList<DriveQuery>()
+        folders.add(queryDrive(idToUri(baseID)))
+        while (folders.isNotEmpty()) {
+            val folder = folders.poll()
+            folder ?: break
+            for (file in folder.files) {
+                if (file.mimeType.equals("application/vnd.google-apps.folder")) {
+                    val query = queryDrive(idToUri(file.id))
+                    query.name = file.name
+                    folders.add(query)
+                } else if (file.mimeType.startsWith("audio/")) {
+                    files.add(queryToMusic(file, folder))
+                } else {
+                    Log.d("DriveSource", "Unreadable mime type: " + file.mimeType)
+                }
+            }
+        }
+
+        return DriveCatalog(files)
+    }
+
+    private fun queryDrive(uri: String): DriveQuery {
+        val catalogConn = URL(uri)
         val reader = BufferedReader(InputStreamReader(catalogConn.openStream()))
-        return Gson().fromJson(reader, JsonCatalog::class.java)
+        return Gson().fromJson(reader, DriveQuery::class.java)
     }
 }
 
@@ -134,28 +158,28 @@ class JsonSource(private val source: Uri) : AbstractMusicSource() {
  * Extension method for [MediaMetadataCompat.Builder] to set the fields from
  * our JSON constructed object (to make the code a bit easier to see).
  */
-fun MediaMetadataCompat.Builder.from(jsonMusic: JsonMusic): MediaMetadataCompat.Builder {
+fun MediaMetadataCompat.Builder.from(driveMusic: DriveMusic): MediaMetadataCompat.Builder {
     // The duration from the JSON is given in seconds, but the rest of the code works in
     // milliseconds. Here's where we convert to the proper units.
-    val durationMs = TimeUnit.SECONDS.toMillis(jsonMusic.duration)
+    val durationMs = TimeUnit.SECONDS.toMillis(/*driveMusic.duration*/ -1)
 
-    id = jsonMusic.id
-    title = jsonMusic.title
-    artist = jsonMusic.artist
-    album = jsonMusic.album
+    id = driveMusic.id
+    title = driveMusic.title
+    artist = driveMusic.folder
+    album = driveMusic.folder
     duration = durationMs
-    genre = jsonMusic.genre
-    mediaUri = jsonMusic.source
-    albumArtUri = jsonMusic.image
-    trackNumber = jsonMusic.trackNumber
-    trackCount = jsonMusic.totalTrackCount
+    genre = /*driveMusic.genre*/ ""
+    mediaUri = /*driveMusic.source*/ ""
+    albumArtUri = /*driveMusic.image*/ ""
+    trackNumber = /*driveMusic.trackNumber*/ 0
+    trackCount = /*driveMusic.totalTrackCount*/ 0
     flag = MediaItem.FLAG_PLAYABLE
 
     // To make things easier for *displaying* these, set the display properties as well.
-    displayTitle = jsonMusic.title
-    displaySubtitle = jsonMusic.artist
-    displayDescription = jsonMusic.album
-    displayIconUri = jsonMusic.image
+    displayTitle = driveMusic.title
+    displaySubtitle = driveMusic.folder
+    displayDescription = /*driveMusic.album*/ "Yeshivat HaHesder Tsfat"
+    displayIconUri = /*driveMusic.image*/ ""
 
     // Add downloadStatus to force the creation of an "extras" bundle in the resulting
     // MediaMetadataCompat object. This is needed to send accurate metadata to the
@@ -166,55 +190,32 @@ fun MediaMetadataCompat.Builder.from(jsonMusic: JsonMusic): MediaMetadataCompat.
     return this
 }
 
-/**
- * Wrapper object for our JSON in order to be processed easily by GSON.
- */
-class JsonCatalog {
-    var music: List<JsonMusic> = ArrayList()
+class DriveQuery {
+    var kind: String = ""
+    var incompleteSearch: Boolean = false
+    var files: List<DriveQueryItem> = emptyList()
+
+    @Transient
+    var name: String = "root"
 }
 
-/**
- * An individual piece of music included in our JSON catalog.
- * The format from the server is as specified:
- * ```
- *     { "music" : [
- *     { "title" : // Title of the piece of music
- *     "album" : // Album title of the piece of music
- *     "artist" : // Artist of the piece of music
- *     "genre" : // Primary genre of the music
- *     "source" : // Path to the music, which may be relative
- *     "image" : // Path to the art for the music, which may be relative
- *     "trackNumber" : // Track number
- *     "totalTrackCount" : // Track count
- *     "duration" : // Duration of the music in seconds
- *     "site" : // Source of the music, if applicable
- *     }
- *     ]}
- * ```
- *
- * `source` and `image` can be provided in either relative or
- * absolute paths. For yeshivathahesder:
- * ``
- *     "source" : "https://www.yeshivathahesder.tsfat/music/ode_to_joy.mp3",
- *     "image" : "ode_to_joy.jpg"
- * ``
- *
- * The `source` specifies the full URI to download the piece of music from, but
- * `image` will be fetched relative to the path of the JSON file itself. This means
- * that if the JSON was at "https://www.yeshivathahesder.tsfat/json/music.json" then the image would be found
- * at "https://www.yeshivathahesder.tsfat/json/ode_to_joy.jpg".
- */
-@Suppress("unused")
-class JsonMusic {
+class DriveQueryItem {
+    var kind: String = ""
     var id: String = ""
-    var title: String = ""
-    var album: String = ""
-    var artist: String = ""
-    var genre: String = ""
+    var name: String = ""
+    var mimeType: String = ""
+}
+
+fun queryToMusic(item: DriveQueryItem, parent: DriveQuery): DriveMusic {
+    return DriveMusic(item.id, item.name, parent.name)
+}
+
+data class DriveCatalog(val music: List<DriveMusic>)
+
+@Suppress("unused")
+data class DriveMusic(
+    val id: String, val title: String, val folder: String,
+) {
     var source: String = ""
     var image: String = ""
-    var trackNumber: Long = 0
-    var totalTrackCount: Long = 0
-    var duration: Long = -1
-    var site: String = ""
 }
