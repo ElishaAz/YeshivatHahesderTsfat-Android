@@ -29,9 +29,10 @@ import tsfat.yeshivathahesder.channel.uamp.utils.InjectorUtils
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
+import timber.log.Timber
 import tsfat.yeshivathahesder.channel.R
 
-class MainActivity : AppCompatActivity() {
+class AudioMainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel> {
         InjectorUtils.provideMainActivityViewModel(this)
@@ -43,9 +44,13 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize the Cast context. This is required so that the media route button can be
         // created in the AppBar
-        castContext = CastContext.getSharedInstance(this)
+        try {
+            castContext = CastContext.getSharedInstance(this)
+        } catch (e: RuntimeException) {
+            Timber.e(e.stackTrace.toString())
+        }
 
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_audio_main)
 
         // Since UAMP is a music player, the volume controls should adjust the music volume while
         // in the app.

@@ -12,4 +12,19 @@
     <color name="dividerColor">#E0E0E0</color>
     <color name="linkColor">#1e88e5</color>
     <color name="playlistVideoCountBgColor">#212121</color>
+
+
+    <!-- UAMP: -->
+    <color name="colorAccent">#14A5A1</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="mediaListBackground">#F1F1F1</color>
+
+    <color name="mediaControlColor">#f8f8f8</color>
+
+    <color name="nowPlayingBackground">#eff0f0</color>
+    <color name="nowPlayingWhiteBackground">#fdfdfd</color>
+
+    <color name="menu_icon_tint">#ffffff</color>
 </resources>

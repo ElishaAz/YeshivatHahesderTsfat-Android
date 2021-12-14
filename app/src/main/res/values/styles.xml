@@ -7,7 +7,8 @@
         <item name="colorSecondary">@color/colorSecondary</item>
 
         <!-- Window Decor -->
-        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/use_light_status_bar</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">@bool/use_light_status_bar
+        </item>
         <item name="android:statusBarColor">@color/transparentColor</item>
 
         <!-- Material Dialog -->
@@ -20,7 +21,7 @@
     </style>
 
     <!-- Toolbar -->
-    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar"/>
+    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <!-- TextView -->
     <style name="IconTextView" parent="@style/Widget.MaterialComponents.TextView">
@@ -37,6 +38,31 @@
     </style>
 
     <!-- Progress Indicator -->
-    <style name="CircularProgressBar" parent="@style/Widget.AppCompat.ProgressBar"/>
+    <style name="CircularProgressBar" parent="@style/Widget.AppCompat.ProgressBar" />
 
-    </resources>
+    <!-- UAMP -->
+
+    <style name="TextAppearance.Uamp.Title" parent="@style/TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.Uamp.Subtitle" parent="@style/TextAppearance.AppCompat.Small">
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="MediaStateIcon">
+        <item name="tint">@color/mediaControlColor</item>
+        <item name="android:layout_margin">@dimen/media_item_control_margin</item>
+    </style>
+
+    <style name="MediaItemList">
+        <item name="android:background">@color/mediaListBackground</item>
+        <item name="android:paddingBottom">2dp</item>
+        <!-- In order to account for optical illusions,
+        make the end padding a bit larger so it visually looks the same. -->
+        <item name="android:paddingEnd">3dp</item>
+        <item name="android:paddingStart">2dp</item>
+        <item name="android:paddingTop">2dp</item>
+    </style>
+
+</resources>

@@ -355,5 +355,5 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
 }
 
 private const val TAG = "PackageValidator"
-private const val ANDROID_PLATFORM = "channel"
+private const val ANDROID_PLATFORM = "android"
 private val WHITESPACE_REGEX = "\\s|\\n".toRegex()

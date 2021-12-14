@@ -1,34 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#14A5A1</color>
-    <color name="colorPrimary">#840255</color>
-    <color name="colorPrimaryDark">#710144</color>
-    <color name="mediaControlColor">#f8f8f8</color>
-    <color name="mediaListBackground">#F1F1F1</color>
-    <color name="menu_icon_tint">#ffffff</color>
-    <color name="nowPlayingBackground">#eff0f0</color>
-    <color name="nowPlayingWhiteBackground">#fdfdfd</color>
-    <color name="transparent">#00000000</color>
-    <dimen name="media_item_art">72dp</dimen>
-    <dimen name="media_item_control_margin">4dp</dimen>
-    <dimen name="media_item_half_radius">2dp</dimen>
-    <dimen name="media_item_height">72dp</dimen>
-    <dimen name="media_item_icon_margin_start">12dp</dimen>
-    <dimen name="media_item_negative_half_radius">-2dp</dimen>
-    <dimen name="media_item_radius">4dp</dimen>
-    <dimen name="media_item_text_margin_start">4dp</dimen>
-    <dimen name="now_playing_album_art_margin">72dp</dimen>
-    <dimen name="now_playing_artist_bottom_margin">32dp</dimen>
-    <dimen name="now_playing_artist_size">18sp</dimen>
-    <dimen name="now_playing_play_pause_bottom_margin">52dp</dimen>
-    <dimen name="now_playing_play_pause_top_margin">42dp</dimen>
-    <dimen name="now_playing_skip_margin">8dp</dimen>
-    <dimen name="now_playing_skip_top_margin">42dp</dimen>
-    <dimen name="now_playing_text_padding">16dp</dimen>
-    <dimen name="now_playing_title_bottom_margin">8dp</dimen>
-    <dimen name="now_playing_title_size">32sp</dimen>
-    <dimen name="now_playing_title_top_margin">32dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
     <string name="albums_title">Albums</string>
     <string name="allowed_caller_log">
         Caller has a valid certificate, but its package doesn\'t match any expected package for the
@@ -47,29 +18,4 @@
     <string name="notification_skip_to_next">Skip to next track</string>
     <string name="notification_skip_to_previous">Skip to previous track</string>
     <string name="recommended_title">Recommended</string>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-    <style name="MediaItemList">
-        <item name="android:background">@color/mediaListBackground</item>
-        <item name="android:paddingBottom">2dp</item>
-        <!-- In order to account for optical illusions,
-        make the end padding a bit larger so it visually looks the same. -->
-        <item name="android:paddingEnd">3dp</item>
-        <item name="android:paddingStart">2dp</item>
-        <item name="android:paddingTop">2dp</item>
-    </style>
-    <style name="MediaStateIcon">
-        <item name="tint">@color/mediaControlColor</item>
-        <item name="android:layout_margin">@dimen/media_item_control_margin</item>
-    </style>
-    <style name="TextAppearance.Uamp.Subtitle" parent="@style/TextAppearance.AppCompat.Small">
-        <item name="android:textColor">?android:textColorSecondary</item>
-    </style>
-    <style name="TextAppearance.Uamp.Title" parent="@style/TextAppearance.AppCompat.Title">
-        <item name="android:textColor">?android:textColorSecondary</item>
-    </style>
 </resources>

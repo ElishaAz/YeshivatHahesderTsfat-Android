@@ -37,6 +37,8 @@ buildscript {
         glide_version = '4.11.0'
         junit_version = '4.13'
         robolectric_version = '4.2'
+        fragment_version = '1.2.5'
+        multidex_version = '1.0.3'
     }
 
     repositories {

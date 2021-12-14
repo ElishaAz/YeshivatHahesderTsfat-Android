@@ -75,7 +75,7 @@
         with the Android Auto app.
         -->
         <service
-            android:name="uamp.media.MusicService"
+            android:name=".uamp.media.MusicService"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedService">
@@ -84,6 +84,8 @@
                 <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
+
+        <activity android:name=".uamp.AudioMainActivity"/>
 
     </application>
 

@@ -94,4 +94,5 @@ class MediaItemFragment : Fragment() {
     }
 }
 
-private const val MEDIA_ID_ARG = "tsfat.yeshivathahesder.channel.uamp.fragments.MediaItemFragment.MEDIA_ID"
+private const val MEDIA_ID_ARG =
+    "tsfat.yeshivathahesder.channel.uamp.fragments.MediaItemFragment.MEDIA_ID"

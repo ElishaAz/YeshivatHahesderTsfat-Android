@@ -25,7 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import tsfat.yeshivathahesder.channel.uamp.MainActivity
+import tsfat.yeshivathahesder.channel.uamp.AudioMainActivity
 import tsfat.yeshivathahesder.channel.uamp.MediaItemData
 import tsfat.yeshivathahesder.channel.uamp.common.MusicServiceConnection
 import tsfat.yeshivathahesder.channel.uamp.fragments.NowPlayingFragment
@@ -100,7 +100,7 @@ class MainActivityViewModel(
 
     /**
      * This posts a browse [Event] that will be handled by the
-     * observer in [MainActivity].
+     * observer in [AudioMainActivity].
      */
     private fun browseToItem(mediaItem: MediaItemData) {
         _navigateToMediaItem.value = Event(mediaItem.mediaId)
