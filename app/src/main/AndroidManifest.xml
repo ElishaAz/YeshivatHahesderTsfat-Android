@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="tsfat.yeshivathahesder.channel">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -58,11 +59,17 @@
 
 
         <!-- UAMP: -->
+        <!-- Enable instant app support -->
+        <dist:module dist:instant="true" />
+
+        <!-- Declare that UAMP supports Android Auto. -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
 
         <!-- Declare that UAMP supports Cast. -->
-        <meta-data
-            android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="tsfat.yeshivathahesder.channel.uamp.cast.UampCastOptionsProvider" />
+        <meta-data android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+            android:value="com.example.android.uamp.cast.UampCastOptionsProvider"/>
 
 
         <!--

@@ -4,7 +4,7 @@ package tsfat.yeshivathahesder.channel.model
 data class PlaylistItemInfo(
     val nextPageToken: String?,
     val prevPageToken: String?,
-    val items: List<ItemBase>
+    val items: List<VideoItem>
 ) {
     abstract class ItemBase {
         abstract val id: String

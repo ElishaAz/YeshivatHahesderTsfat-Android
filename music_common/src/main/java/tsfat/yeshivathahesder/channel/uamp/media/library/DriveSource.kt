@@ -86,6 +86,7 @@ class DriveSource(private val context: Context, private val baseID: String) :
             val musicCat = try {
                 downloadCatalog(baseID)
             } catch (ioException: IOException) {
+                Log.e("DriveSource", ioException.stackTraceToString())
                 return@withContext null
             }
             val mediaMetadataCompats = musicCat.music.map { song ->
@@ -127,13 +128,13 @@ class DriveSource(private val context: Context, private val baseID: String) :
     private fun downloadCatalog(baseID: String): DriveCatalog {
         val files: MutableList<DriveMusic> = ArrayList<DriveMusic>()
         val folders: Queue<DriveQuery> = LinkedList<DriveQuery>()
-        folders.add(queryDrive(idToUri(baseID)))
+        folders.add(queryDrive(idToUri(baseID, isFolder = true)))
         while (folders.isNotEmpty()) {
             val folder = folders.poll()
             folder ?: break
             for (file in folder.files) {
                 if (file.mimeType.equals("application/vnd.google-apps.folder")) {
-                    val query = queryDrive(idToUri(file.id))
+                    val query = queryDrive(idToUri(file.id, isFolder = true))
                     query.name = file.name
                     folders.add(query)
                 } else if (file.mimeType.startsWith("audio/")) {
@@ -167,19 +168,19 @@ fun MediaMetadataCompat.Builder.from(driveMusic: DriveMusic): MediaMetadataCompa
     title = driveMusic.title
     artist = driveMusic.folder
     album = driveMusic.folder
-    duration = durationMs
-    genre = /*driveMusic.genre*/ ""
-    mediaUri = /*driveMusic.source*/ ""
-    albumArtUri = /*driveMusic.image*/ ""
-    trackNumber = /*driveMusic.trackNumber*/ 0
-    trackCount = /*driveMusic.totalTrackCount*/ 0
+//    duration = durationMs
+//    genre = /*driveMusic.genre*/ ""
+    mediaUri = driveMusic.source
+    albumArtUri = driveMusic.image
+//    trackNumber = /*driveMusic.trackNumber*/ 0
+//    trackCount = /*driveMusic.totalTrackCount*/ 0
     flag = MediaItem.FLAG_PLAYABLE
 
     // To make things easier for *displaying* these, set the display properties as well.
     displayTitle = driveMusic.title
     displaySubtitle = driveMusic.folder
     displayDescription = /*driveMusic.album*/ "Yeshivat HaHesder Tsfat"
-    displayIconUri = /*driveMusic.image*/ ""
+    displayIconUri = driveMusic.image
 
     // Add downloadStatus to force the creation of an "extras" bundle in the resulting
     // MediaMetadataCompat object. This is needed to send accurate metadata to the
@@ -217,5 +218,5 @@ data class DriveMusic(
     val id: String, val title: String, val folder: String,
 ) {
     var source: String = ""
-    var image: String = ""
+    var image: String = "https://yhtsfat.org.il/wp-content/uploads/2018/08/%D7%9C%D7%95%D7%92%D7%95-%D7%91%D7%90%D7%99%D7%9B%D7%95%D7%AA-%D7%99%D7%A9%D7%99%D7%91%D7%94-225x300.png"
 }

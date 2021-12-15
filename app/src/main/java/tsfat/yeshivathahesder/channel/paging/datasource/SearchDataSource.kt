@@ -65,7 +65,7 @@ class SearchDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e("An error happened: $e")
+        Timber.e("An error happened: $e.stackTraceToString()")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

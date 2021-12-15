@@ -117,9 +117,6 @@ open class MusicService : MediaBrowserServiceCompat() {
 
     private var isForegroundService = false
 
-    private val remoteJsonSource: Uri =
-        Uri.parse("https://storage.googleapis.com/uamp/catalog.json")
-
     private val uAmpAudioAttributes = AudioAttributes.Builder()
         .setContentType(C.CONTENT_TYPE_MUSIC)
         .setUsage(C.USAGE_MEDIA)
@@ -292,7 +289,7 @@ open class MusicService : MediaBrowserServiceCompat() {
              * and return the recent root instead.
              */
             val isRecentRequest = rootHints?.getBoolean(EXTRA_RECENT) ?: false
-            val browserRootPath = if (isRecentRequest) UAMP_RECENT_ROOT else UAMP_BROWSABLE_ROOT
+            val browserRootPath = /*if (isRecentRequest) UAMP_RECENT_ROOT else*/ UAMP_BROWSABLE_ROOT
             BrowserRoot(browserRootPath, rootExtras)
         } else {
             /**
@@ -321,32 +318,32 @@ open class MusicService : MediaBrowserServiceCompat() {
         /**
          * If the caller requests the recent root, return the most recently played song.
          */
-        if (parentMediaId == UAMP_RECENT_ROOT) {
-            result.sendResult(storage.loadRecentSong()?.let { song -> listOf(song) })
-        } else {
-            // If the media source is ready, the results will be set synchronously here.
-            val resultsSent = mediaSource.whenReady { successfullyInitialized ->
-                if (successfullyInitialized) {
-                    val children = browseTree[parentMediaId]?.map { item ->
-                        MediaItem(item.description, item.flag)
-                    }
-                    result.sendResult(children)
-                } else {
-                    mediaSession.sendSessionEvent(NETWORK_FAILURE, null)
-                    result.sendResult(null)
+//        if (parentMediaId == UAMP_RECENT_ROOT) {
+//            result.sendResult(storage.loadRecentSong()?.let { song -> listOf(song) })
+//        } else {
+        // If the media source is ready, the results will be set synchronously here.
+        val resultsSent = mediaSource.whenReady { successfullyInitialized ->
+            if (successfullyInitialized) {
+                val children = browseTree[parentMediaId]?.map { item ->
+                    MediaItem(item.description, item.flag)
                 }
-            }
-
-            // If the results are not ready, the service must "detach" the results before
-            // the method returns. After the source is ready, the lambda above will run,
-            // and the caller will be notified that the results are ready.
-            //
-            // See [MediaItemFragmentViewModel.subscriptionCallback] for how this is passed to the
-            // UI/displayed in the [RecyclerView].
-            if (!resultsSent) {
-                result.detach()
+                result.sendResult(children)
+            } else {
+                mediaSession.sendSessionEvent(NETWORK_FAILURE, null)
+                result.sendResult(null)
             }
         }
+
+        // If the results are not ready, the service must "detach" the results before
+        // the method returns. After the source is ready, the lambda above will run,
+        // and the caller will be notified that the results are ready.
+        //
+        // See [MediaItemFragmentViewModel.subscriptionCallback] for how this is passed to the
+        // UI/displayed in the [RecyclerView].
+        if (!resultsSent) {
+            result.detach()
+        }
+//        }
     }
 
     /**

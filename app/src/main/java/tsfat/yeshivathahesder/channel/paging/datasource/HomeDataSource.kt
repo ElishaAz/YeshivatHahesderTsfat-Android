@@ -17,7 +17,8 @@ class HomeDataSource(
 
     private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<NetworkState>()
-    private var retryQuery: (() -> Any)? = null // Keep reference of the last query (to be able to retry it if necessary)
+    private var retryQuery: (() -> Any)? =
+        null // Keep reference of the last query (to be able to retry it if necessary)
     private var nextPageToken: String? = null
 
     override fun loadInitial(
@@ -62,7 +63,7 @@ class HomeDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e("An error happened: $e")
+        Timber.e("An error happened: ${e.stackTraceToString()}")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

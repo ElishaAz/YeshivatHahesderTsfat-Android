@@ -53,6 +53,7 @@ class AudioMainActivity : AppCompatActivity() {
     private var castContext: CastContext? = null
 
     private lateinit var audioId: String
+    private var castEnable: Boolean = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,7 @@ class AudioMainActivity : AppCompatActivity() {
         // created in the AppBar
         try {
             castContext = CastContext.getSharedInstance(this)
+            castEnable = true
         } catch (e: RuntimeException) {
             Timber.e(e.stackTrace.toString())
         }
@@ -124,7 +126,8 @@ class AudioMainActivity : AppCompatActivity() {
         /**
          * Set up a MediaRouteButton to allow the user to control the current media playback route
          */
-        CastButtonFactory.setUpMediaRouteButton(this, menu, R.id.media_route_menu_item)
+        if (castEnable)
+            CastButtonFactory.setUpMediaRouteButton(this, menu, R.id.media_route_menu_item)
         return true
     }
 
