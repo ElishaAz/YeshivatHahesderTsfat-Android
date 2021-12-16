@@ -1,11 +1,9 @@
 package tsfat.yeshivathahesder.channel.fragment
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.activity.AudioPlayerActivity
 import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
 import tsfat.yeshivathahesder.channel.fastadapteritems.HomeItem
 import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
-import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
 import tsfat.yeshivathahesder.channel.paging.Status
 import tsfat.yeshivathahesder.channel.utils.DividerItemDecorator
 import tsfat.yeshivathahesder.channel.viewmodel.HomeViewModel
@@ -27,11 +25,17 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericFastAdapter
 import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.adapters.ModelAdapter
 import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.widget_toolbar.view.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.di.AudioConnector
+import tsfat.yeshivathahesder.channel.model.ItemBase
+import tsfat.yeshivathahesder.channel.model.VideoItem
+import tsfat.yeshivathahesder.channel.uamp.AudioItem
 
 @ExperimentalPagedSupport
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -39,11 +43,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel by viewModel<HomeViewModel>() // Lazy inject ViewModel
 
     private var homeAdapter: GenericFastAdapter? = null
-    private lateinit var homePagedModelAdapter: PagedModelAdapter<PlaylistItemInfo.ItemBase, HomeItem>
+    private lateinit var homePagedModelAdapter: PagedModelAdapter<ItemBase, HomeItem>
     private lateinit var footerAdapter: GenericItemAdapter
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
 
+
+    private val audioConnector: AudioConnector by inject()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,6 +64,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setupUploadsPlaylistIdObservables()
         setupRecyclerView(savedInstanceState)
         onRetryButtonClick()
+
+        audioConnector.audioItems.observe(viewLifecycleOwner) {
+        }
     }
 
     override fun onSaveInstanceState(_outState: Bundle) {
@@ -99,29 +108,31 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setupRecyclerView(savedInstanceState: Bundle?) {
-        val asyncDifferConfig = AsyncDifferConfig.Builder<PlaylistItemInfo.ItemBase>(object :
-            DiffUtil.ItemCallback<PlaylistItemInfo.ItemBase>() {
+        val asyncDifferConfig = AsyncDifferConfig.Builder<ItemBase>(object :
+            DiffUtil.ItemCallback<ItemBase>() {
             override fun areItemsTheSame(
-                oldItem: PlaylistItemInfo.ItemBase,
-                newItem: PlaylistItemInfo.ItemBase
+                oldItem: ItemBase,
+                newItem: ItemBase
             ): Boolean {
                 return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: PlaylistItemInfo.ItemBase,
-                newItem: PlaylistItemInfo.ItemBase
+                oldItem: ItemBase,
+                newItem: ItemBase
             ): Boolean {
                 return oldItem == newItem
             }
         }).build()
 
         homePagedModelAdapter =
-            PagedModelAdapter<PlaylistItemInfo.ItemBase, HomeItem>(asyncDifferConfig) {
+            PagedModelAdapter<ItemBase, HomeItem>(asyncDifferConfig) {
                 HomeItem(it)
             }
 
         footerAdapter = ItemAdapter.items()
+
+        homeAdapter = FastAdapter()
 
         homeAdapter = FastAdapter.with(listOf(homePagedModelAdapter, footerAdapter))
         homeAdapter?.registerTypeInstance(HomeItem(null))
@@ -186,7 +197,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         // Observe latest video live data
         viewModel.latestVideoLiveData?.observe(
             viewLifecycleOwner,
-            Observer<PagedList<PlaylistItemInfo.ItemBase>> { latestVideoList ->
+            Observer<PagedList<ItemBase>> { latestVideoList ->
                 homePagedModelAdapter.submitList(latestVideoList)
             })
     }
@@ -224,16 +235,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun onItemClick() {
         homeAdapter?.onClickListener = { view, adapter, item, position ->
             if (item is HomeItem) {
-                val playlistItem: PlaylistItemInfo.ItemBase = item.playlistItem!!
-                if (playlistItem is PlaylistItemInfo.VideoItem) {
+                val mediaItem: ItemBase = item.playlistItem!!
+                if (mediaItem is VideoItem) {
                     VideoPlayerActivity.startActivity(
                         context,
-                        playlistItem.contentDetails.videoId
+                        mediaItem.contentDetails.videoId
                     )
+                } else if (mediaItem is AudioItem) {
+                    audioConnector.playItem(mediaItem)
+//                    AudioPlayerActivity.startActivity(context, mediaItem.contentDetails.audioId)
                 }
-//                else if (playlistItem is PlaylistItemInfo.AudioItem) {
-//                    AudioPlayerActivity.startActivity(context, playlistItem.contentDetails.audioId)
-//                }
             }
 
             false

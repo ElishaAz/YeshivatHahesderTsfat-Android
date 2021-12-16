@@ -1,6 +1,5 @@
 package tsfat.yeshivathahesder.channel.paging.datasource
 
-import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.repository.HomeRepository
 import androidx.lifecycle.LiveData
@@ -8,12 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import kotlinx.coroutines.*
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.model.ItemBase
 
 class HomeDataSource(
     private val homeRepository: HomeRepository,
     private val coroutineScope: CoroutineScope,
     private val playlistId: String
-) : PageKeyedDataSource<String, PlaylistItemInfo.ItemBase>() {
+) : PageKeyedDataSource<String, ItemBase>() {
 
     private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<NetworkState>()
@@ -23,7 +23,7 @@ class HomeDataSource(
 
     override fun loadInitial(
         params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<String, PlaylistItemInfo.ItemBase>
+        callback: LoadInitialCallback<String, ItemBase>
     ) {
         retryQuery = { loadInitial(params, callback) }
         executeQuery {
@@ -33,7 +33,7 @@ class HomeDataSource(
 
     override fun loadAfter(
         params: LoadParams<String>,
-        callback: LoadCallback<String, PlaylistItemInfo.ItemBase>
+        callback: LoadCallback<String, ItemBase>
     ) {
         retryQuery = { loadAfter(params, callback) }
         executeQuery {
@@ -43,12 +43,12 @@ class HomeDataSource(
 
     override fun loadBefore(
         params: LoadParams<String>,
-        callback: LoadCallback<String, PlaylistItemInfo.ItemBase>
+        callback: LoadCallback<String, ItemBase>
     ) {
         // Data is always fetched from the next page and hence loadBefore is never needed
     }
 
-    private fun executeQuery(callback: (List<PlaylistItemInfo.ItemBase>) -> Unit) {
+    private fun executeQuery(callback: (List<ItemBase>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
             val playlistItemInfo = homeRepository.getLatestVideos(playlistId, nextPageToken).body()

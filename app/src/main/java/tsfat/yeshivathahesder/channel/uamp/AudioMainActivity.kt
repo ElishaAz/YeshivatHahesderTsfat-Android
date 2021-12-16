@@ -32,7 +32,6 @@ import com.google.android.gms.cast.framework.CastContext
 import timber.log.Timber
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.activity.AudioPlayerActivity
-import tsfat.yeshivathahesder.channel.uamp.fragments.NowPlayingFragment
 
 class AudioMainActivity : AppCompatActivity() {
 
@@ -90,7 +89,7 @@ class AudioMainActivity : AppCompatActivity() {
             it?.getContentIfNotHandled()?.let { fragmentRequest ->
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.replace(
-                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
+                    R.id.fragmentContainer, fragmentRequest.fragment!!, fragmentRequest.tag
                 )
                 if (fragmentRequest.backStack) transaction.addToBackStack(null)
                 transaction.commit()

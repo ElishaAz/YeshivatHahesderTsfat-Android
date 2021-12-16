@@ -28,7 +28,6 @@ import androidx.lifecycle.ViewModelProvider
 import tsfat.yeshivathahesder.channel.uamp.AudioMainActivity
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import tsfat.yeshivathahesder.channel.uamp.common.MusicServiceConnection
-import tsfat.yeshivathahesder.channel.uamp.fragments.NowPlayingFragment
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.isPlayEnabled
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.isPlaying
@@ -83,7 +82,7 @@ class MainActivityViewModel(
             browseToItem(clickedItem)
         } else {
             playMedia(clickedItem, pauseAllowed = false)
-            showFragment(NowPlayingFragment.newInstance())
+            showFragment(null, play = true)
         }
     }
 
@@ -95,8 +94,13 @@ class MainActivityViewModel(
      * @param backStack if true, add this transaction to the back stack
      * @param tag the name to use for this fragment in the stack
      */
-    fun showFragment(fragment: Fragment, backStack: Boolean = true, tag: String? = null) {
-        _navigateToFragment.value = Event(FragmentNavigationRequest(fragment, backStack, tag))
+    fun showFragment(
+        fragment: Fragment?,
+        backStack: Boolean = true,
+        tag: String? = null,
+        play: Boolean = false
+    ) {
+        _navigateToFragment.value = Event(FragmentNavigationRequest(fragment, backStack, tag, play))
     }
 
 
@@ -181,9 +185,10 @@ class MainActivityViewModel(
  * and its corresponding ViewModel.
  */
 data class FragmentNavigationRequest(
-    val fragment: Fragment,
+    val fragment: Fragment?,
     val backStack: Boolean = false,
-    val tag: String? = null
+    val tag: String? = null,
+    val play: Boolean = false
 )
 
 private const val TAG = "MainActivitytVM"

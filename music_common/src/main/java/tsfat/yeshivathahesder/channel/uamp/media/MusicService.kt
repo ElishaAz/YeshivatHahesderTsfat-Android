@@ -33,12 +33,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.MediaBrowserServiceCompat.BrowserRoot.EXTRA_RECENT
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.album
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.flag
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.toMediaQueueItem
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.toMediaSource
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.trackNumber
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ControlDispatcher
 import com.google.android.exoplayer2.ExoPlaybackException
@@ -61,6 +55,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import tsfat.yeshivathahesder.channel.uamp.media.R
+import tsfat.yeshivathahesder.channel.uamp.media.extensions.*
 import tsfat.yeshivathahesder.channel.uamp.media.library.*
 
 /**
@@ -288,7 +283,7 @@ open class MusicService : MediaBrowserServiceCompat() {
              * By default return the browsable root. Treat the EXTRA_RECENT flag as a special case
              * and return the recent root instead.
              */
-            val isRecentRequest = rootHints?.getBoolean(EXTRA_RECENT) ?: false
+//            val isRecentRequest = rootHints?.getBoolean(EXTRA_RECENT) ?: false
             val browserRootPath = /*if (isRecentRequest) UAMP_RECENT_ROOT else*/ UAMP_BROWSABLE_ROOT
             BrowserRoot(browserRootPath, rootExtras)
         } else {
@@ -325,7 +320,7 @@ open class MusicService : MediaBrowserServiceCompat() {
         val resultsSent = mediaSource.whenReady { successfullyInitialized ->
             if (successfullyInitialized) {
                 val children = browseTree[parentMediaId]?.map { item ->
-                    MediaItem(item.description, item.flag)
+                    toMediaItem(item)
                 }
                 result.sendResult(children)
             } else {
@@ -346,6 +341,24 @@ open class MusicService : MediaBrowserServiceCompat() {
 //        }
     }
 
+    private fun toMediaItem(item: MediaMetadataCompat): MediaItem {
+        val desc = item.description
+        val bundle = desc.extras ?: Bundle()
+        bundle.putString(MediaMetadataCompat.METADATA_KEY_DATE, item.date)
+        val bob = MediaDescriptionCompat.Builder().apply {
+            setMediaId(desc.mediaId);
+            setTitle(desc.title);
+            setSubtitle(desc.subtitle);
+            setDescription(desc.description);
+            setIconBitmap(desc.iconBitmap);
+            setIconUri(desc.iconUri);
+            setMediaUri(desc.mediaUri);
+            setExtras(bundle)
+        }
+
+        return MediaItem(bob.build(), item.flag)
+    }
+
     /**
      * Returns a list of [MediaItem]s that match the given search query
      */
@@ -359,7 +372,7 @@ open class MusicService : MediaBrowserServiceCompat() {
             if (successfullyInitialized) {
                 val resultsList = mediaSource.search(query, extras ?: Bundle.EMPTY)
                     .map { mediaMetadata ->
-                        MediaItem(mediaMetadata.description, mediaMetadata.flag)
+                        toMediaItem(mediaMetadata)
                     }
                 result.sendResult(resultsList)
             }

@@ -44,7 +44,7 @@
     <string name="albums_title">Albums</string>
 
     <!-- Google Drive -->
-    <string name="google_drive_link_template" translatable="false">https://www.googleapis.com/drive/v3/files/{ID}?alt=media&amp;key={KEY}</string>
-    <string name="google_drive_folder_template" translatable="false">https://www.googleapis.com/drive/v3/files?q=\'{ID}\'+in+parents&amp;key={KEY}</string>
-
+    <string name="google_drive_link_template" translatable="false">https://www.googleapis.com/drive/v3/files/%1$s?alt=media&amp;key=%2$s</string>
+    <string name="google_drive_query_template" translatable="false">https://www.googleapis.com/drive/v3/files?q=%1$s&amp;fields=files(id,name,mimeType,createdTime,parents)&amp;key=%2$s</string>
+<!--    <string name="google_drive_query_folder">\'{ID}\'+in+parents</string>-->
 </resources>

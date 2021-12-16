@@ -20,7 +20,7 @@ import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.recyclerview.widget.DiffUtil
-import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
+import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
 
 /**
@@ -38,8 +38,9 @@ data class AudioItem(
     val subtitle: String,
     val albumArtUri: Uri,
     val browsable: Boolean,
+    val audioPublishedAt: String?,
     var playbackRes: Int
-) : PlaylistItemInfo.ItemBase() {
+) : ItemBase() {
 
     companion object {
         /**
@@ -86,5 +87,8 @@ data class AudioItem(
 
     override val id: String
         get() = "RC-$mediaId"
+
+    override val publishedAt: String
+        get() = audioPublishedAt ?: ""
 }
 

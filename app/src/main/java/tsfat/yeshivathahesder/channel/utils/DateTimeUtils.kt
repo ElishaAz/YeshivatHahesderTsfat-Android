@@ -14,6 +14,7 @@ object DateTimeUtils {
      * Eg. 14 hours ago
      * Eg. 2 days ago
      */
+    @SuppressLint("SimpleDateFormat")
     fun getTimeAgo(timeInIso8601: String): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
         sdf.timeZone = TimeZone.getTimeZone("GMT")

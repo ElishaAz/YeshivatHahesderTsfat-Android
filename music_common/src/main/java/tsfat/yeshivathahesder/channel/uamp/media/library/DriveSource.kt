@@ -22,30 +22,17 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
 import android.support.v4.media.MediaMetadataCompat
 import android.util.Log
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.album
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.albumArtUri
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.artist
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.displayDescription
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.displayIconUri
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.displaySubtitle
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.displayTitle
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.downloadStatus
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.duration
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.flag
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.genre
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.mediaUri
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.title
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.trackCount
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.trackNumber
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tsfat.yeshivathahesder.channel.uamp.media.R
+import tsfat.yeshivathahesder.channel.uamp.media.extensions.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.lang.StringBuilder
 import java.net.URL
+import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -69,7 +56,7 @@ class DriveSource(private val context: Context, private val baseID: String) :
 
     override suspend fun load() {
         updateCatalog(baseID)?.let { updatedCatalog ->
-            catalog = updatedCatalog
+            catalog = updatedCatalog.sortedBy { it.date }
             state = STATE_INITIALIZED
         } ?: run {
             catalog = emptyList()
@@ -84,14 +71,17 @@ class DriveSource(private val context: Context, private val baseID: String) :
     private suspend fun updateCatalog(baseID: String): List<MediaMetadataCompat>? {
         return withContext(Dispatchers.IO) {
             val musicCat = try {
-                downloadCatalog(baseID)
-            } catch (ioException: IOException) {
-                Log.e("DriveSource", ioException.stackTraceToString())
+                downloadCatalogRecursive(context, baseID)
+            } catch (e: IOException) {
+                Log.e("DriveSource", e.stackTraceToString())
+                return@withContext null
+            } catch (e: UnknownHostException) {
+                Log.e("DriveSource", e.stackTraceToString())
                 return@withContext null
             }
             val mediaMetadataCompats = musicCat.music.map { song ->
                 if (song.source.isBlank()) {
-                    song.source = idToUri(song.id)
+                    song.source = fileIdToUri(song.id)
                 }
 
                 val imageUri = AlbumArtContentProvider.mapUri(Uri.parse(song.image))
@@ -111,47 +101,15 @@ class DriveSource(private val context: Context, private val baseID: String) :
         }
     }
 
-    private fun idToUri(id: String, isFolder: Boolean = false): String {
-        val template = if (isFolder) context.getString(R.string.google_drive_folder_template)
-        else context.getString(R.string.google_drive_link_template)
-        return template.replace("{ID}", id)
-            .replace("{KEY}", context.getString(R.string.drive_api_key))
-    }
-
-    /**
-     * Attempts to download a catalog from a given Uri.
-     *
-     * @param catalogUri URI to attempt to download the catalog form.
-     * @return The catalog downloaded, or an empty catalog if an error occurred.
-     */
-    @Throws(IOException::class)
-    private fun downloadCatalog(baseID: String): DriveCatalog {
-        val files: MutableList<DriveMusic> = ArrayList<DriveMusic>()
-        val folders: Queue<DriveQuery> = LinkedList<DriveQuery>()
-        folders.add(queryDrive(idToUri(baseID, isFolder = true)))
-        while (folders.isNotEmpty()) {
-            val folder = folders.poll()
-            folder ?: break
-            for (file in folder.files) {
-                if (file.mimeType.equals("application/vnd.google-apps.folder")) {
-                    val query = queryDrive(idToUri(file.id, isFolder = true))
-                    query.name = file.name
-                    folders.add(query)
-                } else if (file.mimeType.startsWith("audio/")) {
-                    files.add(queryToMusic(file, folder))
-                } else {
-                    Log.d("DriveSource", "Unreadable mime type: " + file.mimeType)
-                }
-            }
-        }
-
-        return DriveCatalog(files)
-    }
-
-    private fun queryDrive(uri: String): DriveQuery {
-        val catalogConn = URL(uri)
-        val reader = BufferedReader(InputStreamReader(catalogConn.openStream()))
-        return Gson().fromJson(reader, DriveQuery::class.java)
+    private fun fileIdToUri(id: String): String {
+//        val template = if (isFolder) context.getString(R.string.google_drive_folder_template)
+        return context.getString(
+            R.string.google_drive_link_template,
+            id,
+            context.getString(R.string.drive_api_key)
+        )
+//        return template.replace("{ID}", id)
+//            .replace("{KEY}", context.getString(R.string.drive_api_key))
     }
 }
 
@@ -186,37 +144,8 @@ fun MediaMetadataCompat.Builder.from(driveMusic: DriveMusic): MediaMetadataCompa
     // MediaMetadataCompat object. This is needed to send accurate metadata to the
     // media session during updates.
     downloadStatus = STATUS_NOT_DOWNLOADED
+    putString(MediaMetadataCompat.METADATA_KEY_DATE, driveMusic.createdTime)
 
     // Allow it to be used in the typical builder style.
     return this
-}
-
-class DriveQuery {
-    var kind: String = ""
-    var incompleteSearch: Boolean = false
-    var files: List<DriveQueryItem> = emptyList()
-
-    @Transient
-    var name: String = "root"
-}
-
-class DriveQueryItem {
-    var kind: String = ""
-    var id: String = ""
-    var name: String = ""
-    var mimeType: String = ""
-}
-
-fun queryToMusic(item: DriveQueryItem, parent: DriveQuery): DriveMusic {
-    return DriveMusic(item.id, item.name, parent.name)
-}
-
-data class DriveCatalog(val music: List<DriveMusic>)
-
-@Suppress("unused")
-data class DriveMusic(
-    val id: String, val title: String, val folder: String,
-) {
-    var source: String = ""
-    var image: String = "https://yhtsfat.org.il/wp-content/uploads/2018/08/%D7%9C%D7%95%D7%92%D7%95-%D7%91%D7%90%D7%99%D7%9B%D7%95%D7%AA-%D7%99%D7%A9%D7%99%D7%91%D7%94-225x300.png"
 }

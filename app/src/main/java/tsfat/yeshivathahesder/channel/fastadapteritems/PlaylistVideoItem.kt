@@ -1,7 +1,6 @@
 package tsfat.yeshivathahesder.channel.fastadapteritems
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
 import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -9,8 +8,10 @@ import androidx.appcompat.widget.AppCompatTextView
 import coil.api.load
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
+import tsfat.yeshivathahesder.channel.model.ItemBase
+import tsfat.yeshivathahesder.channel.model.VideoItem
 
-class PlaylistVideoItem(val playlistItem: PlaylistItemInfo.ItemBase?) :
+class PlaylistVideoItem(val playlistItem: ItemBase?) :
     AbstractItem<PlaylistVideoItem.PlaylistVideoViewHolder>() {
 
     override val layoutRes: Int
@@ -34,8 +35,8 @@ class PlaylistVideoItem(val playlistItem: PlaylistItemInfo.ItemBase?) :
             view.findViewById(R.id.tvTimePublishedPlaylistVideoItem)
 
         override fun bindView(item: PlaylistVideoItem, payloads: List<Any>) {
-            val playlistItem: PlaylistItemInfo.ItemBase = item.playlistItem!!
-            if (playlistItem is PlaylistItemInfo.VideoItem) {
+            val playlistItem: ItemBase = item.playlistItem!!
+            if (playlistItem is VideoItem) {
                 playlistItem.snippet.let {
                     thumbnail.load(it.thumbnails.standard?.url ?: it.thumbnails.high.url)
                     videoTitle.text = it.title

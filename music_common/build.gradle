@@ -61,6 +61,10 @@ dependencies {
 
     api "com.google.code.gson:gson:$gsonVersion"
 
+    // Declare the dependency for the Cloud Firestore library
+    // When NOT using the BoM, you must specify versions in Firebase library dependencies
+//    implementation 'com.google.firebase:firebase-firestore-ktx:24.0.0'
+
     // ExoPlayer dependencies
 
     // This allows UAMP to utilize a local version of ExoPlayer, which is particularly

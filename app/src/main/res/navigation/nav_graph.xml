@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_nowPlayingFragment"
+            app:destination="@id/nowPlayingFragment" />
     </fragment>
     <fragment
         android:id="@+id/playlistsFragment"
@@ -84,5 +87,9 @@
         android:name="tsfat.yeshivathahesder.channel.fragment.AudioFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_audio" />
+    <fragment
+        android:id="@+id/nowPlayingFragment"
+        android:name="tsfat.yeshivathahesder.channel.uamp.fragments.NowPlayingFragment"
+        android:label="NowPlayingFragment" />
 
 </navigation>

@@ -11,7 +11,6 @@ import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
 import tsfat.yeshivathahesder.channel.fastadapteritems.PlaylistVideoItem
 import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
-import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
 import tsfat.yeshivathahesder.channel.paging.Status
 import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
 import tsfat.yeshivathahesder.channel.utils.DividerItemDecorator
@@ -43,6 +42,8 @@ import com.mikepenz.fastadapter.paged.PagedModelAdapter
 import kotlinx.android.synthetic.main.fragment_playlist_details.view.*
 import kotlinx.android.synthetic.main.fragment_playlist_videos.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.model.ItemBase
+import tsfat.yeshivathahesder.channel.model.VideoItem
 
 /**
  * A simple [Fragment] subclass to show the list of videos of a particular playlist.
@@ -53,7 +54,7 @@ class PlaylistVideosFragment : Fragment() {
     private val args by navArgs<PlaylistVideosFragmentArgs>()
 
     private lateinit var playlistVideosAdapter: GenericFastAdapter
-    private lateinit var playlistVideosPagedModelAdapter: PagedModelAdapter<PlaylistItemInfo.ItemBase, PlaylistVideoItem>
+    private lateinit var playlistVideosPagedModelAdapter: PagedModelAdapter<ItemBase, PlaylistVideoItem>
     private lateinit var footerAdapter: GenericItemAdapter
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
@@ -109,25 +110,25 @@ class PlaylistVideosFragment : Fragment() {
     }
 
     private fun setupRecyclerView(savedInstanceState: Bundle?) {
-        val asyncDifferConfig = AsyncDifferConfig.Builder<PlaylistItemInfo.ItemBase>(object :
-            DiffUtil.ItemCallback<PlaylistItemInfo.ItemBase>() {
+        val asyncDifferConfig = AsyncDifferConfig.Builder<ItemBase>(object :
+            DiffUtil.ItemCallback<ItemBase>() {
             override fun areItemsTheSame(
-                oldItem: PlaylistItemInfo.ItemBase,
-                newItem: PlaylistItemInfo.ItemBase
+                oldItem: ItemBase,
+                newItem: ItemBase
             ): Boolean {
                 return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: PlaylistItemInfo.ItemBase,
-                newItem: PlaylistItemInfo.ItemBase
+                oldItem: ItemBase,
+                newItem: ItemBase
             ): Boolean {
                 return oldItem == newItem
             }
         }).build()
 
         playlistVideosPagedModelAdapter =
-            PagedModelAdapter<PlaylistItemInfo.ItemBase, PlaylistVideoItem>(asyncDifferConfig) {
+            PagedModelAdapter<ItemBase, PlaylistVideoItem>(asyncDifferConfig) {
                 PlaylistVideoItem(it)
             }
 
@@ -181,7 +182,7 @@ class PlaylistVideosFragment : Fragment() {
         // Observe latest video live data
         viewModel.playlistVideosLiveData?.observe(
             viewLifecycleOwner,
-            Observer<PagedList<PlaylistItemInfo.ItemBase>> { playlistVideosList ->
+            Observer<PagedList<ItemBase>> { playlistVideosList ->
                 playlistVideosPagedModelAdapter.submitList(playlistVideosList)
             })
     }
@@ -211,8 +212,8 @@ class PlaylistVideosFragment : Fragment() {
     private fun onItemClick() {
         playlistVideosAdapter.onClickListener = { view, adapter, item, position ->
             if (item is PlaylistVideoItem) {
-                val playlistItem: PlaylistItemInfo.ItemBase = item.playlistItem!!
-                if (playlistItem is PlaylistItemInfo.VideoItem) {
+                val playlistItem: ItemBase = item.playlistItem!!
+                if (playlistItem is VideoItem) {
                     VideoPlayerActivity.startActivity(
                         context,
                         playlistItem.contentDetails.videoId

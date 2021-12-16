@@ -16,17 +16,20 @@
 
 package tsfat.yeshivathahesder.channel.uamp.viewmodels
 
+import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import timber.log.Timber
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.uamp.common.EMPTY_PLAYBACK_STATE
@@ -35,6 +38,8 @@ import tsfat.yeshivathahesder.channel.uamp.common.NOTHING_PLAYING
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.isPlaying
+import java.time.Instant
+import java.util.*
 
 /**
  * [ViewModel] for [AudioItemFragment].
@@ -60,12 +65,16 @@ class MediaItemFragmentViewModel(
         override fun onChildrenLoaded(parentId: String, children: List<MediaItem>) {
             val itemsList = children.map { child ->
                 val subtitle = child.description.subtitle ?: ""
+                val publishedAt =
+                    child.description.extras!!.getString(MediaMetadataCompat.METADATA_KEY_DATE)
+
                 AudioItem(
                     child.mediaId!!,
                     child.description.title.toString(),
                     subtitle.toString(),
                     child.description.iconUri!!,
                     child.isBrowsable,
+                    publishedAt,
                     getResourceForMediaId(child.mediaId!!)
                 )
             }

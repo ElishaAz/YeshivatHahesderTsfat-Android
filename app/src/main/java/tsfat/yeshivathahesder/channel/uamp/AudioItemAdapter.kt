@@ -27,6 +27,7 @@ import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.databinding.FragmentMediaitemBinding
 import tsfat.yeshivathahesder.channel.uamp.AudioItem.Companion.PLAYBACK_RES_CHANGED
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
+import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
 
 /**
  * [RecyclerView.Adapter] of [AudioItem]s used by the [AudioItemFragment].
@@ -69,6 +70,8 @@ class AudioItemAdapter(
             holder.item = mediaItem
             holder.titleView.text = mediaItem.title
             holder.subtitleView.text = mediaItem.subtitle
+            if (mediaItem.audioPublishedAt != null)
+                holder.timeView.text = DateTimeUtils.getTimeAgo(mediaItem.audioPublishedAt)
             holder.playbackState.setImageResource(mediaItem.playbackRes)
 
             Glide.with(holder.albumArt)
@@ -90,6 +93,7 @@ class MediaViewHolder(
 
     val titleView: TextView = binding.title
     val subtitleView: TextView = binding.subtitle
+    val timeView: TextView = binding.time
     val albumArt: ImageView = binding.albumArt
     val playbackState: ImageView = binding.itemState
 

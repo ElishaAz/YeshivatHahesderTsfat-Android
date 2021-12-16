@@ -1,6 +1,5 @@
 package tsfat.yeshivathahesder.channel.viewmodel
 
-import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.paging.datasourcefactory.PlaylistVideosDataSourceFactory
 import tsfat.yeshivathahesder.channel.repository.PlaylistVideosRepository
@@ -12,13 +11,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import kotlinx.coroutines.launch
+import tsfat.yeshivathahesder.channel.model.ItemBase
 
 class PlaylistVideosViewModel(
     private val playlistVideosRepository: PlaylistVideosRepository
 ) : ViewModel() {
 
     lateinit var playlistVideosDataSourceFactory: PlaylistVideosDataSourceFactory
-    var playlistVideosLiveData: LiveData<PagedList<PlaylistItemInfo.ItemBase>>? = null
+    var playlistVideosLiveData: LiveData<PagedList<ItemBase>>? = null
     var networkStateLiveData: LiveData<NetworkState>? = null
 
     fun getPlaylistVideos(playlistId: String) {

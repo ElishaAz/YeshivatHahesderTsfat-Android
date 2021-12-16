@@ -1,7 +1,6 @@
 package tsfat.yeshivathahesder.channel.viewmodel
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.model.PlaylistItemInfo
 import tsfat.yeshivathahesder.channel.paging.datasourcefactory.HomeDataSourceFactory
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.repository.HomeRepository
@@ -15,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.model.ItemBase
 
 class HomeViewModel(
     private val homeRepository: HomeRepository,
@@ -27,7 +27,7 @@ class HomeViewModel(
         get() = _uploadsPlaylistIdLiveData
 
     lateinit var homeDataSourceFactory: HomeDataSourceFactory
-    var latestVideoLiveData: LiveData<PagedList<PlaylistItemInfo.ItemBase>>? = null
+    var latestVideoLiveData: LiveData<PagedList<ItemBase>>? = null
     var networkStateLiveData: LiveData<NetworkState>? = null
 
     fun getLatestVideos() {
