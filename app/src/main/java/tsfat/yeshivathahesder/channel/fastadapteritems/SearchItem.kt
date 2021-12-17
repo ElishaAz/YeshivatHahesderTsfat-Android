@@ -1,7 +1,7 @@
 package tsfat.yeshivathahesder.channel.fastadapteritems
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.model.SearchedVideo
+import tsfat.yeshivathahesder.channel.model.SearchedList
 import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -10,7 +10,7 @@ import coil.api.load
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 
-class SearchItem(val searchedVideo: SearchedVideo.Item?) :
+class SearchItem(val searchedList: SearchedList.SearchItem?) :
     AbstractItem<SearchItem.SearchViewHolder>() {
 
     override val layoutRes: Int
@@ -32,10 +32,18 @@ class SearchItem(val searchedVideo: SearchedVideo.Item?) :
             view.findViewById(R.id.tvTimePublishedSearchItem)
 
         override fun bindView(item: SearchItem, payloads: List<Any>) {
-            item.searchedVideo?.snippet?.let {
-                thumbnail.load(it.thumbnails.standard?.url ?: it.thumbnails.high.url)
-                videoTitle.text = it.title
-                videoPublishedAt.text = DateTimeUtils.getTimeAgo(it.publishedAt)
+            if (item.searchedList is SearchedList.Item) {
+                item.searchedList.snippet.let {
+                    thumbnail.load(it.thumbnails.standard?.url ?: it.thumbnails.high.url)
+                    videoTitle.text = it.title
+                    videoPublishedAt.text = DateTimeUtils.getTimeAgo(it.publishedAt)
+                }
+            } else if (item.searchedList is SearchedList.AudioSearchItem) {
+                item.searchedList.item.let {
+                    thumbnail.load(it.albumArtUri)
+                    videoTitle.text = it.fullTitle
+                    videoPublishedAt.text = DateTimeUtils.getTimeAgo(it.publishedAt)
+                }
             }
         }
 

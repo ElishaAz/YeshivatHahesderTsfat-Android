@@ -55,19 +55,20 @@ class Channelify : Application() {
             androidLogger()
             androidContext(this@Channelify)
             modules(
-                listOf(
-                    appModule,
-                    homeModule,
-                    videoPlayerModule,
-                    commentsModule,
-                    videoDetailsModule,
-                    commentRepliesModule,
-                    playlistsModule,
-                    playlistVideosModule,
-                    favoritesModule,
-                    searchModule,
-                    aboutModule
-                )
+                    listOf(
+                            appModule,
+                            audioModel,
+                            homeModule,
+                            videoPlayerModule,
+                            commentsModule,
+                            videoDetailsModule,
+                            commentRepliesModule,
+                            playlistsModule,
+                            playlistVideosModule,
+                            favoritesModule,
+                            searchModule,
+                            aboutModule
+                    )
             )
         }
     }

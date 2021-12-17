@@ -63,7 +63,7 @@ class AudioMainActivity : AppCompatActivity() {
             castContext = CastContext.getSharedInstance(this)
             castEnable = true
         } catch (e: RuntimeException) {
-            Timber.e(e.stackTrace.toString())
+            Timber.e(e.stackTraceToString())
         }
 
         setContentView(R.layout.activity_audio_main)

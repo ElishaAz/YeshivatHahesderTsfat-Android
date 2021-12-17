@@ -46,7 +46,7 @@ class HomeItem(val playlistItem: ItemBase?) :
                 mediaPublishedAt.text =
                     DateTimeUtils.getTimeAgo(mediaItem.contentDetails.videoPublishedAt)
             } else if (mediaItem is AudioItem) {
-                mediaTitle.text = mediaItem.title + " | " + mediaItem.subtitle
+                mediaTitle.text = mediaItem.fullTitle
 
                 thumbnail.load(mediaItem.albumArtUri)
 

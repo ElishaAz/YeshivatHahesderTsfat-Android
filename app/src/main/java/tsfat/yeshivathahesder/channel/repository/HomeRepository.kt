@@ -11,67 +11,40 @@ import timber.log.Timber
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.model.ItemList
+import tsfat.yeshivathahesder.channel.repository.AudioRepository
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 class HomeRepository(
-    private val searchVideoService: SearchVideoService,
-    private val channelsService: ChannelsService,
-    private val playlistItemsService: PlaylistItemsService,
-    private val audioConnector: AudioConnector
+        private val searchVideoService: SearchVideoService,
+        private val channelsService: ChannelsService,
+        private val playlistItemsService: PlaylistItemsService,
+        private val audioRepository: AudioRepository
 ) {
 
     suspend fun getUploadsPlaylistId(channelId: String): Response<ChannelUploadsPlaylistInfo> =
-        channelsService.getChannelUploadsPlaylistInfo(channelId)
+            channelsService.getChannelUploadsPlaylistInfo(channelId)
 
     private var lastIndex = 0
 
-//    private val lock = CountDownLatch(1)
-//    private val lock = ReentrantLock()
-//    private val cond = lock.newCondition()
 
-    // TODO: add audio here
     suspend fun getLatestVideos(
-        playlistId: String,
-        pageToken: String?
+            playlistId: String,
+            pageToken: String?
     ): Response<ItemList<ItemBase>> {
         Timber.d("Getting videos")
         val response = playlistItemsService.getPlaylistVideos(playlistId, pageToken)
 
-//        audioConnector.audioItems.observeForever {
-//            if (it != null && it.isNotEmpty())
-//                lock.countDown()
-//        }
+        val allAudioItems: List<AudioItem> = audioRepository.getAudioItems()
 
-        val body = response.body() ?: ItemList(null, null, emptyList())
+        val lastItem = response.body()?.items?.last()
 
-        var audioItemList: List<AudioItem>? = audioConnector.audioItems.value
-//        if (audioItemList == null || audioItemList.isEmpty()) {
-//            Timber.d("HomeRepository", "Waiting for audio items...")
-//            lock.withLock {
-//                cond.await()
-//            }
-//            Timber.d("HomeRepository", "Audio items lock released")
-//            audioItemList = audioConnector.audioItems.value
-//            if (audioItemList == null)
-//                Timber.d("HomeRepository", "No audio items!")
-//        }
-//        if (audioItemList == null || audioItemList.isEmpty()) {
-//            Timber.d("Waiting for audio items...")
-//            lock.await()
-//            Timber.d("Audio items loaded")
-//        }
-
-        while (audioItemList == null || audioItemList.isEmpty()) {
-            Timber.d("Waiting for audio items...")
-            delay(1000)
-            audioItemList = audioConnector.audioItems.value
+        if (lastItem == null) {
+            lastIndex = allAudioItems.size
+            return joinAudioAndVideoResults(response, allAudioItems.subList(lastIndex, allAudioItems.size))
         }
 
-        val allAudioItems: List<AudioItem> = audioItemList?.asReversed() ?: emptyList()
-
-        val lastItem = body.items.last()
         var end = lastIndex
 
         while (end < allAudioItems.size) {
@@ -83,17 +56,6 @@ class HomeRepository(
         val audioItems = allAudioItems.subList(lastIndex, end)
         lastIndex = end
 
-        val newList = (audioItems + body.items).sortedByDescending { it.publishedAt }
-
-        if (response.isSuccessful) {
-            return Response.success(
-                ItemList<ItemBase>(
-                    body.nextPageToken,
-                    body.prevPageToken,
-                    newList
-                )
-            )
-        } else return Response.error(response.errorBody()!!, response.raw())
+        return joinAudioAndVideoResults(response, audioItems)
     }
-
 }

@@ -1,6 +1,6 @@
 package tsfat.yeshivathahesder.channel.viewmodel
 
-import tsfat.yeshivathahesder.channel.model.SearchedVideo
+import tsfat.yeshivathahesder.channel.model.SearchedList
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.paging.datasourcefactory.SearchDataSourceFactory
 import tsfat.yeshivathahesder.channel.repository.SearchRepository
@@ -17,7 +17,7 @@ class SearchViewModel(
 ) : ViewModel() {
 
     lateinit var searchDataSourceFactory: SearchDataSourceFactory
-    var searchResultLiveData: LiveData<PagedList<SearchedVideo.Item>>? = null
+    var searchResultLiveData: LiveData<PagedList<SearchedList.SearchItem>>? = null
     var networkStateLiveData: LiveData<NetworkState>? = null
     private var _emptyStateLiveData = MutableLiveData<Boolean>()
     val emptyStateLiveData: LiveData<Boolean>
@@ -38,18 +38,18 @@ class SearchViewModel(
                 searchResultLiveData =
                     LivePagedListBuilder(searchDataSourceFactory, pagedListConfig())
                         .setBoundaryCallback(object :
-                            PagedList.BoundaryCallback<SearchedVideo.Item>() {
+                            PagedList.BoundaryCallback<SearchedList.SearchItem>() {
                             override fun onZeroItemsLoaded() {
                                 super.onZeroItemsLoaded()
                                 _emptyStateLiveData.value = true
                             }
 
-                            override fun onItemAtFrontLoaded(itemAtFront: SearchedVideo.Item) {
+                            override fun onItemAtFrontLoaded(itemAtFront: SearchedList.SearchItem) {
                                 super.onItemAtFrontLoaded(itemAtFront)
                                 _emptyStateLiveData.value = false
                             }
 
-                            override fun onItemAtEndLoaded(itemAtEnd: SearchedVideo.Item) {
+                            override fun onItemAtEndLoaded(itemAtEnd: SearchedList.SearchItem) {
                                 super.onItemAtEndLoaded(itemAtEnd)
                                 _emptyStateLiveData.value = false
                             }

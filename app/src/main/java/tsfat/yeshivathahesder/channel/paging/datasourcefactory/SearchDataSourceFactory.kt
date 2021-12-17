@@ -1,6 +1,6 @@
 package tsfat.yeshivathahesder.channel.paging.datasourcefactory
 
-import tsfat.yeshivathahesder.channel.model.SearchedVideo
+import tsfat.yeshivathahesder.channel.model.SearchedList
 import tsfat.yeshivathahesder.channel.paging.datasource.SearchDataSource
 import tsfat.yeshivathahesder.channel.repository.SearchRepository
 import androidx.lifecycle.MutableLiveData
@@ -13,12 +13,12 @@ class SearchDataSourceFactory(
     private val channelId: String,
     private var searchQuery: String,
     private val emptySearchResultText: String
-) : DataSource.Factory<String, SearchedVideo.Item>() {
+) : DataSource.Factory<String, SearchedList.SearchItem>() {
 
     private var searchDataSource: SearchDataSource? = null
     val searchDataSourceLiveData = MutableLiveData<SearchDataSource>()
 
-    override fun create(): DataSource<String, SearchedVideo.Item> {
+    override fun create(): DataSource<String, SearchedList.SearchItem> {
         // Also called every time when invalidate() is executed
         searchDataSource =
             SearchDataSource(

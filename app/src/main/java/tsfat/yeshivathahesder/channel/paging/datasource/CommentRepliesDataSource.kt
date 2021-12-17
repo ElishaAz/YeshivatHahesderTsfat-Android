@@ -17,7 +17,8 @@ class CommentRepliesDataSource(
 
     private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<NetworkState>()
-    private var retryQuery: (() -> Any)? = null // Keep reference of the last query (to be able to retry it if necessary)
+    private var retryQuery: (() -> Any)? =
+        null // Keep reference of the last query (to be able to retry it if necessary)
     private var nextPageToken: String? = null
 
     override fun loadInitial(
@@ -50,7 +51,8 @@ class CommentRepliesDataSource(
     private fun executeQuery(callback: (List<CommentReply.Item>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val commentReply = commentRepliesRepository.getCommentReplies(commentId, nextPageToken).body()
+            val commentReply =
+                commentRepliesRepository.getCommentReplies(commentId, nextPageToken).body()
             nextPageToken = commentReply?.nextPageToken
             val commentRepliesList = commentReply?.items
             retryQuery = null
@@ -61,7 +63,7 @@ class CommentRepliesDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e("An error happened: $e.stackTraceToString()")
+        Timber.e("An error happened: ${e.stackTraceToString()}")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

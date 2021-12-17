@@ -1,6 +1,6 @@
 package tsfat.yeshivathahesder.channel.paging.datasource
 
-import tsfat.yeshivathahesder.channel.model.SearchedVideo
+import tsfat.yeshivathahesder.channel.model.SearchedList
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.repository.SearchRepository
 import androidx.lifecycle.LiveData
@@ -15,7 +15,7 @@ class SearchDataSource(
     private val channelId: String,
     private var searchQuery: String,
     private val emptySearchResultText: String
-) : PageKeyedDataSource<String, SearchedVideo.Item>() {
+) : PageKeyedDataSource<String, SearchedList.SearchItem>() {
 
     private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<NetworkState>()
@@ -25,7 +25,7 @@ class SearchDataSource(
 
     override fun loadInitial(
         params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<String, SearchedVideo.Item>
+        callback: LoadInitialCallback<String, SearchedList.SearchItem>
     ) {
         retryQuery = { loadInitial(params, callback) }
         executeQuery {
@@ -35,7 +35,7 @@ class SearchDataSource(
 
     override fun loadAfter(
         params: LoadParams<String>,
-        callback: LoadCallback<String, SearchedVideo.Item>
+        callback: LoadCallback<String, SearchedList.SearchItem>
     ) {
         retryQuery = { loadAfter(params, callback) }
         executeQuery {
@@ -45,12 +45,12 @@ class SearchDataSource(
 
     override fun loadBefore(
         params: LoadParams<String>,
-        callback: LoadCallback<String, SearchedVideo.Item>
+        callback: LoadCallback<String, SearchedList.SearchItem>
     ) {
         // Data is always fetched from the next page and hence loadBefore is never needed
     }
 
-    private fun executeQuery(callback: (List<SearchedVideo.Item>) -> Unit) {
+    private fun executeQuery(callback: (List<SearchedList.SearchItem>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
             val searchVideoResult =
@@ -65,7 +65,7 @@ class SearchDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e("An error happened: $e.stackTraceToString()")
+        Timber.e("An error happened: ${e.stackTraceToString()}")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

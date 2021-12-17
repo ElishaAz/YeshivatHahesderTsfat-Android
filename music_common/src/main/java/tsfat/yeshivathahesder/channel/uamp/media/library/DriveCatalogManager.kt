@@ -190,7 +190,12 @@ class DriveQueryItem {
 }
 
 fun queryToMusic(item: DriveQueryItem, parentName: String): DriveMusic {
-    return DriveMusic(item.id, item.name, parentName, item.createdTime)
+    val name = item.name.lastIndexOf('.').let {
+        if (it > 0 && it == item.name.lastIndex - 3)
+            item.name.substring(0, it)
+        else item.name
+    }
+    return DriveMusic(item.id, name, parentName, item.createdTime)
 }
 
 data class DriveCatalog(

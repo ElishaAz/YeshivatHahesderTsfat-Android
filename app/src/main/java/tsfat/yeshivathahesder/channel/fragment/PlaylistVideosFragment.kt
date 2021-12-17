@@ -116,7 +116,7 @@ class PlaylistVideosFragment : Fragment() {
                 oldItem: ItemBase,
                 newItem: ItemBase
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.baseId == newItem.baseId
             }
 
             override fun areContentsTheSame(

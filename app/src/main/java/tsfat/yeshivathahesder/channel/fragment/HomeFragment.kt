@@ -25,7 +25,6 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericFastAdapter
 import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
-import com.mikepenz.fastadapter.adapters.ModelAdapter
 import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -114,7 +113,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 oldItem: ItemBase,
                 newItem: ItemBase
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.baseId == newItem.baseId
             }
 
             override fun areContentsTheSame(

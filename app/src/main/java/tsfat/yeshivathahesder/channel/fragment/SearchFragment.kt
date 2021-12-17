@@ -5,7 +5,7 @@ import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
 import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
 import tsfat.yeshivathahesder.channel.fastadapteritems.SearchItem
-import tsfat.yeshivathahesder.channel.model.SearchedVideo
+import tsfat.yeshivathahesder.channel.model.SearchedList
 import tsfat.yeshivathahesder.channel.paging.Status
 import tsfat.yeshivathahesder.channel.utils.DividerItemDecorator
 import tsfat.yeshivathahesder.channel.viewmodel.SearchViewModel
@@ -34,16 +34,20 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericFastAdapter
 import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.di.AudioConnector
 
+@ExperimentalPagedSupport
 class SearchFragment : Fragment() {
 
     private val viewModel by viewModel<SearchViewModel>() // Lazy inject ViewModel
 
     private lateinit var searchAdapter: GenericFastAdapter
-    private lateinit var searchPagedModelAdapter: PagedModelAdapter<SearchedVideo.Item, SearchItem>
+    private lateinit var searchPagedModelAdapter: PagedModelAdapter<SearchedList.SearchItem, SearchItem>
     private lateinit var footerAdapter: GenericItemAdapter
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
@@ -119,25 +123,25 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupRecyclerView(savedInstanceState: Bundle?) {
-        val asyncDifferConfig = AsyncDifferConfig.Builder<SearchedVideo.Item>(object :
-            DiffUtil.ItemCallback<SearchedVideo.Item>() {
+        val asyncDifferConfig = AsyncDifferConfig.Builder<SearchedList.SearchItem>(object :
+            DiffUtil.ItemCallback<SearchedList.SearchItem>() {
             override fun areItemsTheSame(
-                oldItem: SearchedVideo.Item,
-                newItem: SearchedVideo.Item
+                oldItem: SearchedList.SearchItem,
+                newItem: SearchedList.SearchItem
             ): Boolean {
-                return oldItem.id.videoId == newItem.id.videoId
+                return oldItem.baseId == newItem.baseId
             }
 
             override fun areContentsTheSame(
-                oldItem: SearchedVideo.Item,
-                newItem: SearchedVideo.Item
+                oldItem: SearchedList.SearchItem,
+                newItem: SearchedList.SearchItem
             ): Boolean {
                 return oldItem == newItem
             }
         }).build()
 
         searchPagedModelAdapter =
-            PagedModelAdapter<SearchedVideo.Item, SearchItem>(asyncDifferConfig) {
+            PagedModelAdapter<SearchedList.SearchItem, SearchItem>(asyncDifferConfig) {
                 SearchItem(it)
             }
 
@@ -202,7 +206,7 @@ class SearchFragment : Fragment() {
         // Observe latest video live data
         viewModel.searchResultLiveData?.observe(
             viewLifecycleOwner,
-            Observer<PagedList<SearchedVideo.Item>> { videoList ->
+            Observer<PagedList<SearchedList.SearchItem>> { videoList ->
                 searchPagedModelAdapter.submitList(videoList)
             })
     }
@@ -230,13 +234,18 @@ class SearchFragment : Fragment() {
         groupEmptySearch.makeGone()
     }
 
+    private val audioConnector: AudioConnector by inject()
+
     /**
      * Called when an item of the RecyclerView is clicked
      */
     private fun onItemClick() {
         searchAdapter.onClickListener = { view, adapter, item, position ->
             if (item is SearchItem) {
-                VideoPlayerActivity.startActivity(context, item.searchedVideo?.id?.videoId!!)
+                if (item.searchedList is SearchedList.Item)
+                    VideoPlayerActivity.startActivity(context, item.searchedList.id.videoId)
+                else if (item.searchedList is SearchedList.AudioSearchItem)
+                    audioConnector.playItem(item.searchedList.item)
             }
             false
         }

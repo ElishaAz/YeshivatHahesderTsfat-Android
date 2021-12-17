@@ -85,10 +85,12 @@ data class AudioItem(
         }
     }
 
-    override val id: String
+    override val baseId: String
         get() = "RC-$mediaId"
 
     override val publishedAt: String
         get() = audioPublishedAt ?: ""
+
+    val fullTitle: String = "$title | $subtitle"
 }
 

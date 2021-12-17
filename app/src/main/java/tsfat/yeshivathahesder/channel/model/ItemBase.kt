@@ -1,7 +1,7 @@
 package tsfat.yeshivathahesder.channel.model
 
 abstract class ItemBase {
-    abstract val id: String
+    abstract val baseId: String
     abstract val publishedAt: String
 
     override fun equals(other: Any?): Boolean {
@@ -10,13 +10,13 @@ abstract class ItemBase {
 
         other as ItemBase
 
-        if (id != other.id) return false
+        if (baseId != other.baseId) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return id.hashCode()
+        return baseId.hashCode()
     }
 
 }

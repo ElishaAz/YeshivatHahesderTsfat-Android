@@ -8,6 +8,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -20,7 +21,8 @@ import java.io.InputStreamReader
 import java.net.URL
 import java.util.*
 
-class FirebaseSource(private val context: Context) : AbstractMusicSource() {
+class FirebaseSource(private val context: Context, private val serviceScope: CoroutineScope) :
+    AbstractMusicSource() {
     private var catalog: List<MediaMetadataCompat> = emptyList()
 
     init {
@@ -56,8 +58,9 @@ class FirebaseSource(private val context: Context) : AbstractMusicSource() {
                 Log.d(TAG, "Catalog too old. Reloading from Drive.")
                 uploadCatalog(context)?.let { musicCat = it }
             } else if (now - timestamp > uploadAfter) {
-                Log.d(TAG, "Reloading catalog from Drive non-blocking.")
-                launch(Dispatchers.IO) {
+                Log.d(TAG, "Will reload catalog from Drive.")
+                serviceScope.launch(Dispatchers.IO) {
+                    Log.d(TAG, "Reloading catalog from Drive.")
                     uploadCatalog(context)
                 }
             }
@@ -70,12 +73,12 @@ class FirebaseSource(private val context: Context) : AbstractMusicSource() {
                 val imageUri = AlbumArtContentProvider.mapUri(Uri.parse(song.image))
 
                 MediaMetadataCompat.Builder()
-                        .from(song)
-                        .apply {
-                            displayIconUri = imageUri.toString() // Used by ExoPlayer and Notification
-                            albumArtUri = imageUri.toString()
-                        }
-                        .build()
+                    .from(song)
+                    .apply {
+                        displayIconUri = imageUri.toString() // Used by ExoPlayer and Notification
+                        albumArtUri = imageUri.toString()
+                    }
+                    .build()
             }.toList()
             // Add description keys to be used by the ExoPlayer MediaSession extension when
             // announcing metadata changes.

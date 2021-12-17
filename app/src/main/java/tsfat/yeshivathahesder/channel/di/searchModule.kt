@@ -13,9 +13,15 @@ val searchModule = module {
 
     factory { provideSearchVideoService(get()) }
 
-    single { SearchRepository(get()) }
+    single { SearchRepository(get(), get()) }
 
-    viewModel { SearchViewModel(get(), androidContext().getString(R.string.channel_id), androidContext().getString(R.string.error_search_empty_result_title)) }
+    viewModel {
+        SearchViewModel(
+            get(),
+            androidContext().getString(R.string.channel_id),
+            androidContext().getString(R.string.error_search_empty_result_title)
+        )
+    }
 }
 
 private fun provideSearchVideoService(retrofit: Retrofit) =

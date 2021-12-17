@@ -52,7 +52,7 @@ data class VideoItem(
         }
     }
 
-    override val id: String
+    override val baseId: String
         get() = "YT-" + contentDetails.videoId
 
     override val publishedAt: String

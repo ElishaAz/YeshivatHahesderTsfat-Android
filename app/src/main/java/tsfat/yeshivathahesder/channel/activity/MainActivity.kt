@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             castContext = CastContext.getSharedInstance(this)
             castEnable = true
         } catch (e: RuntimeException) {
-            Timber.e(e.stackTrace.toString())
+            Timber.e(e.stackTraceToString())
         }
 
 //        setContentView(R.layout.activity_audio_main)
@@ -141,23 +141,23 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        })
 //
-        /**
-         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
-         * fragment swap.
-         */
-        viewModel.navigateToFragment.observe(this, Observer {
-            it?.getContentIfNotHandled()?.let { fragmentRequest ->
-//                val transaction = supportFragmentManager.beginTransaction()
-//                transaction.replace(
-//                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
-//                )
-//                if (fragmentRequest.backStack) transaction.addToBackStack(null)
-//                transaction.commit()
-//                if (fragmentRequest.play)
-                findNavController(R.id.navHostFragment)
-                    .navigate(R.id.action_homeFragment_to_searchFragment)
-            }
-        })
+//        /**
+//         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
+//         * fragment swap.
+//         */
+//        viewModel.navigateToFragment.observe(this, Observer {
+//            it?.getContentIfNotHandled()?.let { fragmentRequest ->
+////                val transaction = supportFragmentManager.beginTransaction()
+////                transaction.replace(
+////                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
+////                )
+////                if (fragmentRequest.backStack) transaction.addToBackStack(null)
+////                transaction.commit()
+////                if (fragmentRequest.play)
+//                findNavController(R.id.navHostFragment)
+//                    .navigate(R.id.action_homeFragment_to_searchFragment)
+//            }
+//        })
 //
 //        /**
 //         * Observe changes to the [MainActivityViewModel.rootMediaId]. When the app starts,
