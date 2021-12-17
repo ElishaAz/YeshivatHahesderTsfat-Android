@@ -25,7 +25,7 @@ import android.util.Log
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import tsfat.yeshivathahesder.channel.uamp.media.R
+import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.*
 import java.io.BufferedReader
 import java.io.IOException
@@ -43,8 +43,8 @@ import kotlin.collections.ArrayList
  * The definition of the JSON is specified in the docs of [DriveMusic] in this file,
  * which is the object representation of it.
  */
-class DriveSource(private val context: Context, private val baseID: String) :
-    AbstractMusicSource() {
+class DriveSource(private val context: Context) :
+        AbstractMusicSource() {
 
     private var catalog: List<MediaMetadataCompat> = emptyList()
 
@@ -55,7 +55,7 @@ class DriveSource(private val context: Context, private val baseID: String) :
     override fun iterator(): Iterator<MediaMetadataCompat> = catalog.iterator()
 
     override suspend fun load() {
-        updateCatalog(baseID)?.let { updatedCatalog ->
+        updateCatalog()?.let { updatedCatalog ->
             catalog = updatedCatalog.sortedBy { it.date }
             state = STATE_INITIALIZED
         } ?: run {
@@ -68,10 +68,10 @@ class DriveSource(private val context: Context, private val baseID: String) :
      * Function to connect to a remote URI and download/process the JSON file that corresponds to
      * [MediaMetadataCompat] objects.
      */
-    private suspend fun updateCatalog(baseID: String): List<MediaMetadataCompat>? {
+    private suspend fun updateCatalog(): List<MediaMetadataCompat>? {
         return withContext(Dispatchers.IO) {
             val musicCat = try {
-                downloadCatalogRecursive(context, baseID)
+                downloadCatalogRecursive(context)
             } catch (e: IOException) {
                 Log.e("DriveSource", e.stackTraceToString())
                 return@withContext null
@@ -81,35 +81,24 @@ class DriveSource(private val context: Context, private val baseID: String) :
             }
             val mediaMetadataCompats = musicCat.music.map { song ->
                 if (song.source.isBlank()) {
-                    song.source = fileIdToUri(song.id)
+                    song.source = fileIdToUri(context, song.id)
                 }
 
                 val imageUri = AlbumArtContentProvider.mapUri(Uri.parse(song.image))
 
                 MediaMetadataCompat.Builder()
-                    .from(song)
-                    .apply {
-                        displayIconUri = imageUri.toString() // Used by ExoPlayer and Notification
-                        albumArtUri = imageUri.toString()
-                    }
-                    .build()
+                        .from(song)
+                        .apply {
+                            displayIconUri = imageUri.toString() // Used by ExoPlayer and Notification
+                            albumArtUri = imageUri.toString()
+                        }
+                        .build()
             }.toList()
             // Add description keys to be used by the ExoPlayer MediaSession extension when
             // announcing metadata changes.
             mediaMetadataCompats.forEach { it.description.extras?.putAll(it.bundle) }
             mediaMetadataCompats
         }
-    }
-
-    private fun fileIdToUri(id: String): String {
-//        val template = if (isFolder) context.getString(R.string.google_drive_folder_template)
-        return context.getString(
-            R.string.google_drive_link_template,
-            id,
-            context.getString(R.string.drive_api_key)
-        )
-//        return template.replace("{ID}", id)
-//            .replace("{KEY}", context.getString(R.string.drive_api_key))
     }
 }
 

@@ -2,8 +2,9 @@ package tsfat.yeshivathahesder.channel.uamp.media.library
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.firestore.ServerTimestamp
 import com.google.gson.Gson
-import tsfat.yeshivathahesder.channel.uamp.media.R
+import tsfat.yeshivathahesder.channel.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -21,7 +22,7 @@ import kotlin.collections.ArrayList
  * @return The catalog downloaded, or an empty catalog if an error occurred.
  */
 @Throws(IOException::class)
-fun downloadCatalogRecursive(context: Context, rootID: String): DriveCatalog {
+fun downloadCatalogRecursive(context: Context): DriveCatalog {
     val startTime = System.currentTimeMillis()
 
     var totalQueryTime = 0.0
@@ -31,7 +32,14 @@ fun downloadCatalogRecursive(context: Context, rootID: String): DriveCatalog {
     val files: MutableList<DriveMusic> = ArrayList<DriveMusic>()
 
     val rootQueryStartTime = System.currentTimeMillis()
-    folders.add(queryDrive(getQuery(context, rootID)))
+    folders.add(
+        queryDrive(
+            getQuery(
+                context,
+                context.getString(R.string.google_drive_root_id)
+            )
+        )
+    )
     totalQueryTime += (System.currentTimeMillis() - rootQueryStartTime) / 1000.0
     queryCount++
 
@@ -153,6 +161,17 @@ fun getQuery(context: Context, ids: List<String>): String {
     )
 }
 
+fun fileIdToUri(context: Context, id: String): String {
+//        val template = if (isFolder) context.getString(R.string.google_drive_folder_template)
+    return context.getString(
+        R.string.google_drive_link_template,
+        id,
+        context.getString(R.string.drive_api_key)
+    )
+//        return template.replace("{ID}", id)
+//            .replace("{KEY}", context.getString(R.string.drive_api_key))
+}
+
 class DriveQuery {
     //    var kind: String = ""
 //    var incompleteSearch: Boolean = false
@@ -174,11 +193,16 @@ fun queryToMusic(item: DriveQueryItem, parentName: String): DriveMusic {
     return DriveMusic(item.id, item.name, parentName, item.createdTime)
 }
 
-data class DriveCatalog(val music: List<DriveMusic>)
+data class DriveCatalog(
+    val music: List<DriveMusic> = emptyList(),
+    @ServerTimestamp
+    var timestamp: Date? = null
+)
 
 @Suppress("unused")
 data class DriveMusic(
-    val id: String, val title: String, val folder: String, val createdTime: String
+    val id: String = "", val title: String = "",
+    val folder: String = "", val createdTime: String = ""
 ) {
     @Transient
     var source: String = ""

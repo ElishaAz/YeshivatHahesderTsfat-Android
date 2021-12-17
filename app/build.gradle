@@ -53,6 +53,12 @@ android {
     packagingOptions {
         exclude 'META-INF/core_release.kotlin_module'
     }
+
+    configurations {
+//        implementation.exclude module: 'proto-google-common-protos'
+//        implementation.exclude module: 'protolite-well-known-types'
+        implementation.exclude module: 'protobuf-lite'
+    }
 }
 
 dependencies {
@@ -64,7 +70,7 @@ dependencies {
     // Kotlin Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutinesVersion"
+//    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutinesVersion"
 
     // Koin
     implementation "org.koin:koin-android:$koinVersion"

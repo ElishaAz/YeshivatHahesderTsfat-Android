@@ -16,7 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tsfat.yeshivathahesder.channel.uamp.media">
+    package="tsfat.yeshivathahesder.channel">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -38,9 +38,9 @@
         </receiver>
 
         <provider
-            android:name=".library.AlbumArtContentProvider"
+            android:name=".uamp.media.library.AlbumArtContentProvider"
             android:authorities="tsfat.yeshivathahesder.channel.uamp"
-            android:exported="true" />
+            android:exported="false" />
 
     </application>
 </manifest>

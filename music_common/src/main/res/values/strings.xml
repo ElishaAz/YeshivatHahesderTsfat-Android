@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Notificaiton Channel -->
     <string name="notification_channel">Now Playing</string>
     <string name="notification_channel_description">Shows what music is currently playing in UAMP</string>
@@ -46,5 +46,6 @@
     <!-- Google Drive -->
     <string name="google_drive_link_template" translatable="false">https://www.googleapis.com/drive/v3/files/%1$s?alt=media&amp;key=%2$s</string>
     <string name="google_drive_query_template" translatable="false">https://www.googleapis.com/drive/v3/files?q=%1$s&amp;fields=files(id,name,mimeType,createdTime,parents)&amp;key=%2$s</string>
-<!--    <string name="google_drive_query_folder">\'{ID}\'+in+parents</string>-->
+    <string name="google_drive_root_id" translatable="false" tools:ignore="TypographyDashes">1-4fu_bw8sOniSJqxqgtUdHlQRdscusFT</string>
+    <!--    <string name="google_drive_query_folder">\'{ID}\'+in+parents</string>-->
 </resources>
