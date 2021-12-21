@@ -13,7 +13,7 @@ val playlistsModule = module {
 
     factory { providePlaylistsService(get()) }
 
-    single { PlaylistsRepository(get()) }
+    single { PlaylistsRepository(get(),get()) }
 
     viewModel { PlaylistsViewModel(get(), androidContext().getString(R.string.channel_id)) }
 }

@@ -20,3 +20,14 @@ abstract class ItemBase {
     }
 
 }
+
+fun baseIdToVideo(baseId: String) = baseId.substring(4)
+fun baseIdToAudio(baseId: String) = baseId.substring(4)
+
+fun audioIdToBase(audioId: String): String {
+    return "RC-$audioId"
+}
+
+fun videoIdToBase(videoId: String): String {
+    return "YT-$videoId"
+}

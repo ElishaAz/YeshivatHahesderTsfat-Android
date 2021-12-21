@@ -22,15 +22,7 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
 import tsfat.yeshivathahesder.channel.uamp.media.MusicService
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.album
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.albumArt
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.albumArtUri
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.artist
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.flag
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.title
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.trackNumber
-import tsfat.yeshivathahesder.channel.uamp.media.extensions.urlEncoded
+import tsfat.yeshivathahesder.channel.uamp.media.extensions.*
 
 /**
  * Represents a tree of media that's used by [MusicService.onLoadChildren].
@@ -93,6 +85,7 @@ class BrowseTree(
 //                    context.resources.getResourceEntryName(R.drawable.ic_album)
 //            flag = MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
 //        }.build()
+
         rootList += musicSource
 
 //        rootList += recommendedMetadata
@@ -125,41 +118,44 @@ class BrowseTree(
      */
     operator fun get(mediaId: String) = mediaIdToChildren[mediaId]
 
-    /**
-     * Builds a node, under the root, that represents an album, given
-     * a [MediaMetadataCompat] object that's one of the songs on that album,
-     * marking the item as [MediaItem.FLAG_BROWSABLE], since it will have child
-     * node(s) AKA at least 1 song.
-     */
-    private fun buildAlbumRoot(mediaItem: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
-        val albumMetadata = MediaMetadataCompat.Builder().apply {
-            id = mediaItem.album.urlEncoded
-            title = mediaItem.album
-            artist = mediaItem.artist
-            albumArt = mediaItem.albumArt
-            albumArtUri = mediaItem.albumArtUri.toString()
-            flag = MediaItem.FLAG_BROWSABLE
-        }.build()
-
-//        // Adds this album to the 'Albums' category.
-//        val rootList = mediaIdToChildren[UAMP_ALBUMS_ROOT] ?: mutableListOf()
+//    /**
+//     * Builds a node, under the root, that represents an album, given
+//     * a [MediaMetadataCompat] object that's one of the songs on that album,
+//     * marking the item as [MediaItem.FLAG_BROWSABLE], since it will have child
+//     * node(s) AKA at least 1 song.
+//     */
+//    private fun buildAlbumRoot(mediaItem: MediaMetadataCompat): MutableList<MediaMetadataCompat> {
+//        val albumMetadata = MediaMetadataCompat.Builder().apply {
+//            id = mediaItem.album.urlEncoded
+//            title = mediaItem.album
+//            artist = mediaItem.artist
+//            albumArt = mediaItem.albumArt
+//            albumArtUri = mediaItem.albumArtUri.toString()
+//            trackCount = mediaItem.trackCount
+//            flag = MediaItem.FLAG_BROWSABLE
+//            putString(MediaMetadataCompat.METADATA_KEY_DATE, mediaItem.date)
+//        }.build()
+//
+//////        // Adds this album to the 'Albums' category.
+////        val albumsList = mediaIdToChildren[UAMP_ALBUMS_ROOT] ?: mutableListOf()
+////        albumsList += albumMetadata
+////        mediaIdToChildren[UAMP_ALBUMS_ROOT] = albumsList
+//
+//        // Adds this album to the root.
+//        val rootList = mediaIdToChildren[UAMP_BROWSABLE_ROOT] ?: mutableListOf()
 //        rootList += albumMetadata
-//        mediaIdToChildren[UAMP_ALBUMS_ROOT] = rootList
-
-        // Adds this album to the 'Albums' category.
-        val rootList = mediaIdToChildren[UAMP_BROWSABLE_ROOT] ?: mutableListOf()
-        rootList += albumMetadata
-        mediaIdToChildren[UAMP_BROWSABLE_ROOT] = rootList
-
-        // Insert the album's root with an empty list for its children, and return the list.
-        return mutableListOf<MediaMetadataCompat>().also {
-            mediaIdToChildren[albumMetadata.id!!] = it
-        }
-    }
+//        mediaIdToChildren[UAMP_BROWSABLE_ROOT] = rootList
+//
+//        // Insert the album's root with an empty list for its children, and return the list.
+//        return mutableListOf<MediaMetadataCompat>().also {
+//            mediaIdToChildren[albumMetadata.id!!] = it
+//        }
+//    }
 }
 
 const val UAMP_BROWSABLE_ROOT = "/"
 const val UAMP_EMPTY_ROOT = "@empty@"
+
 //const val UAMP_RECOMMENDED_ROOT = "__RECOMMENDED__"
 //const val UAMP_ALBUMS_ROOT = "__ALBUMS__"
 //const val UAMP_RECENT_ROOT = "__RECENT__"

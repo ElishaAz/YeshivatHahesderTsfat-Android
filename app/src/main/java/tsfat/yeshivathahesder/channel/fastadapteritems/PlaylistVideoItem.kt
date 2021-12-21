@@ -10,6 +10,7 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.model.VideoItem
+import tsfat.yeshivathahesder.channel.uamp.AudioItem
 
 class PlaylistVideoItem(val playlistItem: ItemBase?) :
     AbstractItem<PlaylistVideoItem.PlaylistVideoViewHolder>() {
@@ -44,6 +45,10 @@ class PlaylistVideoItem(val playlistItem: ItemBase?) :
                 }
                 videoPublishedAt.text =
                     DateTimeUtils.getTimeAgo(playlistItem.contentDetails.videoPublishedAt)
+            } else if (playlistItem is AudioItem) {
+                thumbnail.load(playlistItem.albumArtUri)
+                videoTitle.text = playlistItem.fullTitle
+                videoPublishedAt.text = DateTimeUtils.getTimeAgo(playlistItem.publishedAt)
             }
         }
 

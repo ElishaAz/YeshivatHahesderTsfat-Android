@@ -112,22 +112,18 @@ class MainActivityViewModel(
         _navigateToMediaItem.value = Event(audioItem.mediaId)
     }
 
-    fun playMedia(audioItem: AudioItem, pauseAllowed: Boolean) {
-        playMedia(audioItem.mediaId, pauseAllowed)
-    }
-
     /**
      * This method takes a [AudioItem] and does one of the following:
      * - If the item is *not* the active item, then play it directly.
      * - If the item *is* the active item, check whether "pause" is a permitted command. If it is,
      *   then pause playback, otherwise send "play" to resume playback.
      */
-    fun playMedia(mediaId: String, pauseAllowed: Boolean = true) {
+    fun playMedia(audioItem: AudioItem, pauseAllowed: Boolean = true) {
         val nowPlaying = musicServiceConnection.nowPlaying.value
         val transportControls = musicServiceConnection.transportControls
 
         val isPrepared = musicServiceConnection.playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaId == nowPlaying?.id) {
+        if (isPrepared && audioItem.mediaId == nowPlaying?.id) {
             musicServiceConnection.playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying ->
@@ -136,13 +132,13 @@ class MainActivityViewModel(
                     else -> {
                         Log.w(
                             TAG, "Playable item clicked but neither play nor pause are enabled!" +
-                                    " (mediaId=${mediaId})"
+                                    " (mediaId=${audioItem.mediaId})"
                         )
                     }
                 }
             }
         } else {
-            transportControls.playFromMediaId(mediaId, null)
+            transportControls.playFromMediaId(audioItem.mediaId, null)
         }
     }
 

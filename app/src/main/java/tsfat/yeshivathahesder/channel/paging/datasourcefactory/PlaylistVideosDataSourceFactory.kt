@@ -10,7 +10,8 @@ import tsfat.yeshivathahesder.channel.model.ItemBase
 class PlaylistVideosDataSourceFactory(
     private val playlistVideosRepository: PlaylistVideosRepository,
     private val coroutineScope: CoroutineScope,
-    private val playlistId: String
+    private val playlistId: String,
+    private val playlistType: String
 ) : DataSource.Factory<String, ItemBase>() {
 
     private var playlistVideosDataSource: PlaylistVideosDataSource? = null
@@ -22,7 +23,8 @@ class PlaylistVideosDataSourceFactory(
                 PlaylistVideosDataSource(
                     playlistVideosRepository,
                     coroutineScope,
-                    playlistId
+                    playlistId,
+                    playlistType
                 )
             playlistVideosDataSourceLiveData.postValue(playlistVideosDataSource)
         }

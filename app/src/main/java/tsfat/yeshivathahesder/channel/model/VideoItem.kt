@@ -52,9 +52,10 @@ data class VideoItem(
         }
     }
 
-    override val baseId: String
-        get() = "YT-" + contentDetails.videoId
+    override val baseId: String = videoIdToBase(contentDetails.videoId)
 
     override val publishedAt: String
         get() = contentDetails.videoPublishedAt
+
+    override fun toString(): String = "VideoItem({)${snippet.title})"
 }

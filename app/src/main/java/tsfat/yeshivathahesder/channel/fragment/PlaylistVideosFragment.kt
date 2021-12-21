@@ -38,16 +38,23 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericFastAdapter
 import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
 import kotlinx.android.synthetic.main.fragment_playlist_details.view.*
 import kotlinx.android.synthetic.main.fragment_playlist_videos.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.model.VideoItem
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
+import tsfat.yeshivathahesder.channel.uamp.AudioItem
 
 /**
  * A simple [Fragment] subclass to show the list of videos of a particular playlist.
  */
+@ExperimentalPagedSupport
 class PlaylistVideosFragment : Fragment() {
 
     private val viewModel by viewModel<PlaylistVideosViewModel>() // Lazy inject ViewModel
@@ -59,6 +66,7 @@ class PlaylistVideosFragment : Fragment() {
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
     private lateinit var playlistId: String
+    private lateinit var playlistType: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +79,8 @@ class PlaylistVideosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         playlistId = args.playlistId
+        playlistType = args.playlistType
+
         setupToolbar()
 
         setupRecyclerView(savedInstanceState)
@@ -154,7 +164,7 @@ class PlaylistVideosFragment : Fragment() {
     }
 
     private fun fetchPlaylistVideos() {
-        viewModel.getPlaylistVideos(playlistId)
+        viewModel.getPlaylistVideos(playlistId, playlistType)
     }
 
     private fun setupObservables() {
@@ -206,6 +216,8 @@ class PlaylistVideosFragment : Fragment() {
                 }
     }
 
+    private val audioConnector by inject<AudioConnector>()
+
     /**
      * Called when an item of the RecyclerView is clicked
      */
@@ -218,6 +230,8 @@ class PlaylistVideosFragment : Fragment() {
                         context,
                         playlistItem.contentDetails.videoId
                     )
+                } else if (playlistItem is AudioItem) {
+                    audioConnector.playItem(playlistItem)
                 }
             }
             false
@@ -234,11 +248,18 @@ class PlaylistVideosFragment : Fragment() {
         playlistDetailsDialog.getCustomView().apply {
             ivThumbnailPlaylistDetails.load(args.playlistThumbUrl)
             tvNamePlaylistDetails.text = args.playlistName
-            tvVideoCountPlaylistDetails.text = context.resources.getQuantityString(
-                R.plurals.text_playlist_video_count,
-                args.playlistVideoCount.toInt(),
-                args.playlistVideoCount.toInt()
-            )
+            if (args.playlistType == PLAYLIST_TYPE_VIDEO)
+                tvVideoCountPlaylistDetails.text = context.resources.getQuantityString(
+                    R.plurals.text_playlist_video_count,
+                    args.playlistVideoCount.toInt(),
+                    args.playlistVideoCount.toInt()
+                )
+            else if (args.playlistType == PLAYLIST_TYPE_AUDIO)
+                tvVideoCountPlaylistDetails.text = context.resources.getQuantityString(
+                    R.plurals.text_playlist_audio_count,
+                    args.playlistVideoCount.toInt(),
+                    args.playlistVideoCount.toInt()
+                )
             tvTimePublishedPlaylistDetails.text = context.getString(
                 R.string.text_playlist_published_date,
                 DateTimeUtils.getPublishedDate(args.playlistPublishedTime)

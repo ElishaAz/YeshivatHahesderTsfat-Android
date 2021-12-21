@@ -344,6 +344,7 @@ open class MusicService : MediaBrowserServiceCompat() {
     private fun toMediaItem(item: MediaMetadataCompat): MediaItem {
         val desc = item.description
         val bundle = desc.extras ?: Bundle()
+        bundle.putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, item.trackCount)
         bundle.putString(MediaMetadataCompat.METADATA_KEY_DATE, item.date)
         val bob = MediaDescriptionCompat.Builder().apply {
             setMediaId(desc.mediaId);

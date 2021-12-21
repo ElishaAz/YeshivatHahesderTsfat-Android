@@ -32,14 +32,8 @@ fun downloadCatalogRecursive(context: Context): DriveCatalog {
     val files: MutableList<DriveMusic> = ArrayList<DriveMusic>()
 
     val rootQueryStartTime = System.currentTimeMillis()
-    folders.add(
-        queryDrive(
-            getQuery(
-                context,
-                context.getString(R.string.google_drive_root_id)
-            )
-        )
-    )
+    val root = queryDrive(getQuery(context, context.getString(R.string.google_drive_root_id)))
+    folders.add(root)
     totalQueryTime += (System.currentTimeMillis() - rootQueryStartTime) / 1000.0
     queryCount++
 
@@ -54,7 +48,7 @@ fun downloadCatalogRecursive(context: Context): DriveCatalog {
                 totalQueryTime += (System.currentTimeMillis() - queryStartTime) / 1000.0
                 queryCount++
 
-                query.name = file.name
+                query.name = if (folder == root) file.name else "${file.name} | ${folder.name}"
                 folders.add(query)
             } else if (file.mimeType.startsWith("audio/")) {
                 files.add(queryToMusic(file, folder.name))
@@ -213,6 +207,9 @@ data class DriveMusic(
     var source: String = ""
 
     @Transient
-    var image: String =
-        "https://yhtsfat.org.il/wp-content/uploads/2018/08/%D7%9C%D7%95%D7%92%D7%95-%D7%91%D7%90%D7%99%D7%9B%D7%95%D7%AA-%D7%99%D7%A9%D7%99%D7%91%D7%94-225x300.png"
+    var image: String = defaultAudioUri
+
 }
+
+const val defaultAudioUri =
+    "https://yhtsfat.org.il/wp-content/uploads/2018/08/%D7%9C%D7%95%D7%92%D7%95-%D7%91%D7%90%D7%99%D7%9B%D7%95%D7%AA-%D7%99%D7%A9%D7%99%D7%91%D7%94-225x300.png"

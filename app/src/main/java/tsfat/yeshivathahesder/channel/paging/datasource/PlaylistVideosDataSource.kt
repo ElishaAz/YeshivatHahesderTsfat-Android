@@ -12,12 +12,14 @@ import tsfat.yeshivathahesder.channel.model.ItemBase
 class PlaylistVideosDataSource(
     private val repository: PlaylistVideosRepository,
     private val coroutineScope: CoroutineScope,
-    private val playlistId: String
+    private val playlistId: String,
+    private val playlistType: String
 ) : PageKeyedDataSource<String, ItemBase>() {
 
     private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<NetworkState>()
-    private var retryQuery: (() -> Any)? = null // Keep reference of the last query (to be able to retry it if necessary)
+    private var retryQuery: (() -> Any)? =
+        null // Keep reference of the last query (to be able to retry it if necessary)
     private var nextPageToken: String? = null
 
     override fun loadInitial(
@@ -50,7 +52,8 @@ class PlaylistVideosDataSource(
     private fun executeQuery(callback: (List<ItemBase>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val playlistItemInfo = repository.getPlaylistVideos(playlistId, nextPageToken).body()
+            val playlistItemInfo =
+                repository.getPlaylistVideos(playlistId, playlistType, nextPageToken)?.body()
             nextPageToken = playlistItemInfo?.nextPageToken
             val playlistVideosList = playlistItemInfo?.items
 
@@ -85,3 +88,6 @@ class PlaylistVideosDataSource(
         prevQuery?.invoke()
     }
 }
+
+const val PLAYLIST_TYPE_VIDEO = "Video"
+const val PLAYLIST_TYPE_AUDIO = "Audio"

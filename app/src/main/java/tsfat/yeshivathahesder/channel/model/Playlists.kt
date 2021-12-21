@@ -1,15 +1,15 @@
 package tsfat.yeshivathahesder.channel.model
 
 
-data class Playlist(
-    val items: List<Item>,
-    val nextPageToken: String
+data class Playlists<T : PlaylistBase>(
+    val items: List<T>,
+    val nextPageToken: String?
 ) {
-    data class Item(
+    data class VideoPlaylist(
         val contentDetails: ContentDetails,
         val id: String,
         val snippet: Snippet
-    ) {
+    ) : PlaylistBase() {
         data class ContentDetails(
             val itemCount: Int
         )
@@ -51,5 +51,14 @@ data class Playlist(
                 )
             }
         }
+
+        override val baseId: String = videoIdToBase(id)
+
+        override val name: String
+            get() = snippet.title
+        override val itemCount: Int
+            get() = contentDetails.itemCount
+        override val publishedAt: String
+            get() = snippet.publishedAt
     }
 }

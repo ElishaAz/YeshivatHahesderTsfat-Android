@@ -1,6 +1,6 @@
 package tsfat.yeshivathahesder.channel.paging.datasource
 
-import tsfat.yeshivathahesder.channel.model.Playlist
+import tsfat.yeshivathahesder.channel.model.Playlists
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.repository.PlaylistsRepository
 import androidx.lifecycle.LiveData
@@ -8,12 +8,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import kotlinx.coroutines.*
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.model.PlaylistBase
 
 class PlaylistsDataSource(
     private val repository: PlaylistsRepository,
     private val coroutineScope: CoroutineScope,
     private val channelId: String
-) : PageKeyedDataSource<String, Playlist.Item>() {
+) : PageKeyedDataSource<String, PlaylistBase>() {
 
     private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<NetworkState>()
@@ -23,7 +24,7 @@ class PlaylistsDataSource(
 
     override fun loadInitial(
         params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<String, Playlist.Item>
+        callback: LoadInitialCallback<String, PlaylistBase>
     ) {
         retryQuery = { loadInitial(params, callback) }
         executeQuery {
@@ -33,7 +34,7 @@ class PlaylistsDataSource(
 
     override fun loadAfter(
         params: LoadParams<String>,
-        callback: LoadCallback<String, Playlist.Item>
+        callback: LoadCallback<String, PlaylistBase>
     ) {
         retryQuery = { loadAfter(params, callback) }
         executeQuery {
@@ -43,12 +44,12 @@ class PlaylistsDataSource(
 
     override fun loadBefore(
         params: LoadParams<String>,
-        callback: LoadCallback<String, Playlist.Item>
+        callback: LoadCallback<String, PlaylistBase>
     ) {
         // Data is always fetched from the next page and hence loadBefore is never needed
     }
 
-    private fun executeQuery(callback: (List<Playlist.Item>) -> Unit) {
+    private fun executeQuery(callback: (List<PlaylistBase>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
             val response = repository.getPlaylists(channelId, nextPageToken).body()

@@ -1,6 +1,6 @@
 package tsfat.yeshivathahesder.channel.viewmodel
 
-import tsfat.yeshivathahesder.channel.model.Playlist
+import tsfat.yeshivathahesder.channel.model.Playlists
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.paging.datasourcefactory.PlaylistsDataSourceFactory
 import tsfat.yeshivathahesder.channel.repository.PlaylistsRepository
@@ -9,6 +9,7 @@ import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import kotlinx.coroutines.launch
+import tsfat.yeshivathahesder.channel.model.PlaylistBase
 
 class PlaylistsViewModel(
     private val playlistsRepository: PlaylistsRepository,
@@ -16,7 +17,7 @@ class PlaylistsViewModel(
 ) : ViewModel() {
 
     lateinit var playlistsDataSourceFactory: PlaylistsDataSourceFactory
-    var playlistsLiveData: LiveData<PagedList<Playlist.Item>>? = null
+    var playlistsLiveData: LiveData<PagedList<PlaylistBase>>? = null
     var networkStateLiveData: LiveData<NetworkState>? = null
     private var _emptyStateLiveData = MutableLiveData<Boolean>()
     val emptyStateLiveData: LiveData<Boolean>
@@ -32,26 +33,28 @@ class PlaylistsViewModel(
                         channelId
                     )
 
-                playlistsLiveData = LivePagedListBuilder(playlistsDataSourceFactory, pagedListConfig())
-                    .setBoundaryCallback(object :
-                        PagedList.BoundaryCallback<Playlist.Item>() {
-                        override fun onZeroItemsLoaded() {
-                            super.onZeroItemsLoaded()
-                            _emptyStateLiveData.value = true
-                        }
+                playlistsLiveData =
+                    LivePagedListBuilder(playlistsDataSourceFactory, pagedListConfig())
+                        .setBoundaryCallback(object :
+                            PagedList.BoundaryCallback<PlaylistBase>() {
+                            override fun onZeroItemsLoaded() {
+                                super.onZeroItemsLoaded()
+                                _emptyStateLiveData.value = true
+                            }
 
-                        override fun onItemAtFrontLoaded(itemAtFront: Playlist.Item) {
-                            super.onItemAtFrontLoaded(itemAtFront)
-                            _emptyStateLiveData.value = false
-                        }
+                            override fun onItemAtFrontLoaded(itemAtFront: PlaylistBase) {
+                                super.onItemAtFrontLoaded(itemAtFront)
+                                _emptyStateLiveData.value = false
+                            }
 
-                        override fun onItemAtEndLoaded(itemAtEnd: Playlist.Item) {
-                            super.onItemAtEndLoaded(itemAtEnd)
-                            _emptyStateLiveData.value = false
-                        }
-                    })
-                    .build()
-                networkStateLiveData = Transformations.switchMap(playlistsDataSourceFactory.playlistsDataSourceLiveData) { it.getNetworkState() }
+                            override fun onItemAtEndLoaded(itemAtEnd: PlaylistBase) {
+                                super.onItemAtEndLoaded(itemAtEnd)
+                                _emptyStateLiveData.value = false
+                            }
+                        })
+                        .build()
+                networkStateLiveData =
+                    Transformations.switchMap(playlistsDataSourceFactory.playlistsDataSourceLiveData) { it.getNetworkState() }
             }
         }
 

@@ -61,7 +61,7 @@ class NowPlayingFragmentViewModel(
         val albumArtUri: Uri,
         val title: String?,
         val subtitle: String?,
-        val duration: String
+        val duration: Long
     ) {
 
         companion object {
@@ -174,7 +174,7 @@ class NowPlayingFragmentViewModel(
                 mediaMetadata.albumArtUri,
                 mediaMetadata.title?.trim(),
                 mediaMetadata.displaySubtitle?.trim(),
-                NowPlayingMetadata.timestampToMSS(app, mediaMetadata.duration)
+                mediaMetadata.duration
             )
             this.mediaMetadata.postValue(nowPlayingMetadata)
         }

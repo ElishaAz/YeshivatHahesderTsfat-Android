@@ -70,8 +70,7 @@ class AudioItemAdapter(
             holder.item = mediaItem
             holder.titleView.text = mediaItem.title
             holder.subtitleView.text = mediaItem.subtitle
-            if (mediaItem.audioPublishedAt != null)
-                holder.timeView.text = DateTimeUtils.getTimeAgo(mediaItem.audioPublishedAt)
+            holder.timeView.text = DateTimeUtils.getTimeAgo(mediaItem.publishedAt)
             holder.playbackState.setImageResource(mediaItem.playbackRes)
 
             Glide.with(holder.albumArt)

@@ -1,6 +1,5 @@
 package tsfat.yeshivathahesder.channel.repository
 
-import android.util.Log
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.delay
 import retrofit2.Response
@@ -8,8 +7,16 @@ import timber.log.Timber
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.model.*
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
+import tsfat.yeshivathahesder.channel.uamp.AudioPlaylist
 
 class AudioRepository(private val audioConnector: AudioConnector) {
+    init {
+        audioConnector.audioItems.observeForever {
+            audioPageMap.clear()
+            audioPlaylistsPageMap.clear()
+        }
+    }
+
     private suspend fun lockAudioItemsBusy() {
         while (audioConnector.audioItems.value.isNullOrEmpty()) {
             Timber.d("Waiting for audio items...")
@@ -48,18 +55,61 @@ class AudioRepository(private val audioConnector: AudioConnector) {
         lockAudioItemsBusy()
     }
 
-    suspend fun getAudioItems(): List<AudioItem> {
+
+    private val audioPageMap: MutableList<Pair<String, Pair<Int, Int>>> = mutableListOf()
+
+    suspend fun getAudioItems(
+        pageToken: String?,
+        nextPageToken: String?,
+        lastPublishedAt: String
+    ): List<AudioItem> {
+        val mPageToken = pageToken ?: "start"
+        val mNextPageToken = nextPageToken ?: "end"
 
         waitForAudioItems()
+        val audioItems = audioConnector.audioItems.value?.asReversed() ?: emptyList()
 
-        val audioItemList: List<AudioItem>? = audioConnector.audioItems.value
+        if (mNextPageToken == "end") {
+            val lastIndex = if (audioPageMap.isEmpty()) 0 else audioPageMap.last().second.second
+            audioPageMap.add(Pair(mPageToken, Pair(lastIndex, audioItems.size)))
+            return audioItems.subList(lastIndex, audioItems.size)
+        }
 
-        val allAudioItems: List<AudioItem> = audioItemList?.asReversed() ?: emptyList()
-        return allAudioItems
+        if (mPageToken == "start") {
+            assert(audioPageMap.isEmpty())
+            for ((index, item) in audioItems.withIndex()) {
+                if (item.publishedAt < lastPublishedAt) {
+                    audioPageMap.add(Pair(mPageToken, Pair(0, index)))
+                    return audioItems.subList(0, index)
+                }
+            }
+        }
+
+        for ((token, pair) in audioPageMap) {
+            if (token == pageToken)
+                return audioItems.subList(pair.first, pair.second)
+        }
+
+        val lastIndex = audioPageMap.last().second.second
+
+        var i = lastIndex
+        while (i < audioItems.size) {
+            if (audioItems[i].publishedAt < lastPublishedAt) {
+                audioPageMap.add(Pair(mPageToken, Pair(lastIndex, i)))
+                return audioItems.subList(0, i)
+            }
+            i++
+        }
+        return emptyList()
     }
 
     suspend fun searchAudioItems(searchQuery: String): List<SearchedList.AudioSearchItem> {
         waitForAudioItems()
+        return searchAudioItemsNow(searchQuery)
+    }
+
+    @Synchronized
+    private fun searchAudioItemsNow(searchQuery: String): List<SearchedList.AudioSearchItem> {
         val searchItems: MutableList<SearchedList.AudioSearchItem> = mutableListOf()
         val audioItems = audioConnector.audioItems.value?.asReversed() ?: return emptyList()
 
@@ -72,6 +122,83 @@ class AudioRepository(private val audioConnector: AudioConnector) {
             }
         }
         return searchItems
+    }
+
+    private val audioPlaylistsPageMap: MutableList<Pair<String, Pair<Int, Int>>> = mutableListOf()
+
+    suspend fun getAudioPlaylists(
+        pageToken: String?,
+        nextPageToken: String?,
+        lastPublishedAt: String
+    ): List<AudioPlaylist> {
+
+        val mPageToken = pageToken ?: "start"
+        val mNextPageToken = nextPageToken ?: "end"
+
+        waitForAudioItems()
+        val res = getAudioPlaylistsNow(mNextPageToken, mPageToken, lastPublishedAt, pageToken)
+
+        Timber.d(res.toString())
+
+        return res
+    }
+
+    @Synchronized
+    private fun getAudioPlaylistsNow(
+        mNextPageToken: String,
+        mPageToken: String,
+        lastPublishedAt: String,
+        pageToken: String?
+    ): List<AudioPlaylist> {
+        val playlists = audioConnector.playlists.value ?: return emptyList()
+
+        if (mNextPageToken == "end") {
+            val lastIndex =
+                if (audioPlaylistsPageMap.isEmpty()) 0 else audioPlaylistsPageMap.last().second.second
+            audioPlaylistsPageMap.add(Pair(mPageToken, Pair(lastIndex, playlists.size)))
+            return playlists.subList(lastIndex, playlists.size)
+        }
+
+        if (mPageToken == "start") {
+            assert(audioPlaylistsPageMap.isEmpty())
+            for ((index, item) in playlists.withIndex()) {
+                if (item.publishedAt > lastPublishedAt) {
+                    audioPlaylistsPageMap.add(Pair(mPageToken, Pair(0, index)))
+                    return playlists.subList(0, index)
+                }
+            }
+            audioPlaylistsPageMap.add(Pair(mPageToken, Pair(0, 0)))
+            return emptyList()
+        }
+
+        for ((token, pair) in audioPlaylistsPageMap) {
+            if (token == pageToken)
+                return playlists.subList(pair.first, pair.second)
+        }
+
+        val lastIndex = audioPlaylistsPageMap.last().second.second
+
+        var i = lastIndex
+        while (i < playlists.size) {
+            if (playlists[i].publishedAt < lastPublishedAt) {
+                audioPlaylistsPageMap.add(Pair(mPageToken, Pair(lastIndex, i)))
+                return playlists.subList(0, i)
+            }
+            i++
+        }
+
+        return emptyList()
+    }
+
+    suspend fun getAudioPlaylist(id: String): List<AudioItem> {
+        waitForAudioItems()
+        val playlists = audioConnector.playlists.value ?: emptyList()
+        for (playlist in playlists) {
+            if (playlist.mediaId == id) {
+                return playlist.items.asReversed()
+            }
+        }
+        return emptyList()
     }
 }
 

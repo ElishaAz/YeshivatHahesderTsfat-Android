@@ -27,6 +27,10 @@
         <item quantity="one">%1$d Video</item>
         <item quantity="other">%1$d Videos</item>
     </plurals>
+    <plurals name="text_playlist_audio_count">
+        <item quantity="one">%1$d Lesson</item>
+        <item quantity="other">%1$d Lessons</item>
+    </plurals>
     <string name="text_share_playlist">Share Playlist</string>
     <string name="text_playlist_share_url" translatable="false">https://www.youtube.com/playlist?list=%1$s</string>
     <string name="text_share_video">Share Video</string>

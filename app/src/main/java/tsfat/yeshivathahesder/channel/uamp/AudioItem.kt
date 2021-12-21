@@ -21,6 +21,8 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import androidx.recyclerview.widget.DiffUtil
 import tsfat.yeshivathahesder.channel.model.ItemBase
+import tsfat.yeshivathahesder.channel.model.PlaylistBase
+import tsfat.yeshivathahesder.channel.model.audioIdToBase
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
 
 /**
@@ -38,7 +40,7 @@ data class AudioItem(
     val subtitle: String,
     val albumArtUri: Uri,
     val browsable: Boolean,
-    val audioPublishedAt: String?,
+    override val publishedAt: String,
     var playbackRes: Int
 ) : ItemBase() {
 
@@ -85,12 +87,25 @@ data class AudioItem(
         }
     }
 
-    override val baseId: String
-        get() = "RC-$mediaId"
-
-    override val publishedAt: String
-        get() = audioPublishedAt ?: ""
+    override val baseId: String = audioIdToBase(mediaId)
 
     val fullTitle: String = "$title | $subtitle"
+
+    override fun toString(): String = "AudioItem($fullTitle)"
 }
 
+data class AudioPlaylist(
+    val mediaId: String,
+    val title: String,
+    val items: List<AudioItem>,
+//    val albumArtUri: Uri,
+    override val itemCount: Int,
+    override val publishedAt: String
+) : PlaylistBase() {
+    override val baseId: String = audioIdToBase(mediaId)
+    override val name: String = title
+
+    override fun toString(): String {
+        return "AudioPlaylist(title='$title')"
+    }
+}

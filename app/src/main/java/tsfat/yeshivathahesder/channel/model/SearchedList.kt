@@ -65,8 +65,7 @@ data class SearchedList<T : SearchedList.SearchItem>(
         override fun getGrade(query: String): Double =
             grade ?: search(query, snippet.title).also { grade = it }
 
-        override val baseId: String
-            get() = "YT-${id.videoId}"
+        override val baseId: String = videoIdToBase(id.videoId)
         override val publishedAt: String
             get() = snippet.publishedAt
     }

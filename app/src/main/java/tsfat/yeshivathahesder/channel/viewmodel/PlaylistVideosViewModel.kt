@@ -21,14 +21,15 @@ class PlaylistVideosViewModel(
     var playlistVideosLiveData: LiveData<PagedList<ItemBase>>? = null
     var networkStateLiveData: LiveData<NetworkState>? = null
 
-    fun getPlaylistVideos(playlistId: String) {
+    fun getPlaylistVideos(playlistId: String, playlistType: String) {
         if (playlistVideosLiveData == null) {
             viewModelScope.launch {
                 playlistVideosDataSourceFactory =
                     PlaylistVideosDataSourceFactory(
                         playlistVideosRepository,
                         viewModelScope,
-                        playlistId
+                        playlistId,
+                        playlistType
                     )
 
                 playlistVideosLiveData =

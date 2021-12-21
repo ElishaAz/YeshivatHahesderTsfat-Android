@@ -7,6 +7,8 @@ import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
+import com.google.firebase.ktx.options
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,21 +49,24 @@ class FirebaseSource(private val context: Context, private val serviceScope: Cor
      */
     private suspend fun updateCatalog(): List<MediaMetadataCompat>? {
         return withContext(Dispatchers.IO) {
-            var musicCat = try {
+            var (musicCat, isFromCache) = try {
                 downloadCatalog(context)
             } catch (ioException: IOException) {
                 return@withContext null
             }
             val now = Date().time
             val timestamp = musicCat.timestamp?.time ?: 0
-            if (musicCat.music.isNullOrEmpty() || now - timestamp > waitForDownloadAfter) {
-                Log.d(TAG, "Catalog too old. Reloading from Drive.")
-                uploadCatalog(context)?.let { musicCat = it }
-            } else if (now - timestamp > uploadAfter) {
-                Log.d(TAG, "Will reload catalog from Drive.")
-                serviceScope.launch(Dispatchers.IO) {
-                    Log.d(TAG, "Reloading catalog from Drive.")
-                    uploadCatalog(context)
+
+            if (!isFromCache) {
+                if (musicCat.music.isNullOrEmpty() || now - timestamp > waitForDownloadAfter) {
+                    Log.d(TAG, "Catalog too old. Reloading from Drive.")
+                    uploadCatalog(context)?.let { musicCat = it }
+                } else if (now - timestamp > uploadAfter) {
+                    Log.d(TAG, "Will reload catalog from Drive.")
+                    serviceScope.launch(Dispatchers.IO) {
+                        Log.d(TAG, "Reloading catalog from Drive.")
+                        uploadCatalog(context)
+                    }
                 }
             }
 

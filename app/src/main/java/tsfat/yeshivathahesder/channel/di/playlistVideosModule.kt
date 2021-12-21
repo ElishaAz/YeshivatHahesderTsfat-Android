@@ -11,7 +11,7 @@ import org.koin.dsl.module
  */
 val playlistVideosModule = module {
 
-    single { PlaylistVideosRepository(get()) }
+    single { PlaylistVideosRepository(get(), get()) }
 
     viewModel { PlaylistVideosViewModel(get()) }
 }

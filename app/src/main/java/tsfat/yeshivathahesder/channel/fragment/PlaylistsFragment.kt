@@ -4,7 +4,7 @@ package tsfat.yeshivathahesder.channel.fragment
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.fastadapteritems.PlaylistItem
 import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
-import tsfat.yeshivathahesder.channel.model.Playlist
+import tsfat.yeshivathahesder.channel.model.Playlists
 import tsfat.yeshivathahesder.channel.paging.Status
 import tsfat.yeshivathahesder.channel.utils.DividerItemDecorator
 import tsfat.yeshivathahesder.channel.viewmodel.PlaylistsViewModel
@@ -27,21 +27,28 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.GenericFastAdapter
 import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
+import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
 import kotlinx.android.synthetic.main.fragment_playlists.*
 import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.model.PlaylistBase
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
+import tsfat.yeshivathahesder.channel.uamp.AudioPlaylist
+import tsfat.yeshivathahesder.channel.uamp.media.library.defaultAudioUri
 
 /**
  * A simple [Fragment] subclass to show the list of
  * Playlists of a channel.
  */
+@ExperimentalPagedSupport
 class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
 
     private val viewModel by viewModel<PlaylistsViewModel>() // Lazy inject ViewModel
 
     private lateinit var playlistsAdapter: GenericFastAdapter
-    private lateinit var playlistsPagedModelAdapter: PagedModelAdapter<Playlist.Item, PlaylistItem>
+    private lateinit var playlistsPagedModelAdapter: PagedModelAdapter<PlaylistBase, PlaylistItem>
     private lateinit var footerAdapter: GenericItemAdapter
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
@@ -91,25 +98,25 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     }
 
     private fun setupRecyclerView(savedInstanceState: Bundle?) {
-        val asyncDifferConfig = AsyncDifferConfig.Builder<Playlist.Item>(object :
-            DiffUtil.ItemCallback<Playlist.Item>() {
+        val asyncDifferConfig = AsyncDifferConfig.Builder<PlaylistBase>(object :
+            DiffUtil.ItemCallback<PlaylistBase>() {
             override fun areItemsTheSame(
-                oldItem: Playlist.Item,
-                newItem: Playlist.Item
+                oldItem: PlaylistBase,
+                newItem: PlaylistBase
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.baseId == newItem.baseId
             }
 
             override fun areContentsTheSame(
-                oldItem: Playlist.Item,
-                newItem: Playlist.Item
+                oldItem: PlaylistBase,
+                newItem: PlaylistBase
             ): Boolean {
                 return oldItem == newItem
             }
         }).build()
 
         playlistsPagedModelAdapter =
-            PagedModelAdapter<Playlist.Item, PlaylistItem>(asyncDifferConfig) {
+            PagedModelAdapter<PlaylistBase, PlaylistItem>(asyncDifferConfig) {
                 PlaylistItem(it)
             }
 
@@ -168,7 +175,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         // Observe latest video live data
         viewModel.playlistsLiveData?.observe(
             viewLifecycleOwner,
-            Observer<PagedList<Playlist.Item>> { playlistsList ->
+            Observer<PagedList<PlaylistBase>> { playlistsList ->
                 playlistsPagedModelAdapter.submitList(playlistsList)
             })
     }
@@ -203,17 +210,34 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private fun onItemClick() {
         playlistsAdapter.onClickListener = { view, adapter, item, position ->
             if (item is PlaylistItem) {
-                val action =
-                    PlaylistsFragmentDirections.actionPlaylistsFragmentToPlaylistVideosFragment(
-                        item.playlistItem?.snippet?.title!!,
-                        item.playlistItem.id,
-                        item.playlistItem.snippet.description,
-                        item.playlistItem.contentDetails.itemCount.toFloat(),
-                        item.playlistItem.snippet.thumbnails.standard?.url
-                            ?: item.playlistItem.snippet.thumbnails.high.url,
-                        item.playlistItem.snippet.publishedAt
-                    )
-                findNavController().navigate(action)
+                val action = item.playlistItem.let {
+                    if (it is Playlists.VideoPlaylist) {
+                        PlaylistsFragmentDirections.actionPlaylistsFragmentToPlaylistVideosFragment(
+                            it.snippet.title,
+                            PLAYLIST_TYPE_VIDEO,
+                            it.id,
+                            it.snippet.description,
+                            it.contentDetails.itemCount.toFloat(),
+                            it.snippet.thumbnails.standard?.url
+                                ?: it.snippet.thumbnails.high.url,
+                            it.snippet.publishedAt
+                        )
+                    } else if (it is AudioPlaylist) {
+                        PlaylistsFragmentDirections.actionPlaylistsFragmentToPlaylistVideosFragment(
+                            it.name,
+                            PLAYLIST_TYPE_AUDIO,
+                            it.mediaId,
+                            it.name,
+                            it.itemCount.toFloat(),
+                            defaultAudioUri,
+                            it.publishedAt
+                        )
+                    } else {
+                        null
+                    }
+                }
+
+                findNavController().navigate(action!!)
             }
             false
         }

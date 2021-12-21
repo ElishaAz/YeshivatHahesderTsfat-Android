@@ -26,7 +26,7 @@
     <string name="menu_feedback">שלח לנו משוב</string>
     <string name="menu_tos">תנאי שימוש</string>
     <string name="menu_privacy_policy">מדיניות פרטיות</string>
-    <string name="dialog_theme_text_dark">גוונים כההים</string>
+    <string name="dialog_theme_text_dark">גוונים כהים</string>
     <string name="dialog_settings_title">הגדרות</string>
     <string name="menu_app_info">מידע על האפליקציה</string>
     <string name="fragment_app_info">מידע על האפליקציה</string>
@@ -75,4 +75,16 @@
     <string name="duration_format">%d:%02d</string>
     <string name="cast_context_error">Failed to get Cast context. Try updating Google Play Services and restart the app.</string>
     <string name="menu_audio">אודיו</string>
+
+    <plurals name="text_playlist_video_count">
+        <item quantity="one">סרטון אחד</item>
+        <item quantity="two">שני סרטונים</item>
+        <item quantity="many">%1$d סרטונים</item>
+<!--        <item quantity="other">%1$d Videos</item>-->
+    </plurals>
+    <plurals name="text_playlist_audio_count">
+        <item quantity="one">שיעור אחד</item>
+        <item quantity="two">שני שיעורים</item>
+        <item quantity="many">%1$d שיעורים</item>
+    </plurals>
 </resources>

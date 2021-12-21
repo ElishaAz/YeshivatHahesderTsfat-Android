@@ -1,52 +1,56 @@
 package tsfat.yeshivathahesder.channel.activity
 
-import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.locales.LocaleHelper
-import tsfat.yeshivathahesder.channel.sharedpref.AppPref
-import tsfat.yeshivathahesder.channel.utils.Tools
-import tsfat.yeshivathahesder.channel.utils.media.MyNotificationManager
 import android.content.Context
 import android.media.AudioManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import androidx.navigation.findNavController
+import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.cast.framework.CastContext
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.databinding.ActivityMainBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
-import tsfat.yeshivathahesder.channel.uamp.AudioItem
+import tsfat.yeshivathahesder.channel.locales.LocaleHelper
+import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.utils.InjectorUtils
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
+import tsfat.yeshivathahesder.channel.uamp.viewmodels.NowPlayingFragmentViewModel
+import tsfat.yeshivathahesder.channel.utils.Tools
+import tsfat.yeshivathahesder.core.extensions.makeInvisible
+import tsfat.yeshivathahesder.core.extensions.makeVisible
 
 class MainActivity : AppCompatActivity() {
 
     private var initialLayoutComplete = false
     private lateinit var initialLocale: String
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         initialLocale = AppPref.localeOverride
 
         audioOnCreate(savedInstanceState)
 
         Tools.showUpdateDialog(this, true)
-        MyNotificationManager
-            .createNotificationChannel(this)
+//        MyNotificationManager.createNotificationChannel(this)
 
-        val navController = findNavController(R.id.navHostFragment)
+        val navController = Navigation.findNavController(this, R.id.navHostFragment)
 
-        bottomNavView.setupWithNavController(navController)
+        binding.bottomNavView.setupWithNavController(navController)
+
+        binding.nowPlaying.makeInvisible()
     }
 
     override fun onResume() {
@@ -60,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         if (initialLocale != AppPref.localeOverride) {
             recreate();
             initialLocale = AppPref.localeOverride
-            Log.d("MainActivity", "Locale changed!")
+            Timber.d("Locale changed!")
         }
     }
 
@@ -74,6 +78,9 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModels<MainActivityViewModel> {
         InjectorUtils.provideMainActivityViewModel(this)
+    }
+    private val nowPlayingViewModel by viewModels<NowPlayingFragmentViewModel> {
+        InjectorUtils.provideNowPlayingFragmentViewModel(this)
     }
 
     //    private val mediaItemFragmentViewModel by viewModels<MediaItemFragmentViewModel> {
@@ -125,13 +132,19 @@ class MainActivity : AppCompatActivity() {
         mediaItemViewModel.observe(this) {
             if (it == null) {
                 audioConnector.audioItems.value = null
+                audioConnector.playlists.value = null
             } else {
-                it.audioItems.observe(this) { audioConnector.audioItems.value = it }
+                it.audioItems.observe(this) {
+                    audioConnector.audioItems.value = it
+                }
+                it.mediaPlaylists.observe(this) {
+                    audioConnector.playlists.value = it
+                }
             }
         }
 
         audioConnector.playItem = {
-            viewModel.playMedia(it, pauseAllowed = false)
+            viewModel.mediaItemClicked(it)
         }
 
 //        viewModel.isConnected.observe(this, Observer {
@@ -141,23 +154,25 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        })
 //
-//        /**
-//         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
-//         * fragment swap.
-//         */
-//        viewModel.navigateToFragment.observe(this, Observer {
-//            it?.getContentIfNotHandled()?.let { fragmentRequest ->
-////                val transaction = supportFragmentManager.beginTransaction()
-////                transaction.replace(
-////                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
-////                )
-////                if (fragmentRequest.backStack) transaction.addToBackStack(null)
-////                transaction.commit()
-////                if (fragmentRequest.play)
+        /**
+         * Observe [MainActivityViewModel.navigateToFragment] for [Event]s that request a
+         * fragment swap.
+         */
+        viewModel.navigateToFragment.observe(this, Observer {
+            it?.getContentIfNotHandled()?.let { fragmentRequest ->
+//                val transaction = supportFragmentManager.beginTransaction()
+//                transaction.replace(
+//                    R.id.fragmentContainer, fragmentRequest.fragment, fragmentRequest.tag
+//                )
+//                if (fragmentRequest.backStack) transaction.addToBackStack(null)
+//                transaction.commit()
+//                if (fragmentRequest.play)
 //                findNavController(R.id.navHostFragment)
 //                    .navigate(R.id.action_homeFragment_to_searchFragment)
-//            }
-//        })
+                Timber.d("Navigate to fragment")
+                binding.nowPlaying.makeVisible()
+            }
+        })
 //
 //        /**
 //         * Observe changes to the [MainActivityViewModel.rootMediaId]. When the app starts,
@@ -169,16 +184,74 @@ class MainActivity : AppCompatActivity() {
 //                rootMediaId?.let { navigateToMediaItem(it) }
 //            })
 //
-//        /**
-//         * Observe [MainActivityViewModel.navigateToMediaItem] for [Event]s indicating
-//         * the user has requested to browse to a different [MediaItemData].
-//         */
-//        viewModel.navigateToMediaItem.observe(this, Observer {
+        /**
+         * Observe [MainActivityViewModel.navigateToMediaItem] for [Event]s indicating
+         * the user has requested to browse to a different [MediaItemData].
+         */
+        viewModel.navigateToMediaItem.observe(this, Observer {
 //            it?.getContentIfNotHandled()?.let { mediaId ->
 //                navigateToMediaItem(mediaId)
 //            }
-//        })
+
+            Timber.d("Navigate to media item")
+        })
+
+        nowPlayingOnCreate()
     }
+
+    private fun nowPlayingOnCreate() {
+        // Attach observers to the LiveData coming from this ViewModel
+        nowPlayingViewModel.mediaMetadata.observe(this,
+            Observer { mediaItem -> updateUI(mediaItem) })
+        nowPlayingViewModel.mediaButtonRes.observe(this,
+            Observer { res ->
+                binding.playPauseButton.setImageResource(res)
+            })
+        nowPlayingViewModel.mediaPosition.observe(this,
+            Observer { pos ->
+                binding.progressBar.isIndeterminate = false
+                binding.progressBar.progress = pos.toInt()
+                binding.position.text =
+                    NowPlayingFragmentViewModel.NowPlayingMetadata.timestampToMSS(this, pos)
+            })
+
+        // Setup UI handlers for buttons
+        binding.playPauseButton.setOnClickListener {
+            nowPlayingViewModel.mediaMetadata.value?.let { viewModel.playMediaId(it.id) }
+        }
+
+        // Initialize playback duration and position to zero
+        binding.duration.text =
+            NowPlayingFragmentViewModel.NowPlayingMetadata.timestampToMSS(this, 0L)
+        binding.position.text =
+            NowPlayingFragmentViewModel.NowPlayingMetadata.timestampToMSS(this, 0L)
+        binding.progressBar.isIndeterminate = true
+    }
+
+    /**
+     * Internal function used to update all UI elements except for the current item playback
+     */
+    private fun updateUI(metadata: NowPlayingFragmentViewModel.NowPlayingMetadata) =
+        with(binding) {
+//            if (metadata.albumArtUri == Uri.EMPTY) {
+//                albumArt.setImageResource(R.drawable.ic_album_black_24dp)
+//            } else {
+//                Glide.with(view)
+//                    .load(metadata.albumArtUri)
+//                    .into(albumArt)
+//            }
+            title.text = metadata.title
+            subtitle.text = metadata.subtitle
+            duration.text = NowPlayingFragmentViewModel.NowPlayingMetadata.timestampToMSS(
+                this@MainActivity,
+                metadata.duration
+            )
+            with(progressBar) {
+                max = metadata.duration.toInt()
+                progress = 0
+                isIndeterminate = true
+            }
+        }
 
 //    @Override
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {

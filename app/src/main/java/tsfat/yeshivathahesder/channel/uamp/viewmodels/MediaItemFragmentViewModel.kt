@@ -16,29 +16,26 @@
 
 package tsfat.yeshivathahesder.channel.uamp.viewmodels
 
-import android.os.Build
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import timber.log.Timber
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.uamp.AudioPlaylist
 import tsfat.yeshivathahesder.channel.uamp.common.EMPTY_PLAYBACK_STATE
 import tsfat.yeshivathahesder.channel.uamp.common.MusicServiceConnection
 import tsfat.yeshivathahesder.channel.uamp.common.NOTHING_PLAYING
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.isPlaying
-import java.time.Instant
 import java.util.*
 
 /**
@@ -54,7 +51,9 @@ class MediaItemFragmentViewModel(
      * they don't inadvertently modify it.
      */
     private val _mediaItems = MutableLiveData<List<AudioItem>>()
+    private val _mediaPlaylists = MutableLiveData<List<AudioPlaylist>>()
     val audioItems: LiveData<List<AudioItem>> = _mediaItems
+    val mediaPlaylists: LiveData<List<AudioPlaylist>> = _mediaPlaylists
 
     /**
      * Pass the status of the [MusicServiceConnection.networkFailure] through.
@@ -63,12 +62,14 @@ class MediaItemFragmentViewModel(
 
     private val subscriptionCallback = object : SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String, children: List<MediaItem>) {
+            val playlistsList: MutableMap<String, PlaylistHolder> = mutableMapOf()
             val itemsList = children.map { child ->
-                val subtitle = child.description.subtitle ?: ""
+                val subtitle = child.description.subtitle ?: "root"
                 val publishedAt =
                     child.description.extras!!.getString(MediaMetadataCompat.METADATA_KEY_DATE)
+                        ?: ""
 
-                AudioItem(
+                val item = AudioItem(
                     child.mediaId!!,
                     child.description.title.toString(),
                     subtitle.toString(),
@@ -77,9 +78,34 @@ class MediaItemFragmentViewModel(
                     publishedAt,
                     getResourceForMediaId(child.mediaId!!)
                 )
+                if (playlistsList[item.subtitle] == null) {
+                    playlistsList[item.subtitle] = PlaylistHolder(
+                        item.subtitle,
+                        item.subtitle,
+                        item.publishedAt,
+                        mutableListOf(item)
+                    )
+                } else {
+                    playlistsList[item.subtitle]!!.items.add(item)
+//                    if (playlistsList[item.subtitle]!!.publishedAt < item.publishedAt) {
+//                        playlistsList[item.subtitle]!!.publishedAt = item.publishedAt
+//                    }
+                }
+
+                return@map item
             }
+            _mediaPlaylists.postValue(playlistsList.map { it.value.toPlaylist() })
             _mediaItems.postValue(itemsList)
         }
+    }
+
+    private data class PlaylistHolder(
+        val id: String,
+        val name: String,
+        var publishedAt: String,
+        val items: MutableList<AudioItem>
+    ) {
+        fun toPlaylist(): AudioPlaylist = AudioPlaylist(id, name, items, items.size, publishedAt)
     }
 
     /**

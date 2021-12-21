@@ -99,6 +99,6 @@ class NowPlayingFragment : Fragment() {
         }
         title.text = metadata.title
         subtitle.text = metadata.subtitle
-        duration.text = metadata.duration
+        duration.text = NowPlayingMetadata.timestampToMSS(requireActivity(), metadata.duration)
     }
 }

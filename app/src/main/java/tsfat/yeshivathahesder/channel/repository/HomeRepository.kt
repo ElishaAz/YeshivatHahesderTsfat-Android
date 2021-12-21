@@ -17,44 +17,31 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 class HomeRepository(
-        private val searchVideoService: SearchVideoService,
-        private val channelsService: ChannelsService,
-        private val playlistItemsService: PlaylistItemsService,
-        private val audioRepository: AudioRepository
+    private val searchVideoService: SearchVideoService,
+    private val channelsService: ChannelsService,
+    private val playlistItemsService: PlaylistItemsService,
+    private val audioRepository: AudioRepository
 ) {
 
     suspend fun getUploadsPlaylistId(channelId: String): Response<ChannelUploadsPlaylistInfo> =
-            channelsService.getChannelUploadsPlaylistInfo(channelId)
+        channelsService.getChannelUploadsPlaylistInfo(channelId)
 
     private var lastIndex = 0
 
-
     suspend fun getLatestVideos(
-            playlistId: String,
-            pageToken: String?
+        playlistId: String,
+        pageToken: String?
     ): Response<ItemList<ItemBase>> {
-        Timber.d("Getting videos")
+        Timber.d("Getting videos. Token: $pageToken")
+
         val response = playlistItemsService.getPlaylistVideos(playlistId, pageToken)
 
-        val allAudioItems: List<AudioItem> = audioRepository.getAudioItems()
+        val nextPageToken = response.body()?.nextPageToken
 
         val lastItem = response.body()?.items?.last()
 
-        if (lastItem == null) {
-            lastIndex = allAudioItems.size
-            return joinAudioAndVideoResults(response, allAudioItems.subList(lastIndex, allAudioItems.size))
-        }
-
-        var end = lastIndex
-
-        while (end < allAudioItems.size) {
-            if (allAudioItems[end].publishedAt < lastItem.publishedAt) {
-                break
-            }
-            end++
-        }
-        val audioItems = allAudioItems.subList(lastIndex, end)
-        lastIndex = end
+        val audioItems: List<AudioItem> =
+            audioRepository.getAudioItems(pageToken, nextPageToken, lastItem?.publishedAt ?: "")
 
         return joinAudioAndVideoResults(response, audioItems)
     }
