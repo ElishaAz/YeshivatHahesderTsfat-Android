@@ -69,38 +69,50 @@ class AudioRepository(private val audioConnector: AudioConnector) {
         waitForAudioItems()
         val audioItems = audioConnector.audioItems.value?.asReversed() ?: emptyList()
 
-        if (mNextPageToken == "end") {
-            val lastIndex = if (audioPageMap.isEmpty()) 0 else audioPageMap.last().second.second
-            audioPageMap.add(Pair(mPageToken, Pair(lastIndex, audioItems.size)))
-            return audioItems.subList(lastIndex, audioItems.size)
-        }
+        val res = getPage(
+            audioPageMap,
+            mNextPageToken,
+            mPageToken,
+            audioItems,
+            lastPublishedAt
+        ) { it.publishedAt }
 
-        if (mPageToken == "start") {
-            assert(audioPageMap.isEmpty())
-            for ((index, item) in audioItems.withIndex()) {
-                if (item.publishedAt < lastPublishedAt) {
-                    audioPageMap.add(Pair(mPageToken, Pair(0, index)))
-                    return audioItems.subList(0, index)
-                }
-            }
-        }
+        Timber.d(res.toString())
 
-        for ((token, pair) in audioPageMap) {
-            if (token == pageToken)
-                return audioItems.subList(pair.first, pair.second)
-        }
+        return res
 
-        val lastIndex = audioPageMap.last().second.second
-
-        var i = lastIndex
-        while (i < audioItems.size) {
-            if (audioItems[i].publishedAt < lastPublishedAt) {
-                audioPageMap.add(Pair(mPageToken, Pair(lastIndex, i)))
-                return audioItems.subList(0, i)
-            }
-            i++
-        }
-        return emptyList()
+//        if (mNextPageToken == "end") {
+//            val lastIndex = if (audioPageMap.isEmpty()) 0 else audioPageMap.last().second.second
+//            audioPageMap.add(Pair(mPageToken, Pair(lastIndex, audioItems.size)))
+//            return audioItems.subList(lastIndex, audioItems.size)
+//        }
+//
+//        if (mPageToken == "start") {
+//            assert(audioPageMap.isEmpty())
+//            for ((index, item) in audioItems.withIndex()) {
+//                if (item.publishedAt < lastPublishedAt) {
+//                    audioPageMap.add(Pair(mPageToken, Pair(0, index)))
+//                    return audioItems.subList(0, index)
+//                }
+//            }
+//        }
+//
+//        for ((token, pair) in audioPageMap) {
+//            if (token == pageToken)
+//                return audioItems.subList(pair.first, pair.second)
+//        }
+//
+//        val lastIndex = audioPageMap.last().second.second
+//
+//        var i = lastIndex
+//        while (i < audioItems.size) {
+//            if (audioItems[i].publishedAt < lastPublishedAt) {
+//                audioPageMap.add(Pair(mPageToken, Pair(lastIndex, i)))
+//                return audioItems.subList(0, i)
+//            }
+//            i++
+//        }
+//        return emptyList()
     }
 
     suspend fun searchAudioItems(searchQuery: String): List<SearchedList.AudioSearchItem> {
@@ -136,7 +148,14 @@ class AudioRepository(private val audioConnector: AudioConnector) {
         val mNextPageToken = nextPageToken ?: "end"
 
         waitForAudioItems()
-        val res = getAudioPlaylistsNow(mNextPageToken, mPageToken, lastPublishedAt, pageToken)
+        val playlists = audioConnector.playlists.value ?: return emptyList()
+        val res = getPage(
+            audioPlaylistsPageMap,
+            mNextPageToken,
+            mPageToken,
+            playlists,
+            lastPublishedAt
+        ) { it.publishedAt }
 
         Timber.d(res.toString())
 
@@ -144,45 +163,45 @@ class AudioRepository(private val audioConnector: AudioConnector) {
     }
 
     @Synchronized
-    private fun getAudioPlaylistsNow(
+    private fun <T, R : Comparable<R>> getPage(
+        pageMap: MutableList<Pair<String, Pair<Int, Int>>>,
         mNextPageToken: String,
         mPageToken: String,
-        lastPublishedAt: String,
-        pageToken: String?
-    ): List<AudioPlaylist> {
-        val playlists = audioConnector.playlists.value ?: return emptyList()
-
+        list: List<T>,
+        lastMinVal: R,
+        selector: (T) -> R
+    ): List<T> {
         if (mNextPageToken == "end") {
             val lastIndex =
-                if (audioPlaylistsPageMap.isEmpty()) 0 else audioPlaylistsPageMap.last().second.second
-            audioPlaylistsPageMap.add(Pair(mPageToken, Pair(lastIndex, playlists.size)))
-            return playlists.subList(lastIndex, playlists.size)
+                if (pageMap.isEmpty()) 0 else pageMap.last().second.second
+            pageMap.add(Pair(mPageToken, Pair(lastIndex, list.size)))
+            return list.subList(lastIndex, list.size)
         }
 
         if (mPageToken == "start") {
-            assert(audioPlaylistsPageMap.isEmpty())
-            for ((index, item) in playlists.withIndex()) {
-                if (item.publishedAt > lastPublishedAt) {
-                    audioPlaylistsPageMap.add(Pair(mPageToken, Pair(0, index)))
-                    return playlists.subList(0, index)
+            assert(pageMap.isEmpty())
+            for ((index, item) in list.withIndex()) {
+                if (selector(item) < lastMinVal) {
+                    pageMap.add(Pair(mPageToken, Pair(0, index)))
+                    return list.subList(0, index)
                 }
             }
-            audioPlaylistsPageMap.add(Pair(mPageToken, Pair(0, 0)))
-            return emptyList()
+            pageMap.add(Pair(mPageToken, Pair(0, list.size)))
+            return list
         }
 
-        for ((token, pair) in audioPlaylistsPageMap) {
-            if (token == pageToken)
-                return playlists.subList(pair.first, pair.second)
+        for ((token, pair) in pageMap) {
+            if (token == mPageToken)
+                return list.subList(pair.first, pair.second)
         }
 
-        val lastIndex = audioPlaylistsPageMap.last().second.second
+        val lastIndex = pageMap.last().second.second
 
         var i = lastIndex
-        while (i < playlists.size) {
-            if (playlists[i].publishedAt < lastPublishedAt) {
-                audioPlaylistsPageMap.add(Pair(mPageToken, Pair(lastIndex, i)))
-                return playlists.subList(0, i)
+        while (i < list.size) {
+            if (selector(list[i]) < lastMinVal) {
+                pageMap.add(Pair(mPageToken, Pair(lastIndex, i)))
+                return list.subList(lastIndex, i)
             }
             i++
         }

@@ -87,6 +87,24 @@ class NowPlayingFragmentViewModel(
         postValue(R.drawable.ic_album_black_24dp)
     }
 
+    /**
+     * Get the current state of playback. One of the following:
+     * <ul>
+     * <li> {@link PlaybackStateCompat#STATE_NONE}</li>
+     * <li> {@link PlaybackStateCompat#STATE_STOPPED}</li>
+     * <li> {@link PlaybackStateCompat#STATE_PLAYING}</li>
+     * <li> {@link PlaybackStateCompat#STATE_PAUSED}</li>
+     * <li> {@link PlaybackStateCompat#STATE_FAST_FORWARDING}</li>
+     * <li> {@link PlaybackStateCompat#STATE_REWINDING}</li>
+     * <li> {@link PlaybackStateCompat#STATE_BUFFERING}</li>
+     * <li> {@link PlaybackStateCompat#STATE_ERROR}</li>
+     * <li> {@link PlaybackStateCompat#STATE_CONNECTING}</li>
+     * <li> {@link PlaybackStateCompat#STATE_SKIPPING_TO_PREVIOUS}</li>
+     * <li> {@link PlaybackStateCompat#STATE_SKIPPING_TO_NEXT}</li>
+     * <li> {@link PlaybackStateCompat#STATE_SKIPPING_TO_QUEUE_ITEM}</li>
+     */
+    val mediaState = MutableLiveData<Int>(PlaybackStateCompat.STATE_NONE)
+
     private var updatePosition = true
     private val handler = Handler(Looper.getMainLooper())
 
@@ -185,6 +203,9 @@ class NowPlayingFragmentViewModel(
                 true -> R.drawable.ic_pause_black_24dp
                 else -> R.drawable.ic_play_arrow_black_24dp
             }
+        )
+        mediaState.postValue(
+            playbackState.state
         )
     }
 

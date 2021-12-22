@@ -3,6 +3,7 @@ package tsfat.yeshivathahesder.channel.activity
 import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -24,6 +25,7 @@ import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.NowPlayingFragmentViewModel
 import tsfat.yeshivathahesder.channel.utils.Tools
+import tsfat.yeshivathahesder.core.extensions.makeGone
 import tsfat.yeshivathahesder.core.extensions.makeInvisible
 import tsfat.yeshivathahesder.core.extensions.makeVisible
 
@@ -50,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavView.setupWithNavController(navController)
 
-        binding.nowPlaying.makeInvisible()
+        binding.nowPlayingCard.makeInvisible()
     }
 
     override fun onResume() {
@@ -170,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 //                findNavController(R.id.navHostFragment)
 //                    .navigate(R.id.action_homeFragment_to_searchFragment)
                 Timber.d("Navigate to fragment")
-                binding.nowPlaying.makeVisible()
+                binding.nowPlayingCard.makeVisible()
             }
         })
 //
@@ -200,6 +202,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun nowPlayingOnCreate() {
+        binding.nowPlayingCard.isClickable = true
+
+        nowPlayingViewModel.mediaState.observe(this) {
+            when (it) {
+                PlaybackStateCompat.STATE_NONE, PlaybackStateCompat.STATE_STOPPED -> binding.nowPlayingCard.makeInvisible()
+                else -> binding.nowPlayingCard.makeVisible()
+            }
+            when (it) {
+                PlaybackStateCompat.STATE_CONNECTING, PlaybackStateCompat.STATE_BUFFERING -> binding.pbNowPlayingLoading.makeVisible()
+                else -> binding.pbNowPlayingLoading.makeGone()
+            }
+        }
         // Attach observers to the LiveData coming from this ViewModel
         nowPlayingViewModel.mediaMetadata.observe(this,
             Observer { mediaItem -> updateUI(mediaItem) })

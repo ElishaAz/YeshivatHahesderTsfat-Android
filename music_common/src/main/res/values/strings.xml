@@ -50,7 +50,7 @@
     <!--    <string name="google_drive_query_folder">\'{ID}\'+in+parents</string>-->
 
     <!-- Firebase -->
-    <string name="firebase_catalog_collection" translatable="false">catalog</string>
+    <string name="firebase_catalog_collection" translatable="false">catalog_v0</string>
     <string name="firebase_catalog_document" translatable="false">audio_catalog</string>
     <string name="firebase_catalog_lock_document" translatable="false">lock</string>
 </resources>

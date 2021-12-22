@@ -25,9 +25,8 @@ import java.util.*
 suspend fun downloadCatalog(context: Context): Pair<DriveCatalog, Boolean> {
     val db = Firebase.firestore
 
-    val res = db.collection("catalog").document("audio_catalog").get().await()
-
-    res.metadata.isFromCache
+    val res = db.collection(context.getString(R.string.firebase_catalog_collection))
+        .document(context.getString(R.string.firebase_catalog_document)).get().await()
 
     val catalog = res.toObject<DriveCatalog>()
 
