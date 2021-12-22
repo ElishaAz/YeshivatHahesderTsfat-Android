@@ -23,7 +23,9 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.loadOrCueVideo
 import kotlinx.android.synthetic.main.activity_video_player.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.di.AudioConnector
 
 
 class VideoPlayerActivity : AppCompatActivity(R.layout.activity_video_player) {
@@ -31,6 +33,9 @@ class VideoPlayerActivity : AppCompatActivity(R.layout.activity_video_player) {
     companion object {
         const val VIDEO_ID = "video_id"
 
+        /**
+         * Do not call directly. Call using PlayVideo.play instantiated using inject,
+         */
         fun startActivity(context: Context?, videoId: String) {
             val intent = Intent(context, VideoPlayerActivity::class.java).apply {
                 putExtra(VIDEO_ID, videoId)

@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#2F58D3</color>
     <color name="colorSecondary">#23B0F2</color>
 
+    <color name="mediaButtonColor">#FF000000</color>
+
     <color name="whiteColor">#ffffff</color>
     <color name="defaultBgColor">#ffffff</color>
     <color name="transparentColor">#0fff</color>

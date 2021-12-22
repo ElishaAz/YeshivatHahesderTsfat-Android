@@ -142,6 +142,28 @@ class MainActivityViewModel(
         }
     }
 
+    fun seekTo(duration: Long) {
+        musicServiceConnection.transportControls.seekTo(duration)
+    }
+
+    fun skipBy(duration: Long) {
+        musicServiceConnection.transportControls.seekTo(
+            musicServiceConnection.playbackState.value?.position ?: 0 + duration
+        )
+    }
+
+    fun skipToNext() {
+        musicServiceConnection.transportControls.skipToNext()
+    }
+
+    fun skipToPrevious() {
+        musicServiceConnection.transportControls.skipToPrevious()
+    }
+
+    fun stop() {
+        musicServiceConnection.transportControls.stop()
+    }
+
     fun playMediaId(mediaId: String) {
         val nowPlaying = musicServiceConnection.nowPlaying.value
         val transportControls = musicServiceConnection.transportControls
@@ -163,6 +185,10 @@ class MainActivityViewModel(
         } else {
             transportControls.playFromMediaId(mediaId, null)
         }
+    }
+
+    fun pause() {
+        musicServiceConnection.transportControls.pause()
     }
 
     class Factory(

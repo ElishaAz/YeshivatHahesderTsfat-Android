@@ -4,9 +4,13 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.View
+import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.navigation.Navigation
@@ -17,6 +21,7 @@ import timber.log.Timber
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.databinding.ActivityMainBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
+import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.locales.LocaleHelper
 import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
@@ -92,6 +97,7 @@ class MainActivity : AppCompatActivity() {
 
     //    private val _audioItems: MutableLiveData<List<AudioItem>> = MutableLiveData<List<AudioItem>>()
     private val audioConnector: AudioConnector by inject()
+    private val playVideo: PlayVideo by inject()
 
     private var castContext: CastContext? = null
 
@@ -146,7 +152,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         audioConnector.playItem = {
+            nowPlayingMaximized.postValue(false)
             viewModel.mediaItemClicked(it)
+        }
+        playVideo.play = { context, id ->
+            viewModel.pause()
+            VideoPlayerActivity.startActivity(context, id)
         }
 
 //        viewModel.isConnected.observe(this, Observer {
@@ -201,6 +212,9 @@ class MainActivity : AppCompatActivity() {
         nowPlayingOnCreate()
     }
 
+    private var updateSeekBar: Boolean = true
+    private var nowPlayingMaximized = MutableLiveData(false)
+
     private fun nowPlayingOnCreate() {
         binding.nowPlayingCard.isClickable = true
 
@@ -210,8 +224,14 @@ class MainActivity : AppCompatActivity() {
                 else -> binding.nowPlayingCard.makeVisible()
             }
             when (it) {
-                PlaybackStateCompat.STATE_CONNECTING, PlaybackStateCompat.STATE_BUFFERING -> binding.pbNowPlayingLoading.makeVisible()
-                else -> binding.pbNowPlayingLoading.makeGone()
+                PlaybackStateCompat.STATE_CONNECTING, PlaybackStateCompat.STATE_BUFFERING -> {
+                    binding.pbNowPlayingLoading.makeVisible()
+                    binding.pbNowPlayingLoadingMax.makeVisible()
+                }
+                else -> {
+                    binding.pbNowPlayingLoading.makeGone()
+                    binding.pbNowPlayingLoadingMax.makeGone()
+                }
             }
         }
         // Attach observers to the LiveData coming from this ViewModel
@@ -220,18 +240,62 @@ class MainActivity : AppCompatActivity() {
         nowPlayingViewModel.mediaButtonRes.observe(this,
             Observer { res ->
                 binding.playPauseButton.setImageResource(res)
+                binding.playPauseButtonMax.setImageResource(res)
             })
         nowPlayingViewModel.mediaPosition.observe(this,
             Observer { pos ->
                 binding.progressBar.isIndeterminate = false
+                binding.seekBar.isIndeterminate = false
                 binding.progressBar.progress = pos.toInt()
+                if (updateSeekBar)
+                    binding.seekBar.progress = pos.toInt()
                 binding.position.text =
                     NowPlayingFragmentViewModel.NowPlayingMetadata.timestampToMSS(this, pos)
             })
 
+        nowPlayingMaximized.observe(this) {
+            binding.nowPlayingMaximized.visibility = if (it) View.VISIBLE else View.GONE
+            binding.nowPlayingMinimized.visibility = if (it) View.GONE else View.VISIBLE
+        }
+
         // Setup UI handlers for buttons
         binding.playPauseButton.setOnClickListener {
             nowPlayingViewModel.mediaMetadata.value?.let { viewModel.playMediaId(it.id) }
+        }
+        binding.playPauseButtonMax.setOnClickListener {
+            nowPlayingViewModel.mediaMetadata.value?.let { viewModel.playMediaId(it.id) }
+        }
+
+        binding.stopButtonMax.setOnClickListener { viewModel.stop() }
+        binding.forwardButtonMax.setOnClickListener { viewModel.skipBy(10 * 1000) }
+        binding.replayButtonMax.setOnClickListener { viewModel.skipBy(10 * 1000) }
+
+        binding.skipNextButtonMax.setOnClickListener { viewModel.skipToNext() }
+        binding.skipPrevButtonMax.setOnClickListener { viewModel.skipToPrevious() }
+
+        // seekbar
+        binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                viewModel.seekTo(progress.toLong())
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                updateSeekBar = false
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                updateSeekBar = true
+            }
+        })
+
+        binding.nowPlayingCard.setOnClickListener {
+            nowPlayingMaximized.postValue(nowPlayingMaximized.value == false)
+        }
+
+        binding.nowPlayingCard.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) nowPlayingMaximized.postValue(
+                false
+            )
         }
 
         // Initialize playback duration and position to zero
@@ -240,20 +304,35 @@ class MainActivity : AppCompatActivity() {
         binding.position.text =
             NowPlayingFragmentViewModel.NowPlayingMetadata.timestampToMSS(this, 0L)
         binding.progressBar.isIndeterminate = true
+        binding.seekBar.isIndeterminate = true
+
+        // bind maximized to minimized
+        binding.title.doOnTextChanged { text, start, before, count ->
+            binding.titleMax.text = text
+        }
+        binding.subtitle.doOnTextChanged { text, start, before, count ->
+            binding.subtitleMax.text = text
+        }
+        binding.duration.doOnTextChanged { text, start, before, count ->
+            binding.durationMax.text = text
+        }
+        binding.position.doOnTextChanged { text, start, before, count ->
+            binding.positionMax.text = text
+        }
     }
 
     /**
      * Internal function used to update all UI elements except for the current item playback
      */
-    private fun updateUI(metadata: NowPlayingFragmentViewModel.NowPlayingMetadata) =
+    private fun updateUI(metadata: NowPlayingFragmentViewModel.NowPlayingMetadata) {
         with(binding) {
-//            if (metadata.albumArtUri == Uri.EMPTY) {
-//                albumArt.setImageResource(R.drawable.ic_album_black_24dp)
-//            } else {
-//                Glide.with(view)
-//                    .load(metadata.albumArtUri)
-//                    .into(albumArt)
-//            }
+            //            if (metadata.albumArtUri == Uri.EMPTY) {
+            //                albumArt.setImageResource(R.drawable.ic_album_black_24dp)
+            //            } else {
+            //                Glide.with(view)
+            //                    .load(metadata.albumArtUri)
+            //                    .into(albumArt)
+            //            }
             title.text = metadata.title
             subtitle.text = metadata.subtitle
             duration.text = NowPlayingFragmentViewModel.NowPlayingMetadata.timestampToMSS(
@@ -265,7 +344,14 @@ class MainActivity : AppCompatActivity() {
                 progress = 0
                 isIndeterminate = true
             }
+            with(seekBar) {
+                max = metadata.duration.toInt()
+                progress = 0
+                isIndeterminate = true
+            }
+
         }
+    }
 
 //    @Override
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {

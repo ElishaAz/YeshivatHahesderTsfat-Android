@@ -10,12 +10,12 @@ import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import tsfat.yeshivathahesder.channel.uamp.AudioPlaylist
 
 class AudioRepository(private val audioConnector: AudioConnector) {
-    init {
-        audioConnector.audioItems.observeForever {
-            audioPageMap.clear()
-            audioPlaylistsPageMap.clear()
-        }
-    }
+//    init {
+//        audioConnector.audioItems.observeForever {
+//            audioPageMap.clear()
+//            audioPlaylistsPageMap.clear()
+//        }
+//    }
 
     private suspend fun lockAudioItemsBusy() {
         while (audioConnector.audioItems.value.isNullOrEmpty()) {
@@ -191,8 +191,11 @@ class AudioRepository(private val audioConnector: AudioConnector) {
         }
 
         for ((token, pair) in pageMap) {
-            if (token == mPageToken)
-                return list.subList(pair.first, pair.second)
+            return list.subList(pair.first, pair.second)
+        }
+
+        if (pageMap.isEmpty()){
+            Timber.d(pageMap.toString() + ", " + mPageToken)
         }
 
         val lastIndex = pageMap.last().second.second

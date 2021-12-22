@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tsfat.yeshivathahesder.channel.di.AudioConnector
+import tsfat.yeshivathahesder.channel.di.PlayVideo
 
 @ExperimentalPagedSupport
 class SearchFragment : Fragment() {
@@ -235,6 +236,7 @@ class SearchFragment : Fragment() {
     }
 
     private val audioConnector: AudioConnector by inject()
+    private val playVideo: PlayVideo by inject()
 
     /**
      * Called when an item of the RecyclerView is clicked
@@ -243,7 +245,7 @@ class SearchFragment : Fragment() {
         searchAdapter.onClickListener = { view, adapter, item, position ->
             if (item is SearchItem) {
                 if (item.searchedList is SearchedList.Item)
-                    VideoPlayerActivity.startActivity(context, item.searchedList.id.videoId)
+                    playVideo.play(context, item.searchedList.id.videoId)
                 else if (item.searchedList is SearchedList.AudioSearchItem)
                     audioConnector.playItem(item.searchedList.item)
             }

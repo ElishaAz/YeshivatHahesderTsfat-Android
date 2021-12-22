@@ -24,7 +24,9 @@ import com.mikepenz.itemanimators.AlphaInAnimator
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import kotlinx.android.synthetic.main.item_favorite.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.view.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.di.PlayVideo
 
 /**
  * A simple [Fragment] subclass.
@@ -54,8 +56,10 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             inflateMenu(R.menu.main_menu)
 
             // Store and Search configuration
-            menu.findItem(R.id.miStoreMainMenu).isVisible = resources.getBoolean(R.bool.enable_store)
-            menu.findItem(R.id.miSearchMainMenu).isVisible = resources.getBoolean(R.bool.enable_search)
+            menu.findItem(R.id.miStoreMainMenu).isVisible =
+                resources.getBoolean(R.bool.enable_store)
+            menu.findItem(R.id.miSearchMainMenu).isVisible =
+                resources.getBoolean(R.bool.enable_search)
 
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -147,12 +151,15 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         })
     }
 
+
+    private val playVideo: PlayVideo by inject()
+
     /**
      * Called when an item of the RecyclerView is clicked
      */
     private fun onItemClick() {
         favoritesAdapter.onClickListener = { view, adapter, item, position ->
-            VideoPlayerActivity.startActivity(context, item.favoriteVideo.id)
+            playVideo.play(context, item.favoriteVideo.id)
             false
         }
     }

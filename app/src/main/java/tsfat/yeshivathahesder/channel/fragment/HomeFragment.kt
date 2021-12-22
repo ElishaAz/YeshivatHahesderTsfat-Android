@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tsfat.yeshivathahesder.channel.di.AudioConnector
+import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.model.VideoItem
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
@@ -228,6 +229,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
+
+    private val playVideo: PlayVideo by inject()
+
     /**
      * Called when an item of the RecyclerView is clicked
      */
@@ -236,7 +240,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             if (item is HomeItem) {
                 val mediaItem: ItemBase = item.playlistItem!!
                 if (mediaItem is VideoItem) {
-                    VideoPlayerActivity.startActivity(
+                    playVideo.play(
                         context,
                         mediaItem.contentDetails.videoId
                     )

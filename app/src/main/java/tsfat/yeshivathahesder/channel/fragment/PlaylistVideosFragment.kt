@@ -45,6 +45,7 @@ import kotlinx.android.synthetic.main.fragment_playlist_videos.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tsfat.yeshivathahesder.channel.di.AudioConnector
+import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.model.VideoItem
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
@@ -217,6 +218,7 @@ class PlaylistVideosFragment : Fragment() {
     }
 
     private val audioConnector by inject<AudioConnector>()
+    private val playVideo: PlayVideo by inject()
 
     /**
      * Called when an item of the RecyclerView is clicked
@@ -226,7 +228,7 @@ class PlaylistVideosFragment : Fragment() {
             if (item is PlaylistVideoItem) {
                 val playlistItem: ItemBase = item.playlistItem!!
                 if (playlistItem is VideoItem) {
-                    VideoPlayerActivity.startActivity(
+                    playVideo.play(
                         context,
                         playlistItem.contentDetails.videoId
                     )
