@@ -9,7 +9,7 @@ import tsfat.yeshivathahesder.channel.uamp.AudioPlaylist
 class AudioConnector() {
     var audioItems: MutableLiveData<List<AudioItem>> = MutableLiveData()
     var playlists: MutableLiveData<List<AudioPlaylist>> = MutableLiveData()
-    lateinit var playItem: (AudioItem) -> Unit
+    lateinit var playItem: (String) -> Unit
 }
 
 val audioModel = module {

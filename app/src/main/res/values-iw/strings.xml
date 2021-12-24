@@ -87,4 +87,5 @@
         <item quantity="two">שני שיעורים</item>
         <item quantity="many">%1$d שיעורים</item>
     </plurals>
+    <string name="text_share_audio">שתף שיעור</string>
 </resources>

@@ -164,7 +164,7 @@ class MainActivityViewModel(
         musicServiceConnection.transportControls.stop()
     }
 
-    fun playMediaId(mediaId: String) {
+    fun playMediaId(mediaId: String, pauseAllowed: Boolean = true) {
         val nowPlaying = musicServiceConnection.nowPlaying.value
         val transportControls = musicServiceConnection.transportControls
 
@@ -172,7 +172,7 @@ class MainActivityViewModel(
         if (isPrepared && mediaId == nowPlaying?.id) {
             musicServiceConnection.playbackState.value?.let { playbackState ->
                 when {
-                    playbackState.isPlaying -> transportControls.pause()
+                    playbackState.isPlaying ->  if (pauseAllowed) transportControls.pause() else Unit
                     playbackState.isPlayEnabled -> transportControls.play()
                     else -> {
                         Log.w(

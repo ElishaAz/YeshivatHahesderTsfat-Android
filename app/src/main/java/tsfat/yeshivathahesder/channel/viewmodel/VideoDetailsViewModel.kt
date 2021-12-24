@@ -1,7 +1,7 @@
 package tsfat.yeshivathahesder.channel.viewmodel
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.model.FavoriteVideo
+import tsfat.yeshivathahesder.channel.model.FavoritesEntry
 import tsfat.yeshivathahesder.channel.repository.VideoDetailsRepository
 import tsfat.yeshivathahesder.core.helper.ResultWrapper
 import android.content.Context
@@ -35,15 +35,15 @@ class VideoDetailsViewModel(
         }
     }
 
-    fun addVideoToFavorites(favoriteVideo: FavoriteVideo) {
+    fun addVideoToFavorites(favoritesEntry: FavoritesEntry) {
         viewModelScope.launch {
-            videoDetailsRepository.addVideoToFavorites(favoriteVideo)
+            videoDetailsRepository.addVideoToFavorites(favoritesEntry)
         }
     }
 
-    fun removeVideoFromFavorites(favoriteVideo: FavoriteVideo) {
+    fun removeVideoFromFavorites(favoritesEntry: FavoritesEntry) {
         viewModelScope.launch {
-            videoDetailsRepository.removeVideoFromFavorites(favoriteVideo)
+            videoDetailsRepository.removeVideoFromFavorites(favoritesEntry)
         }
     }
 

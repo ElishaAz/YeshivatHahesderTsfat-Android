@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:background="@color/defaultBgColor"
             android:padding="5dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ProgressBar
                 android:id="@+id/pbNowPlayingLoadingMax"
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/links"
                 app:layout_constraintEnd_toStartOf="@+id/stopButtonMax"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/durationMax">
@@ -171,12 +171,43 @@
                 android:layout_height="@dimen/exo_media_button_height"
                 android:background="?attr/selectableItemBackground"
                 android:scaleType="centerInside"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/links"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/durationMax"
                 app:srcCompat="@drawable/ic_baseline_close_24"
                 tools:ignore="ContentDescription"
                 tools:layout_editor_absoluteY="47dp" />
+
+            <LinearLayout
+                android:id="@+id/links"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/openInBrowserButton"
+                    style="@style/VectorImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_baseline_open_in_browser_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/favoriteButton"
+                    style="@style/VectorImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_favorite_border" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/shareButton"
+                    style="@style/VectorImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_share" />
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -184,7 +215,8 @@
             android:id="@+id/nowPlayingMinimized"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/defaultBgColor">
+            android:background="@color/defaultBgColor"
+            android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/pbNowPlayingLoading"

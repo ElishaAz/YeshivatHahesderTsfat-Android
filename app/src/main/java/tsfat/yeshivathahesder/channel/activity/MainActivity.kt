@@ -1,7 +1,9 @@
 package tsfat.yeshivathahesder.channel.activity
 
 import android.content.Context
+import android.content.Intent
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
@@ -15,14 +17,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
+import coil.api.load
 import com.google.android.gms.cast.framework.CastContext
+import kotlinx.android.synthetic.main.fragment_video_details.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.databinding.ActivityMainBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.locales.LocaleHelper
+import tsfat.yeshivathahesder.channel.model.FavoritesEntry
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
 import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.utils.InjectorUtils
@@ -30,9 +38,9 @@ import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.NowPlayingFragmentViewModel
 import tsfat.yeshivathahesder.channel.utils.Tools
-import tsfat.yeshivathahesder.core.extensions.makeGone
-import tsfat.yeshivathahesder.core.extensions.makeInvisible
-import tsfat.yeshivathahesder.core.extensions.makeVisible
+import tsfat.yeshivathahesder.channel.viewmodel.FavoritesViewModel
+import tsfat.yeshivathahesder.channel.viewmodel.VideoDetailsViewModel
+import tsfat.yeshivathahesder.core.extensions.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -152,8 +160,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         audioConnector.playItem = {
+            Timber.d("Playing audio. Id: $it")
             nowPlayingMaximized.postValue(false)
-            viewModel.mediaItemClicked(it)
+            viewModel.playMediaId(it)
+            binding.nowPlayingCard.makeVisible()
         }
         playVideo.play = { context, id ->
             viewModel.pause()
@@ -318,6 +328,69 @@ class MainActivity : AppCompatActivity() {
         }
         binding.position.doOnTextChanged { text, start, before, count ->
             binding.positionMax.text = text
+        }
+
+        linksOnCreate()
+    }
+
+    private val favoritesViewModel by viewModel<VideoDetailsViewModel>()
+    private var isAudioAddedToFavorite = false
+
+    private fun linksOnCreate() {
+        favoritesViewModel.favoriteVideoLiveData.observe(
+            this,
+            Observer { isFavorite ->
+                isAudioAddedToFavorite = isFavorite
+
+                if (isAudioAddedToFavorite) {
+                    binding.favoriteButton.load(R.drawable.ic_favorite_filled)
+                } else {
+                    binding.favoriteButton.load(R.drawable.ic_favorite_border)
+                }
+            })
+
+        binding.favoriteButton.setOnClickListener {
+            val metadata = nowPlayingViewModel.mediaMetadata.value!!
+            val favoriteVideo = FavoritesEntry(
+                metadata.id,
+                metadata.title ?: "", PLAYLIST_TYPE_AUDIO,
+                metadata.albumArtUri.toString(),
+                System.currentTimeMillis(),
+                true
+            )
+
+            isAudioAddedToFavorite = if (isAudioAddedToFavorite) {
+                binding.favoriteButton.load(R.drawable.ic_favorite_border)
+
+                favoritesViewModel.removeVideoFromFavorites(favoriteVideo)
+                false
+            } else {
+                // Add video to favorites
+                binding.favoriteButton.load(R.drawable.ic_favorite_filled)
+                favoritesViewModel.addVideoToFavorites(favoriteVideo)
+                true
+            }
+        }
+        binding.shareButton.setOnClickListener {
+            this.startShareTextIntent(
+                getString(R.string.text_share_video),
+                getString(
+                    R.string.audio_share_url,
+                    nowPlayingViewModel.mediaMetadata.value!!.id
+                )
+            )
+        }
+        binding.openInBrowserButton.setOnClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(
+                    getString(
+                        R.string.audio_open_url,
+                        nowPlayingViewModel.mediaMetadata.value!!.id
+                    )
+                )
+            )
+            startActivity(intent)
         }
     }
 

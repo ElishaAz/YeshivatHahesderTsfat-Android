@@ -2,7 +2,7 @@ package tsfat.yeshivathahesder.channel.repository
 
 import tsfat.yeshivathahesder.channel.api.VideosService
 import tsfat.yeshivathahesder.channel.db.FavoriteVideoDao
-import tsfat.yeshivathahesder.channel.model.FavoriteVideo
+import tsfat.yeshivathahesder.channel.model.FavoritesEntry
 import tsfat.yeshivathahesder.channel.model.Video
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,15 +16,15 @@ class VideoDetailsRepository(
     suspend fun getVideoInfo(videoId: String): Response<Video> =
         videosService.getVideoInfo(videoId)
 
-    suspend fun addVideoToFavorites(favoriteVideo: FavoriteVideo) {
+    suspend fun addVideoToFavorites(favoritesEntry: FavoritesEntry) {
         withContext(Dispatchers.IO) {
-            favoriteVideoDao.addFavoriteVideo(favoriteVideo)
+            favoriteVideoDao.addFavoriteVideo(favoritesEntry)
         }
     }
 
-    suspend fun removeVideoFromFavorites(favoriteVideo: FavoriteVideo) {
+    suspend fun removeVideoFromFavorites(favoritesEntry: FavoritesEntry) {
         withContext(Dispatchers.IO) {
-            favoriteVideoDao.removeFavoriteVideo(favoriteVideo)
+            favoriteVideoDao.removeFavoriteVideo(favoritesEntry)
         }
     }
 

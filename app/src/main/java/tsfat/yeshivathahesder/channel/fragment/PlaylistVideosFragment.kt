@@ -233,7 +233,7 @@ class PlaylistVideosFragment : Fragment() {
                         playlistItem.contentDetails.videoId
                     )
                 } else if (playlistItem is AudioItem) {
-                    audioConnector.playItem(playlistItem)
+                    audioConnector.playItem(playlistItem.mediaId)
                 }
             }
             false

@@ -245,7 +245,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         mediaItem.contentDetails.videoId
                     )
                 } else if (mediaItem is AudioItem) {
-                    audioConnector.playItem(mediaItem)
+                    audioConnector.playItem(mediaItem.mediaId)
 //                    AudioPlayerActivity.startActivity(context, mediaItem.contentDetails.audioId)
                 }
             }

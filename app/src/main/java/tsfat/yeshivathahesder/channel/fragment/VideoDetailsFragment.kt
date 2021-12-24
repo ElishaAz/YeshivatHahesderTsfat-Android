@@ -2,7 +2,7 @@ package tsfat.yeshivathahesder.channel.fragment
 
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.model.FavoriteVideo
+import tsfat.yeshivathahesder.channel.model.FavoritesEntry
 import tsfat.yeshivathahesder.channel.model.Video
 import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
 import tsfat.yeshivathahesder.channel.viewmodel.VideoDetailsViewModel
@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_video_details.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
 
 class VideoDetailsFragment : Fragment() {
 
@@ -181,9 +182,9 @@ class VideoDetailsFragment : Fragment() {
     }
 
     private fun addVideoToFavorites() {
-        val favoriteVideo = FavoriteVideo(
+        val favoriteVideo = FavoritesEntry(
             videoId,
-            videoItem.snippet.title,
+            videoItem.snippet.title, PLAYLIST_TYPE_VIDEO,
             videoItem.snippet.thumbnails.standard?.url ?: videoItem.snippet.thumbnails.high.url,
             System.currentTimeMillis(),
             true
@@ -192,9 +193,9 @@ class VideoDetailsFragment : Fragment() {
     }
 
     private fun removeVideoFromFavorites() {
-        val favoriteVideo = FavoriteVideo(
+        val favoriteVideo = FavoritesEntry(
             videoId,
-            videoItem.snippet.title,
+            videoItem.snippet.title, PLAYLIST_TYPE_VIDEO,
             videoItem.snippet.thumbnails.standard?.url ?: videoItem.snippet.thumbnails.high.url,
             System.currentTimeMillis(),
             true

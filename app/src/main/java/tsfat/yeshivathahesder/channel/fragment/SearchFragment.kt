@@ -247,7 +247,7 @@ class SearchFragment : Fragment() {
                 if (item.searchedList is SearchedList.Item)
                     playVideo.play(context, item.searchedList.id.videoId)
                 else if (item.searchedList is SearchedList.AudioSearchItem)
-                    audioConnector.playItem(item.searchedList.item)
+                    audioConnector.playItem(item.searchedList.item.mediaId)
             }
             false
         }

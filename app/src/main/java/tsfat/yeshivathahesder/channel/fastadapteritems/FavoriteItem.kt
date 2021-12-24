@@ -1,7 +1,7 @@
 package tsfat.yeshivathahesder.channel.fastadapteritems
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.model.FavoriteVideo
+import tsfat.yeshivathahesder.channel.model.FavoritesEntry
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -10,7 +10,7 @@ import coil.api.load
 import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.items.AbstractItem
 
-class FavoriteItem(val favoriteVideo: FavoriteVideo) :
+class FavoriteItem(val favoritesEntry: FavoritesEntry) :
     AbstractItem<FavoriteItem.FavoriteViewHolder>() {
 
     override val layoutRes: Int
@@ -31,11 +31,11 @@ class FavoriteItem(val favoriteVideo: FavoriteVideo) :
         private val videoTitle: AppCompatTextView = view.findViewById(R.id.tvTitleFavoriteItem)
 
         override fun bindView(item: FavoriteItem, payloads: List<Any>) {
-            thumbnail.load(item.favoriteVideo.thumbnail)
-            videoTitle.text = item.favoriteVideo.title
+            thumbnail.load(item.favoritesEntry.thumbnail)
+            videoTitle.text = item.favoritesEntry.title
 
             // Favorite Icon
-            if (item.favoriteVideo.isChecked) favoriteIcon.setImageDrawable(
+            if (item.favoritesEntry.isChecked) favoriteIcon.setImageDrawable(
                 ContextCompat.getDrawable(
                     view.context,
                     R.drawable.ic_favorite_filled_border

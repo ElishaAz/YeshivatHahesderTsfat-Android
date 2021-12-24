@@ -1,6 +1,6 @@
 package tsfat.yeshivathahesder.channel.viewmodel
 
-import tsfat.yeshivathahesder.channel.model.FavoriteVideo
+import tsfat.yeshivathahesder.channel.model.FavoritesEntry
 import tsfat.yeshivathahesder.channel.repository.FavoritesRepository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -11,19 +11,19 @@ import kotlinx.coroutines.launch
 
 class FavoritesViewModel(private val favoritesRepository: FavoritesRepository) : ViewModel() {
 
-    var favoriteVideosLiveData: LiveData<List<FavoriteVideo>> = liveData(Dispatchers.IO) {
+    var favoriteVideosLiveData: LiveData<List<FavoritesEntry>> = liveData(Dispatchers.IO) {
         emit(favoritesRepository.getFavoriteVideosFromDb())
     }
 
-    fun removeVideoFromFavorites(favoriteVideo: FavoriteVideo) {
+    fun removeVideoFromFavorites(favoritesEntry: FavoritesEntry) {
         viewModelScope.launch {
-            favoritesRepository.removeVideoFromFavorites(favoriteVideo)
+            favoritesRepository.removeVideoFromFavorites(favoritesEntry)
         }
     }
 
-    fun addVideoToFavorites(favoriteVideo: FavoriteVideo) {
+    fun addVideoToFavorites(favoritesEntry: FavoritesEntry) {
         viewModelScope.launch {
-            favoritesRepository.addVideoToFavorites(favoriteVideo)
+            favoritesRepository.addVideoToFavorites(favoritesEntry)
         }
     }
 }

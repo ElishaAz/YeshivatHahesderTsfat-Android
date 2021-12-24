@@ -34,6 +34,7 @@
     <string name="text_share_playlist">Share Playlist</string>
     <string name="text_playlist_share_url" translatable="false">https://www.youtube.com/playlist?list=%1$s</string>
     <string name="text_share_video">Share Video</string>
+    <string name="text_share_audio">Share Lesson</string>
     <string name="text_video_share_url" translatable="false">https://youtu.be/%1$s</string>
     <string name="text_youtube_channel_intent_url" translatable="false">https://www.youtube.com/channel/%1$s</string>
     <string name="text_replies">Replies</string>
@@ -124,6 +125,9 @@
     <string name="album_art_alt">Album art</string>
     <string name="duration_unknown">--:--</string>
     <string name="duration_format">%d:%02d</string>
+
+    <string name="audio_share_url" translatable="false">https://drive.google.com/file/d/%1$s/view</string>
+    <string name="audio_open_url" translatable="false">https://drive.google.com/file/d/%1$s/view</string>
 
     <string name="cast_context_error">Failed to get Cast context. Try updating Google Play Services and restart the app.</string>
 </resources>

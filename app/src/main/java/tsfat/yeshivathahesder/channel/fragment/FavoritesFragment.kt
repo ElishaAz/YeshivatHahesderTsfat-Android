@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.View
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
 import tsfat.yeshivathahesder.channel.fastadapteritems.FavoriteItem
 import tsfat.yeshivathahesder.channel.viewmodel.FavoritesViewModel
 import tsfat.yeshivathahesder.core.extensions.openUrl
@@ -26,7 +25,10 @@ import kotlinx.android.synthetic.main.item_favorite.view.*
 import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
+import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
 
 /**
  * A simple [Fragment] subclass.
@@ -126,26 +128,26 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
             ) {
                 val favoriteIcon = v as AppCompatImageView
 
-                if (item.favoriteVideo.isChecked) {
+                if (item.favoritesEntry.isChecked) {
                     // Icon unchecked
-                    item.favoriteVideo.isChecked = false
+                    item.favoritesEntry.isChecked = false
                     favoriteIcon.setImageDrawable(
                         ContextCompat.getDrawable(
                             context!!,
                             R.drawable.ic_favorite_border
                         )
                     )
-                    viewModel.removeVideoFromFavorites(item.favoriteVideo)
+                    viewModel.removeVideoFromFavorites(item.favoritesEntry)
                 } else {
                     // Icon checked
-                    item.favoriteVideo.isChecked = true
+                    item.favoritesEntry.isChecked = true
                     favoriteIcon.setImageDrawable(
                         ContextCompat.getDrawable(
                             context!!,
                             R.drawable.ic_favorite_filled_border
                         )
                     )
-                    viewModel.addVideoToFavorites(item.favoriteVideo)
+                    viewModel.addVideoToFavorites(item.favoritesEntry)
                 }
             }
         })
@@ -153,13 +155,18 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
 
 
     private val playVideo: PlayVideo by inject()
+    private val audioConnector: AudioConnector by inject()
 
     /**
      * Called when an item of the RecyclerView is clicked
      */
     private fun onItemClick() {
         favoritesAdapter.onClickListener = { view, adapter, item, position ->
-            playVideo.play(context, item.favoriteVideo.id)
+            if (item.favoritesEntry.type == PLAYLIST_TYPE_VIDEO) {
+                playVideo.play(context, item.favoritesEntry.id)
+            } else if (item.favoritesEntry.type == PLAYLIST_TYPE_AUDIO) {
+                audioConnector.playItem(item.favoritesEntry.id)
+            }
             false
         }
     }

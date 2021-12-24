@@ -171,6 +171,11 @@ class AudioRepository(private val audioConnector: AudioConnector) {
         lastMinVal: R,
         selector: (T) -> R
     ): List<T> {
+        for ((token, pair) in pageMap) {
+            if (token == mPageToken)
+                return list.subList(pair.first, pair.second)
+        }
+
         if (mNextPageToken == "end") {
             val lastIndex =
                 if (pageMap.isEmpty()) 0 else pageMap.last().second.second
@@ -179,7 +184,7 @@ class AudioRepository(private val audioConnector: AudioConnector) {
         }
 
         if (mPageToken == "start") {
-            assert(pageMap.isEmpty())
+
             for ((index, item) in list.withIndex()) {
                 if (selector(item) < lastMinVal) {
                     pageMap.add(Pair(mPageToken, Pair(0, index)))
@@ -188,14 +193,6 @@ class AudioRepository(private val audioConnector: AudioConnector) {
             }
             pageMap.add(Pair(mPageToken, Pair(0, list.size)))
             return list
-        }
-
-        for ((token, pair) in pageMap) {
-            return list.subList(pair.first, pair.second)
-        }
-
-        if (pageMap.isEmpty()){
-            Timber.d(pageMap.toString() + ", " + mPageToken)
         }
 
         val lastIndex = pageMap.last().second.second
