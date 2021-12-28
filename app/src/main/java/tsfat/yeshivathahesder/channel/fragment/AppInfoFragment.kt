@@ -141,6 +141,10 @@ class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
                         R.color.defaultBgColor
                     )
                 }
+                R.id.miSourceCodeAppInfo -> {
+                    context?.openUrl(getString(R.string.text_source_code_url),
+                    R.color.defaultBgColor)
+                }
             }
 
             true

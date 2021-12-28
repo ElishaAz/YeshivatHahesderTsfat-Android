@@ -286,7 +286,10 @@ class MainActivity : AppCompatActivity() {
         // seekbar
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.seekTo(progress.toLong())
+                if (fromUser) {
+                    viewModel.seekTo(progress.toLong())
+                    Timber.d("Skiped to: $progress")
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {

@@ -40,7 +40,7 @@
         <provider
             android:name=".uamp.media.library.AlbumArtContentProvider"
             android:authorities="tsfat.yeshivathahesder.channel.uamp"
-            android:exported="false" />
+            android:exported="true" />
 
     </application>
 </manifest>

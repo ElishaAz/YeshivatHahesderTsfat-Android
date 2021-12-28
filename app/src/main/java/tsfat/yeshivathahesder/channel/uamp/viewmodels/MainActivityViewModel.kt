@@ -172,7 +172,7 @@ class MainActivityViewModel(
         if (isPrepared && mediaId == nowPlaying?.id) {
             musicServiceConnection.playbackState.value?.let { playbackState ->
                 when {
-                    playbackState.isPlaying ->  if (pauseAllowed) transportControls.pause() else Unit
+                    playbackState.isPlaying -> if (pauseAllowed) transportControls.pause() else Unit
                     playbackState.isPlayEnabled -> transportControls.play()
                     else -> {
                         Log.w(

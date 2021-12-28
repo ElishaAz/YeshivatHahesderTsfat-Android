@@ -17,6 +17,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import saschpe.android.customtabs.CustomTabsHelper
 import saschpe.android.customtabs.WebViewFallback
+import androidx.core.content.ContextCompat.startActivity
 
 
 /**
@@ -38,30 +39,35 @@ fun Context.toast(message: String, length: Int = Toast.LENGTH_SHORT) {
  * Opens the passed URL in the Chrome Custom Tabs
  */
 fun Context.openUrl(url: String, @ColorRes toolbarColor: Int) {
-    val customTabsIntent = CustomTabsIntent.Builder()
-        .addDefaultShareMenuItem()
-        .setToolbarColor(ContextCompat.getColor(this, toolbarColor))
-        .setShowTitle(true)
-        .build()
-
-    // This is optional but recommended
-    CustomTabsHelper.addKeepAliveExtra(this, customTabsIntent.intent)
-
-    CustomTabsHelper.openCustomTab(
-        this,
-        customTabsIntent,
-        Uri.parse(url),
-        WebViewFallback() // Opens in system browser if Chrome isn't installed on device
-    )
+//    val customTabsIntent = CustomTabsIntent.Builder()
+//        .addDefaultShareMenuItem()
+//        .setToolbarColor(ContextCompat.getColor(this, toolbarColor))
+//        .setShowTitle(true)
+//        .build()
+//
+//    // This is optional but recommended
+//    CustomTabsHelper.addKeepAliveExtra(this, customTabsIntent.intent)
+//
+//    CustomTabsHelper.openCustomTab(
+//        this,
+//        customTabsIntent,
+//        Uri.parse(url),
+//        WebViewFallback() // Opens in system browser if Chrome isn't installed on device
+//    )
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    startActivity(intent)
 }
 
 fun Context.openAppInGooglePlay(appPackageName: String) {
-        try {
+    try {
         // Try to open in the Google Play app
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName")))
     } catch (exception: android.content.ActivityNotFoundException) {
         // Google Play app is not installed. Open URL in the browser.
-        openUrl("https://play.google.com/store/apps/details?id=$appPackageName", R.color.customTabToolbarColor)
+        openUrl(
+            "https://play.google.com/store/apps/details?id=$appPackageName",
+            R.color.customTabToolbarColor
+        )
     }
 }
 

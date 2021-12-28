@@ -31,7 +31,6 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import timber.log.Timber
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.activity.AudioPlayerActivity
 
 class AudioMainActivity : AppCompatActivity() {
 
@@ -68,7 +67,7 @@ class AudioMainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_audio_main)
 
-        audioId = intent.getStringExtra(AudioPlayerActivity.AUDIO_ID)!!
+        audioId = intent.getStringExtra(AUDIO_ID)!!
 
         // Since UAMP is a music player, the volume controls should adjust the music volume while
         // in the app.

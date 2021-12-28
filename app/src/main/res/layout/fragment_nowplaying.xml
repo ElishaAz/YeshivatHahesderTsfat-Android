@@ -26,7 +26,6 @@
         android:id="@+id/albumArt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/album_art_alt"
         android:scaleType="centerCrop"
         app:srcCompat="@android:color/transparent" />
 

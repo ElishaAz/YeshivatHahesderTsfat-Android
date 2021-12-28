@@ -21,14 +21,23 @@ import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ParserException
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultLoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.HttpDataSource
+import com.google.android.exoplayer2.upstream.HttpDataSource.InvalidResponseCodeException
+import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
+import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaMetadata
 import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.common.images.WebImage
+import java.io.FileNotFoundException
+import java.io.IOException
 
 /**
  * Useful extensions for [MediaMetadataCompat].
@@ -263,7 +272,47 @@ inline var MediaMetadataCompat.Builder.flag: Int
  * For convenience, place the [MediaDescriptionCompat] into the tag so it can be retrieved later.
  */
 fun MediaMetadataCompat.toMediaSource(dataSourceFactory: DataSource.Factory) =
-    ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaUri)
+    ProgressiveMediaSource.Factory(dataSourceFactory).setLoadErrorHandlingPolicy(object :
+        LoadErrorHandlingPolicy {
+        /**
+         * Blacklists resources whose load error was an [InvalidResponseCodeException] with response
+         * code HTTP 404 or 410. The duration of the blacklisting is [.DEFAULT_TRACK_BLACKLIST_MS].
+         */
+        override fun getBlacklistDurationMsFor(
+            dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int
+        ): Long {
+            if (exception is InvalidResponseCodeException) {
+                val responseCode = exception.responseCode
+                return if (responseCode == 404 // HTTP 404 Not Found.
+                    || responseCode == 410 // HTTP 410 Gone.
+                    || responseCode == 416 // HTTP 416 Range Not Satisfiable.
+                ) DefaultLoadErrorHandlingPolicy.DEFAULT_TRACK_BLACKLIST_MS else C.TIME_UNSET
+            }
+            return C.TIME_UNSET
+        }
+
+        /**
+         * Retries for any exception that is not a subclass of [ParserException], [ ] or [UnexpectedLoaderException]. The retry delay is calculated as
+         * `Math.min((errorCount - 1) * 1000, 5000)`.
+         */
+        override fun getRetryDelayMsFor(
+            dataType: Int, loadDurationMs: Long, exception: IOException?, errorCount: Int
+        ): Long {
+            return if (exception is ParserException
+                || exception is FileNotFoundException
+                || exception is UnexpectedLoaderException
+            ) C.TIME_UNSET else Math.min((errorCount - 1) * 1000, 5000)
+                .toLong()
+        }
+
+        /**
+         * See [.DefaultLoadErrorHandlingPolicy] and [.DefaultLoadErrorHandlingPolicy]
+         * for documentation about the behavior of this method.
+         */
+        override fun getMinimumLoadableRetryCount(dataType: Int): Int {
+            return if (dataType == C.DATA_TYPE_MEDIA_PROGRESSIVE_LIVE) DefaultLoadErrorHandlingPolicy.DEFAULT_MIN_LOADABLE_RETRY_COUNT_PROGRESSIVE_LIVE else DefaultLoadErrorHandlingPolicy.DEFAULT_MIN_LOADABLE_RETRY_COUNT
+        }
+    }).createMediaSource(mediaUri)
 
 /**
  * Extension method for building a [ConcatenatingMediaSource] given a [List]
@@ -283,11 +332,11 @@ fun List<MediaMetadataCompat>.toMediaSource(
 fun MediaMetadataCompat.toMediaQueueItem(): MediaQueueItem {
     val metadata: MediaMetadata = toCastMediaMetadata()
     val mediaInfo = MediaInfo.Builder(this.mediaUri.toString())
-            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-            .setContentType(MimeTypes.AUDIO_MPEG)
-            .setStreamDuration(this.duration)
-            .setMetadata(metadata)
-            .build()
+        .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+        .setContentType(MimeTypes.AUDIO_MPEG)
+        .setStreamDuration(this.duration)
+        .setMetadata(metadata)
+        .build()
     return MediaQueueItem.Builder(mediaInfo).build()
 }
 
@@ -311,5 +360,6 @@ private fun MediaMetadataCompat.toCastMediaMetadata(): MediaMetadata {
  * Custom property that holds whether an item is [MediaItem.FLAG_BROWSABLE] or
  * [MediaItem.FLAG_PLAYABLE].
  */
-const val METADATA_KEY_UAMP_FLAGS = "tsfat.yeshivathahesder.channel.uamp.media.METADATA_KEY_UAMP_FLAGS"
+const val METADATA_KEY_UAMP_FLAGS =
+    "tsfat.yeshivathahesder.channel.uamp.media.METADATA_KEY_UAMP_FLAGS"
 
