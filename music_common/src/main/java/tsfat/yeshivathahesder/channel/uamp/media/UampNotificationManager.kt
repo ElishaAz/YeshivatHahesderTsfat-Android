@@ -33,7 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.uamp.R
 
 const val NOW_PLAYING_CHANNEL_ID = "tsfat.yeshivathahesder.channel.uamp.media.NOW_PLAYING"
 const val NOW_PLAYING_NOTIFICATION_ID = 0xb339 // Arbitrary number used to identify our notification

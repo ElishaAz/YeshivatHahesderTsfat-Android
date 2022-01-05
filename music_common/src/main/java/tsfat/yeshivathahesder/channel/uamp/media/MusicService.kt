@@ -54,7 +54,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.uamp.R
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.*
 import tsfat.yeshivathahesder.channel.uamp.media.library.*
 

@@ -21,7 +21,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaMetadataCompat
 import tsfat.yeshivathahesder.channel.uamp.media.MusicService
-import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.uamp.R
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.*
 
 /**

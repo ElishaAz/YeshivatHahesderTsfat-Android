@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.google.firebase.firestore.ServerTimestamp
 import com.google.gson.Gson
-import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.uamp.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

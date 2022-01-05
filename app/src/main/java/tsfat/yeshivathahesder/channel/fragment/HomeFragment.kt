@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.model.ItemBase
@@ -53,6 +54,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Timber.d("Home Fragment View Created")
         setupToolbar()
 
         if (requireContext().isInternetAvailable()) {
@@ -64,9 +66,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         setupUploadsPlaylistIdObservables()
         setupRecyclerView(savedInstanceState)
         onRetryButtonClick()
-
-        audioConnector.audioItems.observe(viewLifecycleOwner) {
-        }
     }
 
     override fun onSaveInstanceState(_outState: Bundle) {
@@ -198,6 +197,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         viewModel.latestVideoLiveData?.observe(
             viewLifecycleOwner,
             Observer<PagedList<ItemBase>> { latestVideoList ->
+                Timber.d("Got home list")
                 homePagedModelAdapter.submitList(latestVideoList)
             })
     }

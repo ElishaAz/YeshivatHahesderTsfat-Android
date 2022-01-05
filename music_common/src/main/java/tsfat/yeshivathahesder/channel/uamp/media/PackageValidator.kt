@@ -32,8 +32,8 @@ import androidx.annotation.XmlRes
 import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
 import org.xmlpull.v1.XmlPullParserException
-import tsfat.yeshivathahesder.channel.BuildConfig
-import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.uamp.BuildConfig
+import tsfat.yeshivathahesder.channel.uamp.R
 import java.io.IOException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException

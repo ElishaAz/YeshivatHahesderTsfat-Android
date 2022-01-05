@@ -41,9 +41,9 @@ class Channelify : Application() {
     }
 
     private fun initializeTimber() {
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
+//        if (BuildConfig.DEBUG) {
+        Timber.plant(Timber.DebugTree())
+//        }
     }
 
     private fun initializeKotpref() {
@@ -55,20 +55,20 @@ class Channelify : Application() {
             androidLogger()
             androidContext(this@Channelify)
             modules(
-                    listOf(
-                            appModule,
-                            audioModel,
-                            homeModule,
-                            videoPlayerModule,
-                            commentsModule,
-                            videoDetailsModule,
-                            commentRepliesModule,
-                            playlistsModule,
-                            playlistVideosModule,
-                            favoritesModule,
-                            searchModule,
-                            aboutModule
-                    )
+                listOf(
+                    appModule,
+                    audioModel,
+                    homeModule,
+                    videoPlayerModule,
+                    commentsModule,
+                    videoDetailsModule,
+                    commentRepliesModule,
+                    playlistsModule,
+                    playlistVideosModule,
+                    favoritesModule,
+                    searchModule,
+                    aboutModule
+                )
             )
         }
     }

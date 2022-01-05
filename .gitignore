@@ -24,4 +24,4 @@
 
 # Sensitive information:
 /keys.properties
-/app/google-services.json
+google-services.json

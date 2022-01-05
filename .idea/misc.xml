@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.10555555555555556" />
+        <entry key="../../../.gradle/caches/transforms-3/e7f094deea21f5d4e6dffdb5515daa06/transformed/jetified-exoplayer-ui-2.11.5/res/drawable-anydpi-v21/exo_icon_next.xml" value="0.1" />
+        <entry key="../../../.gradle/caches/transforms-3/e7f094deea21f5d4e6dffdb5515daa06/transformed/jetified-exoplayer-ui-2.11.5/res/drawable-anydpi-v21/exo_icon_rewind.xml" value="0.1" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/bg_splash.xml" value="0.18796296296296297" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/ic_arrow_back.xml" value="0.18796296296296297" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/ic_arrow_down_circle.xml" value="0.18796296296296297" />
@@ -21,10 +24,54 @@
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/menu/bab_menu_video_details.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/menu/toolbar_menu_about.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/mipmap-anydpi-v26/ic_yhtsfat.xml" value="0.22447916666666667" />
+        <entry key="app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_forward_10_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_open_in_browser_24.xml" value="0.10740740740740741" />
+        <entry key="app/src/main/res/drawable/ic_baseline_replay_10_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_skip_previous_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_stop_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_code.xml" value="0.10740740740740741" />
+        <entry key="app/src/main/res/drawable/ic_email.xml" value="0.10740740740740741" />
+        <entry key="app/src/main/res/drawable/ic_favorite_border.xml" value="0.10740740740740741" />
+        <entry key="app/src/main/res/drawable/ic_github.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_home.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/drawable/ic_mic.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/drawable/ic_pause_black_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_play_arrow_black_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_playlists.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/drawable/ic_privacy_policy.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_video.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/drawable/media_item_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/now_playing_bg.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/round_button.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_audio_main.xml" value="0.12635869565217392" />
+        <entry key="app/src/main/res/layout/activity_audio_player.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_video_player.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/cast_context_error.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_app_info.xml" value="0.2015625" />
+        <entry key="app/src/main/res/layout/fragment_audio.xml" value="0.15715579710144928" />
+        <entry key="app/src/main/res/layout/fragment_comment_replies.xml" value="0.129981884057971" />
+        <entry key="app/src/main/res/layout/fragment_comments.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/fragment_mediaitem.xml" value="0.18206521739130435" />
+        <entry key="app/src/main/res/layout/fragment_mediaitem_list.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/fragment_nowplaying.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/fragment_video_details.xml" value="0.2015625" />
+        <entry key="app/src/main/res/layout/item_audio.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/item_favorite.xml" value="0.2015625" />
+        <entry key="app/src/main/res/layout/item_home.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/menu/app_info_menu.xml" value="0.19846153846153847" />
+        <entry key="app/src/main/res/menu/bab_menu_video_details.xml" value="0.2015625" />
+        <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2015625" />
+        <entry key="core/src/main/res/drawable/ic_launcher_foreground.xml" value="0.21458333333333332" />
+        <entry key="core/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="music_common/src/main/res/menu/main_activity_menu.xml" value="0.2015625" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

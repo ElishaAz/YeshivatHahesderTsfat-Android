@@ -25,7 +25,7 @@ import android.util.Log
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.uamp.R
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.*
 import java.io.BufferedReader
 import java.io.IOException
