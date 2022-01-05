@@ -78,6 +78,7 @@
     <string name="menu_newest_first_comments">Newest First</string>
     <string name="menu_add_to_favorites">Add to favorites</string>
     <string name="menu_pip">Start PIP mode</string>
+    <string name="menu_open_in_youtube">Open In Youtube</string>
     <string name="menu_share">Share</string>
     <string name="menu_details">Details</string>
     <string name="menu_search_videos">Search Videos</string>
@@ -113,7 +114,6 @@
     <string name="text_update_unavailable">No new updates.</string>
     <string name="text_update_available_content">There is a new version available to download.</string>
     <string name="text_update_unavailable_content">There are no new versions available to download.</string>
-    <string name="menu_open_in_youtube">Open In Youtube</string>
     <string name="channel_name" translatable="false">Media Playback</string>
     <!--    <string name="channel_description">Media playback notifications</string>-->
 

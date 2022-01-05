@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.fragment_video_details.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
 
 class VideoDetailsFragment : Fragment() {
@@ -173,6 +174,13 @@ class VideoDetailsFragment : Fragment() {
                         Uri.parse(getString(R.string.text_video_share_url, videoId))
                     )
                     startActivity(intent)
+                    true
+                }
+                R.id.miPIPBabVideoDetails -> {
+                    val player = activity
+                    if (player is VideoPlayerActivity) {
+                        player.enterPIP()
+                    }
                     true
                 }
                 else -> false

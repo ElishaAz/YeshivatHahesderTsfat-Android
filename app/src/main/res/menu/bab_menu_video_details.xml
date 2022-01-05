@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
+        android:id="@+id/miPIPBabVideoDetails"
+        android:icon="@drawable/ic_baseline_picture_in_picture_alt_24"
+        android:title="@string/menu_pip"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/miOpenBabVideoDetails"
         android:icon="@drawable/ic_youtube"
         android:title="@string/menu_open_in_youtube"
