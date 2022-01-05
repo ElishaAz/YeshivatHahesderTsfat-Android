@@ -6,7 +6,7 @@
     <string name="text_video_description">הועלה ב %1$s \n\n%2$s</string>
     <string name="text_playlist_published_date">הועלה ב %1$s</string>
     <string name="text_commenter_name_time">%1$s • %2$s</string>
-    <string name="text_commenter_name_time_edited">%1$s • %2$s (תוקן)</string>
+    <string name="text_commenter_name_time_edited">%1$s • %2$s (עודכן)</string>
     <string name="text_replies">תגובות</string>
     <string name="text_count_unavailable">-</string>
     <string name="text_channel_join_date">הצטרף %1$s</string>
@@ -21,7 +21,7 @@
     <string name="menu_search_videos">חפש סרטונים</string>
     <string name="menu_newest_first_comments">חדש קודם</string>
     <string name="menu_add_to_favorites">הוסף למועדפים</string>
-    <string name="menu_pip">התחל מצב \"תמונה בתמונה\"</string>
+    <string name="menu_pip">התחל מצב \"תמונה בתוך תמונה\"</string>
     <string name="menu_rate_us">דרג בחנות האפליקציות</string>
     <string name="menu_feedback">שלח לנו משוב</string>
     <string name="menu_tos">תנאי שימוש</string>
