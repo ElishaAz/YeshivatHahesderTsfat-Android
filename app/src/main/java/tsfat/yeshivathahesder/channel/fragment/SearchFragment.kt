@@ -1,18 +1,6 @@
 package tsfat.yeshivathahesder.channel.fragment
 
 
-import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
-import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
-import tsfat.yeshivathahesder.channel.fastadapteritems.SearchItem
-import tsfat.yeshivathahesder.channel.model.SearchedList
-import tsfat.yeshivathahesder.channel.paging.Status
-import tsfat.yeshivathahesder.channel.utils.DividerItemDecorator
-import tsfat.yeshivathahesder.channel.viewmodel.SearchViewModel
-import tsfat.yeshivathahesder.core.extensions.dismissKeyboard
-import tsfat.yeshivathahesder.core.extensions.makeGone
-import tsfat.yeshivathahesder.core.extensions.makeVisible
-import tsfat.yeshivathahesder.core.extensions.showKeyboard
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,11 +24,22 @@ import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
-import kotlinx.android.synthetic.main.fragment_search.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.R
+import tsfat.yeshivathahesder.channel.databinding.FragmentSearchBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
+import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
+import tsfat.yeshivathahesder.channel.fastadapteritems.SearchItem
+import tsfat.yeshivathahesder.channel.model.SearchedList
+import tsfat.yeshivathahesder.channel.paging.Status
+import tsfat.yeshivathahesder.channel.utils.DividerItemDecorator
+import tsfat.yeshivathahesder.channel.viewmodel.SearchViewModel
+import tsfat.yeshivathahesder.core.extensions.dismissKeyboard
+import tsfat.yeshivathahesder.core.extensions.makeGone
+import tsfat.yeshivathahesder.core.extensions.makeVisible
+import tsfat.yeshivathahesder.core.extensions.showKeyboard
 
 @ExperimentalPagedSupport
 class SearchFragment : Fragment() {
@@ -54,12 +53,16 @@ class SearchFragment : Fragment() {
     private var retrySnackbar: Snackbar? = null
     private var isSearchRequestInitialized = false
 
+    private lateinit var binding: FragmentSearchBinding
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,24 +81,24 @@ class SearchFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        svSearch.dismissKeyboard(context)
+        binding.svSearch.dismissKeyboard(context)
         retrySnackbar?.dismiss() // Dismiss the retrySnackbar if already present
     }
 
     private fun setupToolbar() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        toolbarSearch.setupWithNavController(navController, appBarConfiguration)
+        binding.toolbarSearch.setupWithNavController(navController, appBarConfiguration)
     }
 
     private fun setupSearchView() {
-        svSearch.apply {
+        binding.svSearch.apply {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
-                    svSearch.dismissKeyboard(context)
+                    binding.svSearch.dismissKeyboard(context)
 
                     if (query.isNotBlank()) {
-                        pbSearch.makeVisible()
+                        binding.pbSearch.makeVisible()
 
                         if (!isSearchRequestInitialized) {
                             isSearchRequestInitialized = true
@@ -116,7 +119,7 @@ class SearchFragment : Fragment() {
             // Set focus on the SearchView and open the keyboard
             setOnQueryTextFocusChangeListener { view, hasFocus ->
                 if (hasFocus) {
-                    svSearch.findFocus().showKeyboard(context)
+                    binding.svSearch.findFocus().showKeyboard(context)
                 }
             }
             requestFocus()
@@ -152,8 +155,8 @@ class SearchFragment : Fragment() {
         searchAdapter.registerTypeInstance(SearchItem(null))
         searchAdapter.withSavedInstanceState(savedInstanceState)
 
-        rvSearch.layoutManager = LinearLayoutManager(context)
-        rvSearch.addItemDecoration(
+        binding.rvSearch.layoutManager = LinearLayoutManager(context)
+        binding.rvSearch.addItemDecoration(
             DividerItemDecorator(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -161,7 +164,7 @@ class SearchFragment : Fragment() {
                 )!!
             )
         )
-        rvSearch.adapter = searchAdapter
+        binding.rvSearch.adapter = searchAdapter
 
         onItemClick()
     }
@@ -183,14 +186,14 @@ class SearchFragment : Fragment() {
             when (networkState?.status) {
                 Status.FAILED -> {
                     footerAdapter.clear()
-                    pbSearch.makeGone()
+                    binding.pbSearch.makeGone()
                     createRetrySnackbar()
                     retrySnackbar?.show()
                 }
 
                 Status.SUCCESS -> {
                     footerAdapter.clear()
-                    pbSearch.makeGone()
+                    binding.pbSearch.makeGone()
                     hideEmptyState()
                 }
 
@@ -220,7 +223,7 @@ class SearchFragment : Fragment() {
 
     private fun createRetrySnackbar() {
         retrySnackbar =
-            Snackbar.make(clSearch, R.string.error_load_more_videos, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(binding.clSearch, R.string.error_load_more_videos, Snackbar.LENGTH_INDEFINITE)
                 .setAnchorView(activity?.findViewById(R.id.bottomNavView) as BottomNavigationView)
                 .setAction(R.string.btn_retry) {
                     viewModel.refreshFailedRequest()
@@ -228,11 +231,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun showEmptyState() {
-        groupEmptySearch.makeVisible()
+        binding.groupEmptySearch.makeVisible()
     }
 
     private fun hideEmptyState() {
-        groupEmptySearch.makeGone()
+        binding.groupEmptySearch.makeGone()
     }
 
     private val audioConnector: AudioConnector by inject()

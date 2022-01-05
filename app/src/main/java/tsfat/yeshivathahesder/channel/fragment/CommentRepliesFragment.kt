@@ -27,8 +27,8 @@ import com.mikepenz.fastadapter.GenericFastAdapter
 import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
-import kotlinx.android.synthetic.main.fragment_comment_replies.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.databinding.FragmentCommentRepliesBinding
 
 class CommentRepliesFragment : Fragment() {
 
@@ -44,12 +44,14 @@ class CommentRepliesFragment : Fragment() {
 
     private var initialLayoutComplete = false
 
+    private lateinit var binding: FragmentCommentRepliesBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_comment_replies, container, false)
+        binding = FragmentCommentRepliesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +63,7 @@ class CommentRepliesFragment : Fragment() {
         fetchCommentReplies()
         setupObservables()
 
-        ivCloseCommentReplies.setOnClickListener { onCloseClick() }
+        binding.ivCloseCommentReplies.setOnClickListener { onCloseClick() }
     }
 
     override fun onSaveInstanceState(_outState: Bundle) {
@@ -105,8 +107,8 @@ class CommentRepliesFragment : Fragment() {
         commentRepliesAdapter.registerTypeInstance(CommentReplyItem(null))
         commentRepliesAdapter.withSavedInstanceState(savedInstanceState)
 
-        rvCommentReplies.layoutManager = LinearLayoutManager(context)
-        rvCommentReplies.addItemDecoration(
+        binding.rvCommentReplies.layoutManager = LinearLayoutManager(context)
+        binding.rvCommentReplies.addItemDecoration(
             DividerItemDecorator(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -114,7 +116,7 @@ class CommentRepliesFragment : Fragment() {
                 )!!
             )
         )
-        rvCommentReplies.adapter = commentRepliesAdapter
+        binding.rvCommentReplies.adapter = commentRepliesAdapter
     }
 
     private fun setupObservables() {
@@ -160,7 +162,7 @@ class CommentRepliesFragment : Fragment() {
     private fun createRetrySnackbar() {
         retrySnackbar =
             Snackbar.make(
-                clCommentReplies,
+                binding.clCommentReplies,
                 R.string.error_fetch_comment_replies,
                 Snackbar.LENGTH_INDEFINITE
             )

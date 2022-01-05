@@ -18,9 +18,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import kotlinx.android.synthetic.main.fragment_video_details.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
+import tsfat.yeshivathahesder.channel.databinding.FragmentVideoDetailsBinding
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
 
 class VideoDetailsFragment : Fragment() {
@@ -36,12 +36,16 @@ class VideoDetailsFragment : Fragment() {
     private lateinit var videoItem: Video.Item
     private var isVideoAddedToFavorite = false
 
+    private lateinit var binding: FragmentVideoDetailsBinding
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_video_details, container, false)
+    ): View {
+        binding = FragmentVideoDetailsBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -57,8 +61,8 @@ class VideoDetailsFragment : Fragment() {
         fetchVideoFavoriteStatus()
 
         setupBottomAppBar()
-        tvCommentsVideoDetails.setOnClickListener { onCommentsClick() }
-        btnRetryVideoDetails.setOnClickListener { onRetryClick() }
+        binding.tvCommentsVideoDetails.setOnClickListener { onCommentsClick() }
+        binding.btnRetryVideoDetails.setOnClickListener { onRetryClick() }
     }
 
 
@@ -98,10 +102,10 @@ class VideoDetailsFragment : Fragment() {
             isVideoAddedToFavorite = isFavorite
 
             if (isVideoAddedToFavorite) {
-                babVideoDetails.menu.findItem(R.id.miFavoriteBabVideoDetails)
+                binding.babVideoDetails.menu.findItem(R.id.miFavoriteBabVideoDetails)
                     .setIcon(R.drawable.ic_favorite_filled)
             } else {
-                babVideoDetails.menu.findItem(R.id.miFavoriteBabVideoDetails)
+                binding.babVideoDetails.menu.findItem(R.id.miFavoriteBabVideoDetails)
                     .setIcon(R.drawable.ic_favorite_border)
             }
         })
@@ -109,22 +113,22 @@ class VideoDetailsFragment : Fragment() {
 
     private fun setVideoInfo() {
         with(videoItem) {
-            tvVideoTitleVideoDetails.text = snippet.title
-            tvViewCountVideoDetails.text =
+            binding.tvVideoTitleVideoDetails.text = snippet.title
+            binding.tvViewCountVideoDetails.text =
                 statistics.viewCount?.toLong()?.getFormattedNumberInString() ?: getString(
                     R.string.text_count_unavailable
                 )
-            tvLikeCountVideoDetails.text =
+            binding.tvLikeCountVideoDetails.text =
                 statistics.likeCount?.toLong()?.getFormattedNumberInString() ?: getString(
                     R.string.text_count_unavailable
                 )
-            tvDislikeCountVideoDetails.text =
+            binding.tvDislikeCountVideoDetails.text =
                 statistics.dislikeCount?.toLong()?.getFormattedNumberInString() ?: getString(
                     R.string.text_count_unavailable
                 )
-            tvCommentCountVideoDetails.text =
+            binding.tvCommentCountVideoDetails.text =
                 statistics.commentCount.toLong().getFormattedNumberInString()
-            tvVideoDescVideoDetails.text = getString(
+            binding.tvVideoDescVideoDetails.text = getString(
                 R.string.text_video_description,
                 DateTimeUtils.getPublishedDate(snippet.publishedAt),
                 snippet.description
@@ -133,18 +137,18 @@ class VideoDetailsFragment : Fragment() {
     }
 
     private fun showVideoInfoErrorState() {
-        groupInfoVideoDetails.makeGone()
-        groupErrorVideoDetails.makeVisible()
+        binding.groupInfoVideoDetails.makeGone()
+        binding.groupErrorVideoDetails.makeVisible()
     }
 
     private fun hideVideoInfoErrorState() {
-        groupErrorVideoDetails.makeGone()
-        groupInfoVideoDetails.makeVisible()
+        binding.groupErrorVideoDetails.makeGone()
+        binding.groupInfoVideoDetails.makeVisible()
     }
 
 
     private fun setupBottomAppBar() {
-        babVideoDetails.setOnMenuItemClickListener { item ->
+        binding.babVideoDetails.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.miFavoriteBabVideoDetails -> {
                     if (this::videoItem.isInitialized) {

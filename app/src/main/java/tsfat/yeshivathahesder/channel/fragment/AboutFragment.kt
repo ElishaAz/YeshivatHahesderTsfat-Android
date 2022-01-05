@@ -19,6 +19,8 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -28,18 +30,30 @@ import coil.api.load
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
-import kotlinx.android.synthetic.main.fragment_about.*
-import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.databinding.FragmentAboutBinding
 
 /**
  * A simple [Fragment] subclass.
  */
-class AboutFragment : Fragment(R.layout.fragment_about) {
+class AboutFragment : Fragment() {
 
     private val viewModel by viewModel<AboutViewModel>() // Lazy inject ViewModel
 
     private lateinit var channelInfoItem: ChannelInfo.Item
+
+    private lateinit var binding: FragmentAboutBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAboutBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,17 +62,17 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         setupObservables()
         fetchChannelInfo()
 
-        btnRetryAbout.setOnClickListener {
+        binding.btnRetryAbout.setOnClickListener {
             fetchChannelInfo()
         }
 
-        btnSubscribeAbout.setOnClickListener {
+        binding.btnSubscribeAbout.setOnClickListener {
             startYouTubeIntent()
         }
     }
 
     private fun setupToolbar() {
-        ablAbout.toolbarMain.apply {
+        binding.ablAbout.toolbarMain.apply {
             inflateMenu(R.menu.toolbar_menu_about)
 
             // Change theme menu item icon based on current theme
@@ -108,14 +122,14 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
         viewModel.channelInfoLiveData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ResultWrapper.Loading -> {
-                    pbAbout.makeVisible()
+                    binding.pbAbout.makeVisible()
                 }
                 is ResultWrapper.Error -> {
-                    pbAbout.makeGone()
+                    binding.pbAbout.makeGone()
                     showChannelInfoErrorState()
                 }
                 is ResultWrapper.Success<*> -> {
-                    pbAbout.makeGone()
+                    binding.pbAbout.makeGone()
                     hideChannelInfoErrorState()
                     channelInfoItem = (it.data as ChannelInfo).items[0]
                     setChannelInfo()
@@ -128,47 +142,47 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
         // Banner
         if (channelInfoItem.brandingSettings != null) {
-            ivBannerAbout.load(
+            binding.ivBannerAbout.load(
                 channelInfoItem.brandingSettings?.image?.bannerMobileHdImageUrl
                     ?: channelInfoItem.brandingSettings?.image?.bannerMobileMediumHdImageUrl
             )
         } else {
-            ivBannerAbout.makeGone()
+            binding.ivBannerAbout.makeGone()
             val constraintSet = ConstraintSet().apply {
-                clone(clAbout)
+                clone(binding.clAbout)
                 connect(R.id.cvAbout, ConstraintSet.TOP, R.id.ablAbout, ConstraintSet.BOTTOM)
             }
-            constraintSet.applyTo(clAbout)
+            constraintSet.applyTo(binding.clAbout)
         }
 
         // Profile Image
-        ivProfileAbout.load(
+        binding.ivProfileAbout.load(
             channelInfoItem.snippet.thumbnails.high?.url
                 ?: channelInfoItem.snippet.thumbnails.medium.url
         )
 
-        tvNameAbout.text = channelInfoItem.snippet.title
-        tvJoinDateAbout.text = getString(
+        binding.tvNameAbout.text = channelInfoItem.snippet.title
+        binding.tvJoinDateAbout.text = getString(
             R.string.text_channel_join_date,
             DateTimeUtils.getPublishedDate(channelInfoItem.snippet.publishedAt)
         )
-        tvSubscribersValueAbout.text =
+        binding.tvSubscribersValueAbout.text =
             channelInfoItem.statistics.subscriberCount.toLong().getFormattedNumberInString()
-        tvVideosValueAbout.text =
+        binding.tvVideosValueAbout.text =
             channelInfoItem.statistics.videoCount.toLong().getFormattedNumberInString()
-        tvViewsValueAbout.text =
+        binding.tvViewsValueAbout.text =
             channelInfoItem.statistics.viewCount.toLong().getFormattedNumberInString()
-        tvDescAbout.text = channelInfoItem.snippet.description
+        binding.tvDescAbout.text = channelInfoItem.snippet.description
     }
 
     private fun showChannelInfoErrorState() {
-        groupResultAbout.makeGone()
-        groupErrorAbout.makeVisible()
+        binding.groupResultAbout.makeGone()
+        binding.groupErrorAbout.makeVisible()
     }
 
     private fun hideChannelInfoErrorState() {
-        groupErrorAbout.makeGone()
-        groupResultAbout.makeVisible()
+        binding.groupErrorAbout.makeGone()
+        binding.groupResultAbout.makeVisible()
     }
 
     /**
@@ -209,7 +223,10 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
         MaterialDialog(requireContext()).show {
             title(R.string.dialog_settings_title)
-            checkBoxPrompt(R.string.dialog_theme_text_dark, isCheckedDefault = !AppPref.isLightThemeEnabled) {
+            checkBoxPrompt(
+                R.string.dialog_theme_text_dark,
+                isCheckedDefault = !AppPref.isLightThemeEnabled
+            ) {
                 if (it) {
                     setTheme(AppCompatDelegate.MODE_NIGHT_YES)
                 } else {

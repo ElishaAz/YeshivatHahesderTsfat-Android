@@ -27,7 +27,7 @@ class FavoriteItem(val favoritesEntry: FavoritesEntry) :
     class FavoriteViewHolder(private var view: View) : FastAdapter.ViewHolder<FavoriteItem>(view) {
 
         private val thumbnail: AppCompatImageView = view.findViewById(R.id.ivThumbnailFavoriteItem)
-        private val favoriteIcon: AppCompatImageView = view.findViewById(R.id.ivHeartFavoriteItem)
+        val favoriteIcon: AppCompatImageView = view.findViewById(R.id.ivHeartFavoriteItem)
         private val videoTitle: AppCompatTextView = view.findViewById(R.id.tvTitleFavoriteItem)
 
         override fun bindView(item: FavoriteItem, payloads: List<Any>) {

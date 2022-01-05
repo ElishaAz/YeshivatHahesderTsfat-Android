@@ -6,9 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
 import tsfat.yeshivathahesder.channel.fastadapteritems.PlaylistVideoItem
 import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
 import tsfat.yeshivathahesder.channel.paging.Status
@@ -31,7 +32,6 @@ import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.mikepenz.fastadapter.FastAdapter
@@ -40,10 +40,9 @@ import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
-import kotlinx.android.synthetic.main.fragment_playlist_details.view.*
-import kotlinx.android.synthetic.main.fragment_playlist_videos.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.databinding.FragmentPlaylistVideosBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.model.ItemBase
@@ -69,12 +68,15 @@ class PlaylistVideosFragment : Fragment() {
     private lateinit var playlistId: String
     private lateinit var playlistType: String
 
+    private lateinit var binding: FragmentPlaylistVideosBinding
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_playlist_videos, container, false)
+        binding = FragmentPlaylistVideosBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,11 +105,11 @@ class PlaylistVideosFragment : Fragment() {
     private fun setupToolbar() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        toolbarPlaylistVideos.setupWithNavController(navController, appBarConfiguration)
+        binding.toolbarPlaylistVideos.setupWithNavController(navController, appBarConfiguration)
 
         // Inflate Menu
-        toolbarPlaylistVideos.inflateMenu(R.menu.toolbar_menu_playlist_videos)
-        toolbarPlaylistVideos.setOnMenuItemClickListener { item ->
+        binding.toolbarPlaylistVideos.inflateMenu(R.menu.toolbar_menu_playlist_videos)
+        binding.toolbarPlaylistVideos.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.miDetailsPlaylistVideos -> {
                     showPlaylistDetails()
@@ -150,9 +152,9 @@ class PlaylistVideosFragment : Fragment() {
         playlistVideosAdapter.registerTypeInstance(PlaylistVideoItem(null))
         playlistVideosAdapter.withSavedInstanceState(savedInstanceState)
 
-        rvPlaylistVideos.layoutManager = LinearLayoutManager(context)
-        rvPlaylistVideos.adapter = playlistVideosAdapter
-        rvPlaylistVideos.addItemDecoration(
+        binding.rvPlaylistVideos.layoutManager = LinearLayoutManager(context)
+        binding.rvPlaylistVideos.adapter = playlistVideosAdapter
+        binding.rvPlaylistVideos.addItemDecoration(
             DividerItemDecorator(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -207,7 +209,7 @@ class PlaylistVideosFragment : Fragment() {
     private fun createRetrySnackbar() {
         retrySnackbar =
             Snackbar.make(
-                clPlaylistVideos,
+                binding.clPlaylistVideos,
                 R.string.error_load_more_videos,
                 Snackbar.LENGTH_INDEFINITE
             )
@@ -247,27 +249,31 @@ class PlaylistVideosFragment : Fragment() {
 
             }
 
-        playlistDetailsDialog.getCustomView().apply {
-            ivThumbnailPlaylistDetails.load(args.playlistThumbUrl)
-            tvNamePlaylistDetails.text = args.playlistName
+        playlistDetailsDialog.findViewById<ImageView>(R.id.ivThumbnailPlaylistDetails)
+            .load(args.playlistThumbUrl)
+        playlistDetailsDialog.findViewById<TextView>(R.id.tvNamePlaylistDetails).text =
+            args.playlistName
+        playlistDetailsDialog.findViewById<TextView>(R.id.tvVideoCountPlaylistDetails).apply {
             if (args.playlistType == PLAYLIST_TYPE_VIDEO)
-                tvVideoCountPlaylistDetails.text = context.resources.getQuantityString(
+                text = context.resources.getQuantityString(
                     R.plurals.text_playlist_video_count,
                     args.playlistVideoCount.toInt(),
                     args.playlistVideoCount.toInt()
                 )
             else if (args.playlistType == PLAYLIST_TYPE_AUDIO)
-                tvVideoCountPlaylistDetails.text = context.resources.getQuantityString(
+                text = context.resources.getQuantityString(
                     R.plurals.text_playlist_audio_count,
                     args.playlistVideoCount.toInt(),
                     args.playlistVideoCount.toInt()
                 )
-            tvTimePublishedPlaylistDetails.text = context.getString(
+        }
+        playlistDetailsDialog.findViewById<TextView>(R.id.tvTimePublishedPlaylistDetails).text =
+            requireContext().getString(
                 R.string.text_playlist_published_date,
                 DateTimeUtils.getPublishedDate(args.playlistPublishedTime)
             )
-            tvDescPlaylistDetails.text = args.playlistDesc
-        }
+        playlistDetailsDialog.findViewById<TextView>(R.id.tvDescPlaylistDetails).text =
+            args.playlistDesc
     }
 
     private fun sharePlaylistUrl() {

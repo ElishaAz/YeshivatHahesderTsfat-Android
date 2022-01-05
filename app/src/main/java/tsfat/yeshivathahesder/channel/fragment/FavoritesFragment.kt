@@ -2,8 +2,10 @@ package tsfat.yeshivathahesder.channel.fragment
 
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.fastadapteritems.FavoriteItem
@@ -20,11 +22,10 @@ import com.mikepenz.fastadapter.FastAdapter
 import com.mikepenz.fastadapter.adapters.FastItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.itemanimators.AlphaInAnimator
-import kotlinx.android.synthetic.main.fragment_favorites.*
-import kotlinx.android.synthetic.main.item_favorite.view.*
-import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.databinding.FragmentCommentsBinding
+import tsfat.yeshivathahesder.channel.databinding.FragmentFavoritesBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
@@ -33,11 +34,22 @@ import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
 /**
  * A simple [Fragment] subclass.
  */
-class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
+class FavoritesFragment : Fragment() {
 
     private val viewModel by viewModel<FavoritesViewModel>() // Lazy inject ViewModel
 
     private lateinit var favoritesAdapter: FastItemAdapter<FavoriteItem>
+
+    private lateinit var binding: FragmentFavoritesBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentFavoritesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,7 +66,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun setupToolbar() {
-        ablFavorites.toolbarMain.apply {
+        binding.ablFavorites.toolbarMain.apply {
             inflateMenu(R.menu.main_menu)
 
             // Store and Search configuration
@@ -82,10 +94,10 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         favoritesAdapter.setHasStableIds(true)
         favoritesAdapter.withSavedInstanceState(savedInstanceState)
 
-        rvFavorites.layoutManager = LinearLayoutManager(context)
-        rvFavorites.itemAnimator = AlphaInAnimator()
-        rvFavorites.adapter = favoritesAdapter
-        rvFavorites.itemAnimator = AlphaInAnimator()
+        binding.rvFavorites.layoutManager = LinearLayoutManager(context)
+        binding.rvFavorites.itemAnimator = AlphaInAnimator()
+        binding.rvFavorites.adapter = favoritesAdapter
+        binding.rvFavorites.itemAnimator = AlphaInAnimator()
 
         onFavoriteClick()
         onItemClick()
@@ -104,7 +116,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
     }
 
     private fun showEmptyState(itemCount: Int) {
-        groupEmptyFavorites.isVisible = itemCount < 1
+        binding.groupEmptyFavorites.isVisible = itemCount < 1
     }
 
     /**
@@ -114,7 +126,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites) {
         favoritesAdapter.addEventHook(object : ClickEventHook<FavoriteItem>() {
             override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
                 return if (viewHolder is FavoriteItem.FavoriteViewHolder) {
-                    viewHolder.itemView.ivHeartFavoriteItem
+                    viewHolder.favoriteIcon
                 } else {
                     null
                 }

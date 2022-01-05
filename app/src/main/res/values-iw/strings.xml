@@ -42,9 +42,9 @@
     <string name="error_internet_connectivity">אנא בדוק את חיבור האינטרנט שלך ונסה שוב</string>
     <string name="error_load_more_videos">שגיאה בטעינת סרטונים נוספים</string>
     <string name="error_video_details">שגיאה בטעינת פרטי הסרטון. אנא בדוק את חיבור האינטרנט שלך ונסה שוב.</string>
-    <string name="error_fetch_comments">שגיעה בטעינת הערות</string>
-    <string name="error_fetch_comment_replies">שגיעה בטעינת תגובות</string>
-    <string name="error_fetch_playlists">שגיעה בטעינת פלייליסטים</string>
+    <string name="error_fetch_comments">שגיאה בטעינת הערות</string>
+    <string name="error_fetch_comment_replies">שגיאה בטעינת תגובות</string>
+    <string name="error_fetch_playlists">שגיאה בטעינת פלייליסטים</string>
     <string name="error_search_empty_result_title">לא נמצאו תוצאות</string>
     <string name="error_search_empty_result_desc">נסה לחפש באמצעות מילת מפתח אחרת</string>
     <string name="error_channel_info">שגיאה בטעינת פרטי הערוץ. אנא נסה שוב.</string>

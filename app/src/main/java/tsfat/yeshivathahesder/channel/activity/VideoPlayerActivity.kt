@@ -23,7 +23,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.loadOrCueVideo
-import kotlinx.android.synthetic.main.activity_video_player.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import android.app.PictureInPictureParams
 import android.content.res.Configuration

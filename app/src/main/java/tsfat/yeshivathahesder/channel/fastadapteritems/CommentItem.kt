@@ -36,6 +36,8 @@ class CommentItem(val comment: Comment.Item?) : AbstractItem<CommentItem.Comment
         private val repliesCount: MaterialTextView =
             view.findViewById(R.id.tvCommentCountCommentItem)
         private val viewReplies: MaterialButton = view.findViewById(R.id.btnViewRepliesCommentItem)
+        val btnViewRepliesCommentItem: MaterialButton = view.findViewById(R.id.btnViewRepliesCommentItem)
+
 
         override fun bindView(item: CommentItem, payloads: List<Any>) {
             item.comment?.snippet?.let {

@@ -1,7 +1,6 @@
 package tsfat.yeshivathahesder.channel.fragment
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.activity.VideoPlayerActivity
 import tsfat.yeshivathahesder.channel.fastadapteritems.HomeItem
 import tsfat.yeshivathahesder.channel.fastadapteritems.ProgressIndicatorItem
 import tsfat.yeshivathahesder.channel.paging.Status
@@ -10,7 +9,9 @@ import tsfat.yeshivathahesder.channel.viewmodel.HomeViewModel
 import tsfat.yeshivathahesder.core.extensions.*
 import tsfat.yeshivathahesder.core.helper.ResultWrapper
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -27,11 +28,10 @@ import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.databinding.FragmentHomeBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.model.ItemBase
@@ -39,7 +39,7 @@ import tsfat.yeshivathahesder.channel.model.VideoItem
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
 
 @ExperimentalPagedSupport
-class HomeFragment : Fragment(R.layout.fragment_home) {
+class HomeFragment : Fragment() {
 
     private val viewModel by viewModel<HomeViewModel>() // Lazy inject ViewModel
 
@@ -49,8 +49,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
 
-
     private val audioConnector: AudioConnector by inject()
+
+    private lateinit var binding: FragmentHomeBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,7 +93,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setupToolbar() {
-        ablHome.toolbarMain.apply {
+        binding.ablHome.toolbarMain.apply {
             inflateMenu(R.menu.main_menu)
 
             // Store and Search configuration
@@ -137,9 +147,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         homeAdapter?.registerTypeInstance(HomeItem(null))
         homeAdapter?.withSavedInstanceState(savedInstanceState)
 
-        rvHome.layoutManager = LinearLayoutManager(context)
-        rvHome.adapter = homeAdapter
-        rvHome.addItemDecoration(
+        binding.rvHome.layoutManager = LinearLayoutManager(context)
+        binding.rvHome.adapter = homeAdapter
+        binding.rvHome.addItemDecoration(
             DividerItemDecorator(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -175,13 +185,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             when (networkState?.status) {
                 Status.FAILED -> {
                     footerAdapter.clear()
-                    pbHome.makeGone()
+                    binding.pbHome.makeGone()
                     createRetrySnackbar()
                     retrySnackbar?.show()
                 }
                 Status.SUCCESS -> {
                     footerAdapter.clear()
-                    pbHome.makeGone()
+                    binding.pbHome.makeGone()
                 }
                 Status.LOADING -> {
                     if (!isFirstPageLoading) {
@@ -209,22 +219,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun showErrorState(errorMsg: String = getString(R.string.error_internet_connectivity)) {
-        rvHome.makeGone()
-        pbHome.makeGone()
-        groupErrorHome.makeVisible()
-        tvErrorHome.text = errorMsg
+        binding.rvHome.makeGone()
+        binding.pbHome.makeGone()
+        binding.groupErrorHome.makeVisible()
+        binding.tvErrorHome.text = errorMsg
     }
 
     private fun hideErrorState() {
-        groupErrorHome.makeGone()
-        rvHome.makeVisible()
+        binding.groupErrorHome.makeGone()
+        binding.rvHome.makeVisible()
     }
 
     /**
      * Called when the Retry button of the error state is clicked
      */
     private fun onRetryButtonClick() {
-        btnRetryHome.setOnClickListener {
+        binding.btnRetryHome.setOnClickListener {
             if (requireContext().isInternetAvailable()) viewModel.getLatestVideos()
         }
     }
@@ -256,7 +266,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun createRetrySnackbar() {
         retrySnackbar =
-            Snackbar.make(clHome, R.string.error_load_more_videos, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(binding.clHome, R.string.error_load_more_videos, Snackbar.LENGTH_INDEFINITE)
                 .setAnchorView(activity?.findViewById(R.id.bottomNavView) as BottomNavigationView)
                 .setAction(R.string.btn_retry) {
                     viewModel.refreshFailedRequest()

@@ -19,7 +19,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.ui.setupWithNavController
 import coil.api.load
 import com.google.android.gms.cast.framework.CastContext
-import kotlinx.android.synthetic.main.fragment_video_details.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -119,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             castContext = CastContext.getSharedInstance(this)
             castEnable = true
         } catch (e: RuntimeException) {
-            Timber.e(e.stackTraceToString())
+            Timber.e(e)
         }
 
 //        setContentView(R.layout.activity_audio_main)

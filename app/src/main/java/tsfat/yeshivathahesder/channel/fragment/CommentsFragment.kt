@@ -26,10 +26,9 @@ import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
-import kotlinx.android.synthetic.main.fragment_comments.*
-import kotlinx.android.synthetic.main.item_comment.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.databinding.FragmentCommentsBinding
 
 class CommentsFragment : Fragment() {
 
@@ -47,13 +46,15 @@ class CommentsFragment : Fragment() {
 
     private var initialLayoutComplete = false
 
+    private lateinit var binding: FragmentCommentsBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_comments, container, false)
-
+        binding = FragmentCommentsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
@@ -65,8 +66,8 @@ class CommentsFragment : Fragment() {
         fetchComments(SORT_BY_RELEVANCE)
         setupObservables()
 
-        ivSortComments.setOnClickListener { onSortClick(it) }
-        ivCloseComments.setOnClickListener { onCloseClick() }
+        binding.ivSortComments.setOnClickListener { onSortClick(it) }
+        binding.ivCloseComments.setOnClickListener { onCloseClick() }
     }
 
     override fun onSaveInstanceState(_outState: Bundle) {
@@ -110,8 +111,8 @@ class CommentsFragment : Fragment() {
         commentsAdapter.withSavedInstanceState(savedInstanceState)
         onViewRepliesClick()
 
-        rvComments.layoutManager = LinearLayoutManager(context)
-        rvComments.addItemDecoration(
+        binding.rvComments.layoutManager = LinearLayoutManager(context)
+        binding.rvComments.addItemDecoration(
             DividerItemDecorator(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -119,7 +120,7 @@ class CommentsFragment : Fragment() {
                 )!!
             )
         )
-        rvComments.adapter = commentsAdapter
+        binding.rvComments.adapter = commentsAdapter
     }
 
     private fun setupObservables() {
@@ -169,11 +170,11 @@ class CommentsFragment : Fragment() {
     }
 
     private fun showEmptyState() {
-        groupEmptyComments.makeVisible()
+        binding.groupEmptyComments.makeVisible()
     }
 
     private fun hideEmptyState() {
-        groupEmptyComments.makeGone()
+        binding.groupEmptyComments.makeGone()
     }
 
     private fun fetchComments(sortOrder: String) {
@@ -182,7 +183,11 @@ class CommentsFragment : Fragment() {
 
     private fun createRetrySnackbar() {
         retrySnackbar =
-            Snackbar.make(clComments, R.string.error_fetch_comments, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(
+                binding.clComments,
+                R.string.error_fetch_comments,
+                Snackbar.LENGTH_INDEFINITE
+            )
                 .setAction(R.string.btn_retry) {
                     viewModel.refreshFailedRequest()
                 }
@@ -223,7 +228,7 @@ class CommentsFragment : Fragment() {
         commentsAdapter.addEventHook(object : ClickEventHook<CommentItem>() {
             override fun onBind(viewHolder: RecyclerView.ViewHolder): View? {
                 return if (viewHolder is CommentItem.CommentViewHolder) {
-                    viewHolder.itemView.btnViewRepliesCommentItem
+                    viewHolder.btnViewRepliesCommentItem
                 } else {
                     null
                 }

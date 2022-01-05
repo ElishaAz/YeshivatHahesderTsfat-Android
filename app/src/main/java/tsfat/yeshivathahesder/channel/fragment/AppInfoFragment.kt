@@ -8,21 +8,35 @@ import tsfat.yeshivathahesder.core.extensions.startEmailIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import coil.api.load
-import kotlinx.android.synthetic.main.fragment_app_info.*
+import tsfat.yeshivathahesder.channel.databinding.FragmentAppInfoBinding
 
-class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
+class AppInfoFragment : Fragment() {
+
+    private lateinit var binding: FragmentAppInfoBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentAppInfoBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        ivLogoAppInfo.load(R.drawable.yhtsfat_logo)
+        binding.ivLogoAppInfo.load(R.drawable.yhtsfat_logo)
 
         onWebsiteClick()
         onGooglePlayClick()
@@ -36,17 +50,17 @@ class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
     private fun setupToolbar() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        toolbarAppInfo.setupWithNavController(navController, appBarConfiguration)
+        binding.toolbarAppInfo.setupWithNavController(navController, appBarConfiguration)
     }
 
     private fun onWebsiteClick() {
-        ivWebsiteAppInfo.setOnClickListener {
+        binding.ivWebsiteAppInfo.setOnClickListener {
             context?.openUrl(getString(R.string.text_website_url), R.color.defaultBgColor)
         }
     }
 
     private fun onGooglePlayClick() {
-        ivGooglePlayAppInfo.setOnClickListener {
+        binding.ivGooglePlayAppInfo.setOnClickListener {
             try {
                 // Try to open in the Google Play app
                 startActivity(
@@ -66,7 +80,7 @@ class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
     }
 
     private fun onPhoneClick() {
-        ivPhoneAppInfo.setOnClickListener {
+        binding.ivPhoneAppInfo.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse(
                 "tel:${
@@ -78,7 +92,7 @@ class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
     }
 
     private fun onFacebookClick() {
-        ivFacebookAppInfo.setOnClickListener {
+        binding.ivFacebookAppInfo.setOnClickListener {
             try {
                 val intent = Intent(
                     Intent.ACTION_VIEW,
@@ -115,13 +129,13 @@ class AppInfoFragment : Fragment(R.layout.fragment_app_info) {
 //    }
 
     private fun onEmailClick() {
-        ivEmailAppInfo.setOnClickListener {
+        binding.ivEmailAppInfo.setOnClickListener {
             context?.startEmailIntent(getString(R.string.text_contact_email), null)
         }
     }
 
     private fun onNavigationViewMenuItemClick() {
-        nvAppInfo.setNavigationItemSelectedListener {
+        binding.nvAppInfo.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.miRateAppInfo -> {
                     context?.openAppInGooglePlay(BuildConfig.APPLICATION_ID)

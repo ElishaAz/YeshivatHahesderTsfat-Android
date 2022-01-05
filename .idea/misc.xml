@@ -59,8 +59,10 @@
         <entry key="app/src/main/res/layout/fragment_mediaitem.xml" value="0.18206521739130435" />
         <entry key="app/src/main/res/layout/fragment_mediaitem_list.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/fragment_nowplaying.xml" value="0.1984375" />
+        <entry key="app/src/main/res/layout/fragment_playlist_details.xml" value="0.10869565217391304" />
         <entry key="app/src/main/res/layout/fragment_video_details.xml" value="0.2015625" />
         <entry key="app/src/main/res/layout/item_audio.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/item_comment.xml" value="0.10869565217391304" />
         <entry key="app/src/main/res/layout/item_favorite.xml" value="0.2015625" />
         <entry key="app/src/main/res/layout/item_home.xml" value="0.1671195652173913" />
         <entry key="app/src/main/res/menu/app_info_menu.xml" value="0.19846153846153847" />

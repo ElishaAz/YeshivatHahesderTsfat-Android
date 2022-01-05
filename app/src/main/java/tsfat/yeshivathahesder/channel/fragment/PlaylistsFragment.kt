@@ -12,7 +12,9 @@ import tsfat.yeshivathahesder.core.extensions.makeGone
 import tsfat.yeshivathahesder.core.extensions.makeVisible
 import tsfat.yeshivathahesder.core.extensions.openUrl
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -29,9 +31,8 @@ import com.mikepenz.fastadapter.adapters.GenericItemAdapter
 import com.mikepenz.fastadapter.adapters.ItemAdapter
 import com.mikepenz.fastadapter.paged.ExperimentalPagedSupport
 import com.mikepenz.fastadapter.paged.PagedModelAdapter
-import kotlinx.android.synthetic.main.fragment_playlists.*
-import kotlinx.android.synthetic.main.widget_toolbar.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.databinding.FragmentPlaylistsBinding
 import tsfat.yeshivathahesder.channel.model.PlaylistBase
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
@@ -43,7 +44,7 @@ import tsfat.yeshivathahesder.channel.uamp.media.library.defaultAudioUri
  * Playlists of a channel.
  */
 @ExperimentalPagedSupport
-class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
+class PlaylistsFragment : Fragment() {
 
     private val viewModel by viewModel<PlaylistsViewModel>() // Lazy inject ViewModel
 
@@ -52,6 +53,18 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     private lateinit var footerAdapter: GenericItemAdapter
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
+
+    private lateinit var binding: FragmentPlaylistsBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,7 +87,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     }
 
     private fun setupToolbar() {
-        ablPlaylists.toolbarMain.apply {
+        binding.ablPlaylists.toolbarMain.apply {
             inflateMenu(R.menu.main_menu)
 
             // Store and Search configuration
@@ -126,8 +139,8 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
         playlistsAdapter.registerTypeInstance(PlaylistItem(null))
         playlistsAdapter.withSavedInstanceState(savedInstanceState)
 
-        rvPlaylists.layoutManager = LinearLayoutManager(context)
-        rvPlaylists.addItemDecoration(
+        binding.rvPlaylists.layoutManager = LinearLayoutManager(context)
+        binding.rvPlaylists.addItemDecoration(
             DividerItemDecorator(
                 ContextCompat.getDrawable(
                     requireContext(),
@@ -135,7 +148,7 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
                 )!!
             )
         )
-        rvPlaylists.adapter = playlistsAdapter
+        binding.rvPlaylists.adapter = playlistsAdapter
         onItemClick()
     }
 
@@ -154,13 +167,13 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
             when (networkState?.status) {
                 Status.FAILED -> {
                     footerAdapter.clear()
-                    pbPlaylists.makeGone()
+                    binding.pbPlaylists.makeGone()
                     createRetrySnackbar()
                     retrySnackbar?.show()
                 }
                 Status.SUCCESS -> {
                     footerAdapter.clear()
-                    pbPlaylists.makeGone()
+                    binding.pbPlaylists.makeGone()
                 }
                 Status.LOADING -> {
                     if (!isFirstPageLoading) {
@@ -187,11 +200,11 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
     }
 
     private fun showEmptyState() {
-        groupEmptyPlaylists.makeVisible()
+        binding.groupEmptyPlaylists.makeVisible()
     }
 
     private fun hideEmptyState() {
-        groupEmptyPlaylists.makeGone()
+        binding.groupEmptyPlaylists.makeGone()
     }
 
     private fun fetchPlaylists() {
@@ -200,7 +213,11 @@ class PlaylistsFragment : Fragment(R.layout.fragment_playlists) {
 
     private fun createRetrySnackbar() {
         retrySnackbar =
-            Snackbar.make(clPlaylists, R.string.error_fetch_playlists, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(
+                binding.clPlaylists,
+                R.string.error_fetch_playlists,
+                Snackbar.LENGTH_INDEFINITE
+            )
                 .setAnchorView(activity?.findViewById(R.id.bottomNavView) as BottomNavigationView)
                 .setAction(R.string.btn_retry) {
                     viewModel.refreshFailedRequest()
