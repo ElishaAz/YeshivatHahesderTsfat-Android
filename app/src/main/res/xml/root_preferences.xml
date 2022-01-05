@@ -1,0 +1,29 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="@string/preference_file_name">
+
+    <PreferenceCategory app:title="@string/menu_settings">
+        <ListPreference
+            app:defaultValue="@string/theme_value_system"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:key="@string/preference_theme_key"
+            app:title="@string/settings_theme"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="@string/default_locale"
+            app:entries="@array/locales_entries"
+            app:entryValues="@array/locales_values"
+            app:key="@string/preference_locale_key"
+            app:title="@string/settings_locale_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/preference_auto_pip_key"
+            android:summary="@string/settings_enter_pip_summery"
+            android:title="@string/settings_enter_pip_name" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

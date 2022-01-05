@@ -31,7 +31,7 @@
     <string name="dialog_settings_title">הגדרות</string>
     <string name="menu_app_info">מידע על האפליקציה</string>
     <string name="fragment_app_info">מידע על האפליקציה</string>
-    <string name="text_comments">הערות</string>
+    <string name="text_comments">תגובות</string>
     <string name="text_share_playlist">שתף פלייליסט</string>
     <string name="text_share_video">שתף סרטון</string>
     <string name="text_subscribers">מנויים</string>
@@ -86,4 +86,8 @@
         <item quantity="other">%1$d שיעורים</item>
     </plurals>
     <string name="text_share_audio">שתף שיעור</string>
+    <string name="settings_theme">מצב לילה</string>
+    <string name="settings_locale_title">שפה</string>
+    <string name="settings_enter_pip_name">הכנס למצב \"תמונה בתוך תמונה\" אוטומטית</string>
+    <string name="settings_enter_pip_summery">הכנס למצב \"תמונה בתוך תמונה\" כשהסרטון נמצה ברקע</string>
 </resources>

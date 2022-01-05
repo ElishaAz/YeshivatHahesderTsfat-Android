@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="settings_language_values">
+    <string-array name="locales_entries">
         <item>ברירת המחדל של המערכת</item>
         <item>עברית</item>
         <item>English</item>

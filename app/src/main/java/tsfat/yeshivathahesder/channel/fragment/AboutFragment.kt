@@ -75,16 +75,8 @@ class AboutFragment : Fragment() {
         binding.ablAbout.toolbarMain.apply {
             inflateMenu(R.menu.toolbar_menu_about)
 
-            // Change theme menu item icon based on current theme
-            val themeDrawable = if (AppPref.isLightThemeEnabled) ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.ic_theme_light
-            ) else ContextCompat.getDrawable(requireContext(), R.drawable.ic_theme_dark)
-            menu.findItem(R.id.miThemeAbout).icon = themeDrawable
-
             // Store configuration
             menu.findItem(R.id.miStoreAbout).isVisible = resources.getBoolean(R.bool.enable_store)
-
 
             // MenuItem onclick
             setOnMenuItemClickListener { item ->
@@ -96,7 +88,7 @@ class AboutFragment : Fragment() {
                         Tools.showUpdateDialog(context, false)
                     }
                     R.id.miThemeAbout -> {
-                        showThemeChooserDialog()
+                        findNavController().navigate(R.id.action_aboutFragment_to_settingsFragment)
                     }
                     R.id.miAppInfoAbout -> {
                         findNavController().navigate(R.id.action_aboutFragment_to_appInfoFragment)
@@ -212,62 +204,57 @@ class AboutFragment : Fragment() {
         }
     }
 
-    @SuppressLint("CheckResult")
-    private fun showThemeChooserDialog() {
-        val langList = resources.getStringArray(R.array.locales)
-        val langListNames = resources.getStringArray(R.array.settings_language_values).asList()
-
-        val currentLangIndex = if (langList.contains(AppPref.localeOverride))
-            langList.indexOf(AppPref.localeOverride) else 0
-
-
-        MaterialDialog(requireContext()).show {
-            title(R.string.dialog_settings_title)
-            checkBoxPrompt(
-                R.string.dialog_theme_text_dark,
-                isCheckedDefault = !AppPref.isLightThemeEnabled
-            ) {
-                if (it) {
-                    setTheme(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    setTheme(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
-            listItemsSingleChoice(
-                items = langListNames,
-                initialSelection = currentLangIndex
-            ) { dialog, index, text ->
-                AppPref.localeOverride = langList[index]
-                LocaleHelper.setLocale(context, AppPref.localeOverride)
-                val parent = activity
-                if (parent is MainActivity)
-                    parent.checkLocaleChange()
-            }
-
-            negativeButton(R.string.dialog_negative_button) {
-            }
-            positiveButton(R.string.dialog_positive_button) {
-            }
-
-//            listItemsSingleChoice(
-//                items = themeList,
-//                initialSelection = currentThemeIndex
-//            ) { dialog, index, text ->
-//                when (text) {
-//                    getString(R.string.dialog_theme_text_light) -> {
-//                        setTheme(AppCompatDelegate.MODE_NIGHT_NO)
-//                    }
-//                    getString(R.string.dialog_theme_text_dark) -> {
-//                        setTheme(AppCompatDelegate.MODE_NIGHT_YES)
-//                    }
+//    @SuppressLint("CheckResult")
+//    private fun showThemeChooserDialog() {
+//        val langList = resources.getStringArray(R.array.locales_values)
+//        val langListNames = resources.getStringArray(R.array.locales_entries).asList()
+//
+//        val currentLangIndex = if (langList.contains(AppPref.localeOverride))
+//            langList.indexOf(AppPref.localeOverride) else 0
+//
+//
+//        MaterialDialog(requireContext()).show {
+//            title(R.string.dialog_settings_title)
+//            checkBoxPrompt(
+//                R.string.dialog_theme_text_dark,
+//                isCheckedDefault = !AppPref.isLightThemeEnabled(requireContext())
+//            ) {
+//                if (it) {
+//                    setTheme(AppCompatDelegate.MODE_NIGHT_YES)
+//                } else {
+//                    setTheme(AppCompatDelegate.MODE_NIGHT_NO)
 //                }
 //            }
-        }
-    }
-
-    private fun setTheme(themeMode: Int) {
-        AppCompatDelegate.setDefaultNightMode(themeMode)
-        AppPref.isLightThemeEnabled = themeMode == AppCompatDelegate.MODE_NIGHT_NO
-    }
+//            listItemsSingleChoice(
+//                items = langListNames,
+//                initialSelection = currentLangIndex
+//            ) { dialog, index, text ->
+//                AppPref.localeOverride = langList[index]
+//                LocaleHelper.setLocale(context, AppPref.localeOverride)
+//                val parent = activity
+//                if (parent is MainActivity)
+//                    parent.checkLocaleChange()
+//            }
+//
+//            negativeButton(R.string.dialog_negative_button) {
+//            }
+//            positiveButton(R.string.dialog_positive_button) {
+//            }
+//
+////            listItemsSingleChoice(
+////                items = themeList,
+////                initialSelection = currentThemeIndex
+////            ) { dialog, index, text ->
+////                when (text) {
+////                    getString(R.string.dialog_theme_text_light) -> {
+////                        setTheme(AppCompatDelegate.MODE_NIGHT_NO)
+////                    }
+////                    getString(R.string.dialog_theme_text_dark) -> {
+////                        setTheme(AppCompatDelegate.MODE_NIGHT_YES)
+////                    }
+////                }
+////            }
+//        }
+//    }
 }
 

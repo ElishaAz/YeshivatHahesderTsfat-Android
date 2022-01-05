@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="theme_entries">
+        <item>System</item>
+        <item>Day</item>
+        <item>Night</item>
+    </string-array>
+</resources>

@@ -82,7 +82,6 @@
     <string name="menu_share">Share</string>
     <string name="menu_details">Details</string>
     <string name="menu_search_videos">Search Videos</string>
-    <string name="menu_settings">Settings</string>
     <string name="menu_rate_us">Rate app on Google Play</string>
     <string name="menu_feedback">Send us a feedback</string>
     <string name="menu_tos">Terms of Service</string>
@@ -128,4 +127,11 @@
 
     <string name="audio_share_url" translatable="false">https://drive.google.com/file/d/%1$s/view</string>
     <string name="audio_open_url" translatable="false">https://drive.google.com/file/d/%1$s/view</string>
+
+    <!-- Settings -->
+    <string name="menu_settings">Settings</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_locale_title">Language</string>
+    <string name="settings_enter_pip_name">Enter PIP mode automatically</string>
+    <string name="settings_enter_pip_summery">Enter \"Picture In Picture\" mode whenever the video is in the background</string>
 </resources>

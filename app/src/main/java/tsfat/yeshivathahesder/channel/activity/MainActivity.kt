@@ -2,6 +2,7 @@ package tsfat.yeshivathahesder.channel.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,7 +31,6 @@ import tsfat.yeshivathahesder.channel.di.PlayVideo
 import tsfat.yeshivathahesder.channel.locales.LocaleHelper
 import tsfat.yeshivathahesder.channel.model.FavoritesEntry
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
-import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_VIDEO
 import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.utils.InjectorUtils
@@ -37,7 +38,6 @@ import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.NowPlayingFragmentViewModel
 import tsfat.yeshivathahesder.channel.utils.Tools
-import tsfat.yeshivathahesder.channel.viewmodel.FavoritesViewModel
 import tsfat.yeshivathahesder.channel.viewmodel.VideoDetailsViewModel
 import tsfat.yeshivathahesder.core.extensions.*
 
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private var initialLayoutComplete = false
     private lateinit var initialLocale: String
+    private var initialIsLight: Boolean = true
 
     private lateinit var binding: ActivityMainBinding
 
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initialLocale = AppPref.localeOverride
+
+        AppPref.preferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
         audioOnCreate(savedInstanceState)
 
@@ -69,11 +72,33 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
         checkLocaleChange()
     }
 
-    fun checkLocaleChange() {
+    private val preferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
+            when (key) {
+                getString(R.string.preference_locale_key) -> checkLocaleChange()
+                getString(R.string.preference_theme_key) -> checkThemeChange()
+            }
+        }
+
+    private fun checkThemeChange() {
+//        val isLight = AppPref.isLightThemeEnabled(this)
+//        if (initialIsLight != isLight) {
+//            if (isLight) {
+//                setTheme(AppCompatDelegate.MODE_NIGHT_NO)
+//            } else {
+//                setTheme(AppCompatDelegate.MODE_NIGHT_YES)
+//            }
+//            initialIsLight = isLight
+//            Timber.d("Theme changed!")
+//        }
+        AppCompatDelegate.setDefaultNightMode(AppPref.modeNight)
+        setTheme(AppPref.modeNight)
+    }
+
+    private fun checkLocaleChange() {
         // Locale changes
         if (initialLocale != AppPref.localeOverride) {
             recreate();

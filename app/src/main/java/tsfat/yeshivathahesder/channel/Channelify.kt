@@ -3,6 +3,8 @@ package tsfat.yeshivathahesder.channel
 import tsfat.yeshivathahesder.channel.di.*
 import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 import android.app.Application
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.appcompat.app.AppCompatDelegate
 import com.chibatching.kotpref.Kotpref
 import org.koin.android.ext.koin.androidContext
@@ -32,12 +34,7 @@ class Channelify : Application() {
     }
 
     private fun setThemeMode() {
-        if (AppPref.isLightThemeEnabled) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-
+        AppCompatDelegate.setDefaultNightMode(AppPref.modeNight)
     }
 
     private fun initializeTimber() {

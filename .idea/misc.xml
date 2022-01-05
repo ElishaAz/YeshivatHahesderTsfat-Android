@@ -29,6 +29,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_open_in_browser_24.xml" value="0.10740740740740741" />
         <entry key="app/src/main/res/drawable/ic_baseline_picture_in_picture_alt_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_replay_10_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_skip_previous_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_stop_24.xml" value="0.1" />
@@ -36,6 +37,9 @@
         <entry key="app/src/main/res/drawable/ic_code.xml" value="0.10740740740740741" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.10740740740740741" />
         <entry key="app/src/main/res/drawable/ic_favorite_border.xml" value="0.10740740740740741" />
+        <entry key="app/src/main/res/drawable/ic_favorite_filled.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_favorite_filled_border.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_forward.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_github.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/drawable/ic_mic.xml" value="0.21770833333333334" />
@@ -43,7 +47,9 @@
         <entry key="app/src/main/res/drawable/ic_play_arrow_black_24dp.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_playlists.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/drawable/ic_privacy_policy.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_rewind.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_video.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/drawable/ic_youtube.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/media_item_background.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/now_playing_bg.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/round_button.xml" value="0.1" />
@@ -61,14 +67,19 @@
         <entry key="app/src/main/res/layout/fragment_mediaitem_list.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/fragment_nowplaying.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/fragment_playlist_details.xml" value="0.10869565217391304" />
+        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_video_details.xml" value="0.2015625" />
         <entry key="app/src/main/res/layout/item_audio.xml" value="0.1671195652173913" />
         <entry key="app/src/main/res/layout/item_comment.xml" value="0.10869565217391304" />
         <entry key="app/src/main/res/layout/item_favorite.xml" value="0.2015625" />
         <entry key="app/src/main/res/layout/item_home.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/item_playlist.xml" value="0.1" />
         <entry key="app/src/main/res/menu/app_info_menu.xml" value="0.19846153846153847" />
         <entry key="app/src/main/res/menu/bab_menu_video_details.xml" value="0.2015625" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2015625" />
+        <entry key="app/src/main/res/menu/toolbar_menu_about.xml" value="0.2015625" />
+        <entry key="app/src/main/res/xml/root_preferences.xml" value="0.1" />
+        <entry key="app/src/main/res/xml/settings_preferences.xml" value="0.1" />
         <entry key="core/src/main/res/drawable/ic_launcher_foreground.xml" value="0.21458333333333332" />
         <entry key="core/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="music_common/src/main/res/menu/main_activity_menu.xml" value="0.2015625" />

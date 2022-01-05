@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="theme_value_system" translatable="false">system</string>
+    <string name="theme_value_light" translatable="false">light</string>
+    <string name="theme_value_dark" translatable="false">dark</string>
+    <string-array name="theme_values">
+        <item>@string/theme_value_system</item>
+        <item>@string/theme_value_light</item>
+        <item>@string/theme_value_dark</item>
+    </string-array>
+
+    <string name="preference_file_name" translatable="false">app_preferences_file_name</string>
+    <string name="preference_theme_key" translatable="false">theme_key</string>
+    <string name="preference_locale_key" translatable="false">locale_key</string>
+    <string name="preference_auto_pip_key" translatable="false">auto_pip_key</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="theme_entries">
+        <item>מערכת</item>
+        <item>יום</item>
+        <item>לילה</item>
+    </string-array>
+</resources>

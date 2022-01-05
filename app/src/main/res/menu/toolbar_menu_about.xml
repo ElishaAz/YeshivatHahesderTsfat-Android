@@ -16,7 +16,7 @@
 
     <item
         android:id="@+id/miThemeAbout"
-        android:icon="@drawable/ic_theme_light"
+        android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/menu_settings"
         app:showAsAction="ifRoom" />
 

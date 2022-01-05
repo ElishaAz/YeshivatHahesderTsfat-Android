@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_aboutFragment_to_appInfoFragment"
             app:destination="@id/appInfoFragment" />
+        <action
+            android:id="@+id/action_aboutFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/playlistVideosFragment"
@@ -81,5 +84,9 @@
         android:name="tsfat.yeshivathahesder.channel.fragment.AppInfoFragment"
         android:label="@string/fragment_app_info"
         tools:layout="@layout/fragment_app_info" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="tsfat.yeshivathahesder.channel.fragment.SettingsFragment"
+        android:label="@string/menu_settings" />
 
 </navigation>

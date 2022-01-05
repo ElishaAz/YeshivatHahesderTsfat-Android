@@ -1,7 +1,6 @@
 package tsfat.yeshivathahesder.core.extensions
 
 
-import tsfat.yeshivathahesder.core.R
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -13,11 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.ColorRes
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
-import saschpe.android.customtabs.CustomTabsHelper
-import saschpe.android.customtabs.WebViewFallback
-import androidx.core.content.ContextCompat.startActivity
+import tsfat.yeshivathahesder.core.R
 
 
 /**
