@@ -1,6 +1,6 @@
 <resources>
     <string-array name="theme_entries">
-        <item>מערכת</item>
+        <item>ברירת המחדל של המערכת</item>
         <item>יום</item>
         <item>לילה</item>
     </string-array>

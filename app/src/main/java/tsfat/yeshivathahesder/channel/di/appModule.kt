@@ -64,7 +64,7 @@ fun provideApplicationSignature(context: Context): List<String> {
         }
         return signatureList
     } catch (e: Exception) {
-        Timber.e(e.stackTraceToString())
+        Timber.e(e)
     }
     return emptyList()
 }

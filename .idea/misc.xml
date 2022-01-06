@@ -24,6 +24,7 @@
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/menu/bab_menu_video_details.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/menu/toolbar_menu_about.xml" value="0.20833333333333334" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/mipmap-anydpi-v26/ic_yhtsfat.xml" value="0.22447916666666667" />
+        <entry key="app/src/main/res/drawable/ic_baseline_bedtime_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_forward_10_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_open_in_browser_24.xml" value="0.10740740740740741" />
@@ -33,6 +34,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_skip_previous_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_stop_24.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_baseline_translate_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_close.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_code.xml" value="0.10740740740740741" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.10740740740740741" />
@@ -48,6 +50,7 @@
         <entry key="app/src/main/res/drawable/ic_playlists.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/drawable/ic_privacy_policy.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_rewind.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_share.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_video.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/drawable/ic_youtube.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/media_item_background.xml" value="0.1" />

@@ -8,6 +8,7 @@ import tsfat.yeshivathahesder.channel.utils.FullScreenHelper
 import tsfat.yeshivathahesder.channel.utils.media.MediaSessionController
 import tsfat.yeshivathahesder.channel.viewmodel.VideoPlayerViewModel
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -25,10 +26,20 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.loadOrCueVideo
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import android.app.PictureInPictureParams
+import android.app.RemoteAction
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.drawable.Icon
+import android.util.Log
 import android.util.Rational
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.core.app.RemoteActionCompat
+import androidx.core.graphics.drawable.IconCompat
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import timber.log.Timber
 import tsfat.yeshivathahesder.channel.databinding.ActivityVideoPlayerBinding
 import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 
@@ -45,10 +56,31 @@ class VideoPlayerActivity : AppCompatActivity() {
             val intent = Intent(context, VideoPlayerActivity::class.java).apply {
                 putExtra(VIDEO_ID, videoId)
             }
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             context?.startActivity(intent)
         }
 
+        fun getPauseIntent(): Intent {
+            val intent = Intent(ACTION_MEDIA_CONTROL)
+            intent.putExtra(EXTRA_MEDIA_CONTROL_ACTION, ACTION_PAUSE)
+            return intent
+        }
+
         private val autoEnterPIP_A12: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+        const val ACTION_MEDIA_CONTROL = "tsfat.yeshivathahesder.channel.PIP_CONTROL"
+        const val EXTRA_MEDIA_CONTROL_ACTION = "tsfat.yeshivathahesder.channel.EXTRA_PIP_CONTROL"
+
+        const val ACTION_REPLAY = "action_replay"
+        const val ACTION_FORWARD = "action_forward"
+        const val ACTION_PLAY = "action_play"
+        const val ACTION_PAUSE = "action_pause"
+        const val ACTION_PLAY_PAUSE = "action_play_pause"
+//        const val ACTION_REWIND = "action_rewind"
+//        const val ACTION_FAST_FORWARD = "action_fast_foward"
+//        const val ACTION_NEXT = "action_next"
+//        const val ACTION_PREVIOUS = "action_previous"
+//        const val ACTION_STOP = "action_stop"
     }
 
     private lateinit var binding: ActivityVideoPlayerBinding
@@ -60,8 +92,11 @@ class VideoPlayerActivity : AppCompatActivity() {
     private var videoElapsedTimeInSeconds = 0f
 
     private var autoEnterPIP: Boolean = true
+    private var shouldAutoEnterPIP = false
+    private var isPlaying = false
 
     private lateinit var ytVideoPlayerView: YouTubePlayerView
+    private var ytPlayer: YouTubePlayer? = null
 
 
     private lateinit var mediaSession: MediaSessionCompat
@@ -86,6 +121,23 @@ class VideoPlayerActivity : AppCompatActivity() {
         )
 
         initYouTubePlayer()
+
+        val filter = IntentFilter(ACTION_MEDIA_CONTROL)
+        registerReceiver(receiver, filter)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        intent ?: return
+
+        videoId = intent.getStringExtra(VIDEO_ID)!!
+
+        findNavController(R.id.navHostVideoPlayer).setGraph(
+            R.navigation.video_player_graph,
+            bundleOf(VideoDetailsFragment.VIDEO_ID to videoId)
+        )
+        ytPlayer?.loadOrCueVideo(lifecycle, videoId, 0f)
     }
 
     override fun onBackPressed() {
@@ -96,6 +148,12 @@ class VideoPlayerActivity : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isTaskRoot)
+            finishAndRemoveTask()
     }
 
     override fun onDestroy() {
@@ -113,23 +171,12 @@ class VideoPlayerActivity : AppCompatActivity() {
             ytVideoPlayerView.enableBackgroundPlayback(true)
         }
 
-
         ytVideoPlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
                 youTubePlayer.loadOrCueVideo(lifecycle, videoId, 0f)
                 addFullScreenListenerToPlayer()
                 setupCustomActions(youTubePlayer)
-
-//                if (autoEnterPIP_A12 && autoEnterPIP) {
-//                    val aspectRatio = Rational(ytVideoPlayerView.width, ytVideoPlayerView.height)
-//                    setPictureInPictureParams(
-//                        PictureInPictureParams.Builder()
-//                            .setAspectRatio(aspectRatio)
-//                            .setSourceRectHint(ytVideoPlayerView.clipBounds)
-//                            .setAutoEnterEnabled(true)
-//                            .build()
-//                    )
-//                }
+                ytPlayer = youTubePlayer
             }
 
             override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
@@ -141,6 +188,12 @@ class VideoPlayerActivity : AppCompatActivity() {
                 state: PlayerConstants.PlayerState
             ) {
                 shouldAutoEnterPIP = state == PlayerConstants.PlayerState.PLAYING
+                isPlaying =
+                    state == PlayerConstants.PlayerState.PLAYING || state == PlayerConstants.PlayerState.BUFFERING
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    setPictureInPictureParams(createPIPParams())
+                }
             }
         })
 
@@ -155,23 +208,70 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
     }
 
-    private var shouldAutoEnterPIP = false
-
     override fun onUserLeaveHint() {
         if (autoEnterPIP /* && !autoEnterPIP_A12 */ && shouldAutoEnterPIP) {
             enterPIP()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun generateAction(
+        icon: Int,
+        title: String,
+        intentAction: String
+    ): RemoteAction {
+        val intent = Intent(ACTION_MEDIA_CONTROL)
+//        intent.setClass(this, receiver.javaClass)
+        intent.putExtra(EXTRA_MEDIA_CONTROL_ACTION, intentAction)
+        val pendingIntent =
+            PendingIntent.getBroadcast(
+                this,
+                0,
+                intent,
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+            )
+        return RemoteAction(
+            Icon.createWithResource(this, icon),
+            title,
+            title,
+            pendingIntent
+        )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun createPIPParams(): PictureInPictureParams {
+        val aspectRatio = Rational(ytVideoPlayerView.width, ytVideoPlayerView.height)
+
+        Timber.d("Playing: $isPlaying")
+
+//        val backTen = generateAction(
+//            R.drawable.ic_rewind, "Replay 10s", ACTION_REPLAY
+//        )
+        val playPauseAction = if (!isPlaying) generateAction(
+            R.drawable.ic_play_arrow_black_24dp, "Play", ACTION_PLAY_PAUSE
+        ) else generateAction(
+            R.drawable.ic_pause_black_24dp, "Pause", ACTION_PLAY_PAUSE
+        )
+//        val forwardTen = generateAction(
+//            R.drawable.ic_forward, "Forward 10s", ACTION_FORWARD
+//        )
+
+        val actionList = if (maxNumPictureInPictureActions >= 3) listOf(
+//            backTen,
+            playPauseAction
+//            ,
+//            forwardTen
+        ) else listOf(playPauseAction)
+        return PictureInPictureParams.Builder()
+            .setActions(actionList)
+            .setAspectRatio(aspectRatio)
+            .setSourceRectHint(ytVideoPlayerView.clipBounds)
+            .build()
+    }
+
     fun enterPIP() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val aspectRatio = Rational(ytVideoPlayerView.width, ytVideoPlayerView.height)
-            enterPictureInPictureMode(
-                PictureInPictureParams.Builder()
-                    .setAspectRatio(aspectRatio)
-                    .setSourceRectHint(ytVideoPlayerView.clipBounds)
-                    .build()
-            )
+            enterPictureInPictureMode(createPIPParams())
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             enterPictureInPictureMode()
         }
@@ -190,7 +290,36 @@ class VideoPlayerActivity : AppCompatActivity() {
             if (wasFullScreen)
                 ytVideoPlayerView.enterFullScreen()
         }
+    }
 
+    private val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Timber.d(intent.toString())
+            handleBroadcast(intent)
+            intent?.getStringExtra(EXTRA_MEDIA_CONTROL_ACTION)?.let {
+                Timber.d(it)
+            }
+        }
+    }
+
+    private fun handleBroadcast(intent: Intent?) {
+        intent ?: return
+        val player = ytPlayer ?: return
+        if (intent.action != ACTION_MEDIA_CONTROL) return
+        val action = intent.getStringExtra(EXTRA_MEDIA_CONTROL_ACTION) ?: return
+        when (action) {
+            ACTION_PLAY -> player.play()
+            ACTION_PAUSE -> player.pause()
+            ACTION_REPLAY -> {
+                videoElapsedTimeInSeconds -= R.integer.video_rewind_seconds
+                player.seekTo(videoElapsedTimeInSeconds)
+            }
+            ACTION_FORWARD -> {
+                videoElapsedTimeInSeconds += R.integer.video_forward_seconds
+                player.seekTo(videoElapsedTimeInSeconds)
+            }
+            ACTION_PLAY_PAUSE -> if (isPlaying) player.pause() else player.play()
+        }
     }
 
     /**
@@ -199,17 +328,17 @@ class VideoPlayerActivity : AppCompatActivity() {
     private fun setupCustomActions(youTubePlayer: YouTubePlayer) {
         ytVideoPlayerView.getPlayerUiController()
             .setCustomAction1(
-                ContextCompat.getDrawable(this, R.drawable.ic_rewind)!!,
-                View.OnClickListener {
-                    videoElapsedTimeInSeconds -= 10
-                    youTubePlayer.seekTo(videoElapsedTimeInSeconds)
-                })
+                ContextCompat.getDrawable(this, R.drawable.ic_rewind)!!
+            ) {
+                videoElapsedTimeInSeconds -= R.integer.video_rewind_seconds
+                youTubePlayer.seekTo(videoElapsedTimeInSeconds)
+            }
             .setCustomAction2(
-                ContextCompat.getDrawable(this, R.drawable.ic_forward)!!,
-                View.OnClickListener {
-                    videoElapsedTimeInSeconds += 10
-                    youTubePlayer.seekTo(videoElapsedTimeInSeconds)
-                })
+                ContextCompat.getDrawable(this, R.drawable.ic_forward)!!
+            ) {
+                videoElapsedTimeInSeconds += R.integer.video_forward_seconds
+                youTubePlayer.seekTo(videoElapsedTimeInSeconds)
+            }
     }
 
     /**

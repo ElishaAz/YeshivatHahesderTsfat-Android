@@ -188,6 +188,7 @@ class MainActivity : AppCompatActivity() {
             nowPlayingMaximized.postValue(false)
             viewModel.playMediaId(it)
             binding.nowPlayingCard.makeVisible()
+            sendBroadcast(VideoPlayerActivity.getPauseIntent())
         }
         playVideo.play = { context, id ->
             viewModel.pause()
