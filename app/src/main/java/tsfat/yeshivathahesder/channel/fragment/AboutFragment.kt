@@ -31,6 +31,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tsfat.yeshivathahesder.channel.Channelify
 import tsfat.yeshivathahesder.channel.databinding.FragmentAboutBinding
 
 /**
@@ -78,6 +79,8 @@ class AboutFragment : Fragment() {
             // Store configuration
             menu.findItem(R.id.miStoreAbout).isVisible = resources.getBoolean(R.bool.enable_store)
 
+            menu.findItem(R.id.miCheckUpdate).isVisible = Channelify.isUpdateNotifyEnabled
+
             // MenuItem onclick
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -85,7 +88,8 @@ class AboutFragment : Fragment() {
                         context.openUrl(getString(R.string.store_url), R.color.defaultBgColor)
                     }
                     R.id.miCheckUpdate -> {
-                        Tools.showUpdateDialog(context, false)
+                        if (Channelify.isUpdateNotifyEnabled)
+                            Tools.showUpdateDialog(context, false)
                     }
                     R.id.miThemeAbout -> {
                         findNavController().navigate(R.id.action_aboutFragment_to_settingsFragment)

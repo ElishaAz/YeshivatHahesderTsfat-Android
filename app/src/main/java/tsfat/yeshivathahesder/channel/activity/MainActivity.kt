@@ -24,6 +24,7 @@ import com.google.android.gms.cast.framework.CastContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.Channelify
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.databinding.ActivityMainBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
@@ -60,7 +61,9 @@ class MainActivity : AppCompatActivity() {
 
         audioOnCreate(savedInstanceState)
 
-        Tools.showUpdateDialog(this, true)
+
+        if (Channelify.isUpdateNotifyEnabled)
+            Tools.showUpdateDialog(this, true)
 //        MyNotificationManager.createNotificationChannel(this)
 
         val navController = Navigation.findNavController(this, R.id.navHostFragment)
