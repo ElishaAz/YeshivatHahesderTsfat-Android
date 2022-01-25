@@ -2,11 +2,16 @@ package tsfat.yeshivathahesder.channel.uamp.media.library
 
 import android.content.Context
 import android.util.Log
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ServerTimestamp
+import com.google.firebase.firestore.core.FirestoreClient
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -14,6 +19,13 @@ import tsfat.yeshivathahesder.channel.uamp.R
 import java.io.IOException
 import java.net.UnknownHostException
 import java.util.*
+
+private val firestore: FirebaseFirestore
+    get() {
+        val db = Firebase.firestore
+//        db.firestoreSettings = FirebaseFirestoreSettings.Builder().setSslEnabled(false).build()
+        return db
+    }
 
 /**
  * Attempts to download the catalog from firebase
@@ -23,7 +35,7 @@ import java.util.*
  */
 @Throws(IOException::class)
 suspend fun downloadCatalog(context: Context): Pair<DriveCatalog, Boolean> {
-    val db = Firebase.firestore
+    val db = firestore
 
     val res = db.collection(context.getString(R.string.firebase_catalog_collection))
         .document(context.getString(R.string.firebase_catalog_document)).get().await()
@@ -40,7 +52,7 @@ suspend fun downloadCatalog(context: Context): Pair<DriveCatalog, Boolean> {
 @Throws(IOException::class)
 suspend fun uploadCatalog(context: Context): DriveCatalog? {
     val uuid = UUID.randomUUID().toString()
-    val db = Firebase.firestore
+    val db = firestore
 
     val lockRef = db.collection(context.getString(R.string.firebase_catalog_collection))
         .document(context.getString(R.string.firebase_catalog_lock_document))
