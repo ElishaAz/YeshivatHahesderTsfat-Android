@@ -190,22 +190,22 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/openInBrowserButton"
                     style="@style/VectorImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     app:srcCompat="@drawable/ic_baseline_open_in_browser_24" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/favoriteButton"
                     style="@style/VectorImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     app:srcCompat="@drawable/ic_favorite_border" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/shareButton"
                     style="@style/VectorImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     app:srcCompat="@drawable/ic_share" />
             </LinearLayout>
 

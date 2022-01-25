@@ -377,6 +377,11 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
+        nowPlayingViewModel.mediaMetadata.observe(this, Observer { media ->
+            favoritesViewModel.getVideoInfo(media.id)
+            favoritesViewModel.getVideoFavoriteStatus(media.id)
+        })
+
         binding.favoriteButton.setOnClickListener {
             val metadata = nowPlayingViewModel.mediaMetadata.value!!
             val favoriteVideo = FavoritesEntry(
