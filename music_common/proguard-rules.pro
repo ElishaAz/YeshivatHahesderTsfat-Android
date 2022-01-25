@@ -21,3 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class tsfat.yeshivathahesder.channel.uamp.media.library.** { *; }
+
+# Disable obfuscation
+-dontobfuscate
+-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*,!code/allocation/variable
