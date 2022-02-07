@@ -157,10 +157,15 @@ fun getQuery(context: Context, ids: List<String>): String {
 
 fun fileIdToUri(context: Context, id: String): String {
 //        val template = if (isFolder) context.getString(R.string.google_drive_folder_template)
+//    return context.getString(
+//        R.string.google_drive_link_template,
+//        id,
+//        context.getString(R.string.drive_api_key)
+//    )
+
     return context.getString(
         R.string.google_drive_link_template,
-        id,
-        context.getString(R.string.drive_api_key)
+        id
     )
 //        return template.replace("{ID}", id)
 //            .replace("{KEY}", context.getString(R.string.drive_api_key))

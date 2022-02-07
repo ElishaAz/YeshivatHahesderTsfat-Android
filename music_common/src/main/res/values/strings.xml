@@ -44,7 +44,8 @@
     <string name="albums_title">Albums</string>
 
     <!-- Google Drive -->
-    <string name="google_drive_link_template" translatable="false">https://www.googleapis.com/drive/v3/files/%1$s?alt=media&amp;key=%2$s</string>
+<!--    <string name="google_drive_link_template" translatable="false">https://www.googleapis.com/drive/v3/files/%1$s?alt=media&amp;key=%2$s</string>-->
+    <string name="google_drive_link_template" translatable="false">https://drive.google.com/u/1/uc?id=%1$s&amp;export=download</string>
     <string name="google_drive_query_template" translatable="false">https://www.googleapis.com/drive/v3/files?q=%1$s&amp;fields=files(id,name,mimeType,createdTime,parents)&amp;key=%2$s</string>
     <string name="google_drive_root_id" translatable="false" tools:ignore="TypographyDashes">1-4fu_bw8sOniSJqxqgtUdHlQRdscusFT</string>
     <!--    <string name="google_drive_query_folder">\'{ID}\'+in+parents</string>-->
