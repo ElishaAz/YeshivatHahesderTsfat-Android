@@ -25,6 +25,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ytVideoPlayerView"
         app:layout_constraintBottom_toBottomOf="parent"
-         />
+        tools:layout="@layout/fragment_video_details" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

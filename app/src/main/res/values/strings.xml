@@ -79,6 +79,7 @@
     <string name="menu_add_to_favorites">Add to favorites</string>
     <string name="menu_pip">Start \"Picture In Picture\" mode</string>
     <string name="menu_open_in_youtube">Open in Youtube</string>
+    <string name="menu_open_in_browser">Open in browser</string>
     <string name="menu_share">Share</string>
     <string name="menu_details">Details</string>
     <string name="menu_search_videos">Search Videos</string>
@@ -88,6 +89,12 @@
     <string name="menu_privacy_policy">Privacy Policy</string>
     <string name="menu_source_code">Source Code</string>
     <string name="menu_check_updae">Check for updates</string>
+
+    <string name="menu_website">Website</string>
+    <string name="menu_google_play">Google Play listing</string>
+    <string name="menu_call">Call</string>
+    <string name="menu_facebook">Facebook</string>
+    <string name="menu_email">Email</string>
 
     <!-- Dialog -->
     <string name="dialog_theme_text_dark">Dark Theme</string>
@@ -121,6 +128,8 @@
     <string name="skip_forward_10s">Skip forward 10s</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
+    <string name="play_pause">Play / Pause</string>
+    <string name="stop">Stop</string>
 
     <string name="duration_unknown">--:--</string>
     <string name="duration_format">%d:%02d</string>

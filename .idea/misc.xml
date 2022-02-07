@@ -52,6 +52,7 @@
         <entry key="app/src/main/res/drawable/ic_rewind.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_share.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_video.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/drawable/ic_website.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_youtube.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/media_item_background.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/now_playing_bg.xml" value="0.1" />
@@ -61,6 +62,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_video_player.xml" value="0.1671195652173913" />
         <entry key="app/src/main/res/layout/cast_context_error.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_about.xml" value="0.10326086956521739" />
         <entry key="app/src/main/res/layout/fragment_app_info.xml" value="0.2015625" />
         <entry key="app/src/main/res/layout/fragment_audio.xml" value="0.15715579710144928" />
         <entry key="app/src/main/res/layout/fragment_comment_replies.xml" value="0.129981884057971" />

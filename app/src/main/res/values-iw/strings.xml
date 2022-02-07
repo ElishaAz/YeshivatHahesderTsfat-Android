@@ -68,7 +68,7 @@
     <string name="skip_back_10s">דלג אחורה 10 ש\'</string>
     <string name="skip_forward_10s">דלג קדימה 10 ש\'</string>
     <string name="play">נגן</string>
-    <string name="pause">עצור</string>
+    <string name="pause">השהה</string>
     <string name="duration_unknown">--:--</string>
     <string name="duration_format">%d:%02d</string>
     <string name="menu_audio">אודיו</string>
@@ -90,4 +90,12 @@
     <string name="settings_locale_title">שפה</string>
     <string name="settings_enter_pip_name">הכנס למצב \"תמונה בתוך תמונה\" אוטומטית</string>
     <string name="settings_enter_pip_summery">הכנס למצב \"תמונה בתוך תמונה\" כשהסרטון נמצה ברקע</string>
+    <string name="play_pause">נגן / השהה</string>
+    <string name="stop">עצור</string>
+    <string name="menu_open_in_browser">פתח בדפדפן</string>
+    <string name="menu_website">אתר אינטרנט</string>
+    <string name="menu_google_play">האפליקציה בחנות האפליקציות</string>
+    <string name="menu_call">התקשר</string>
+    <string name="menu_facebook">פייסבוק</string>
+    <string name="menu_email">אימייל</string>
 </resources>

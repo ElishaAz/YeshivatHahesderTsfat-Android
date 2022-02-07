@@ -131,6 +131,7 @@
                     android:layout_width="@dimen/exo_media_button_width"
                     android:layout_height="@dimen/exo_media_button_height"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/skip_back_10s"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_baseline_replay_10_24"
                     tools:ignore="ContentDescription" />
@@ -140,6 +141,7 @@
                     android:layout_width="@dimen/exo_media_button_width"
                     android:layout_height="@dimen/exo_media_button_height"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/play_pause"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_play_arrow_black_24dp"
                     tools:ignore="ContentDescription" />
@@ -149,6 +151,7 @@
                     android:layout_width="@dimen/exo_media_button_width"
                     android:layout_height="@dimen/exo_media_button_height"
                     android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/skip_forward_10s"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/ic_baseline_forward_10_24"
                     tools:ignore="ContentDescription" />
@@ -170,13 +173,13 @@
                 android:layout_width="@dimen/exo_media_button_width"
                 android:layout_height="@dimen/exo_media_button_height"
                 android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/stop"
                 android:scaleType="centerInside"
                 app:layout_constraintBottom_toTopOf="@id/links"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/durationMax"
                 app:srcCompat="@drawable/ic_baseline_close_24"
-                tools:ignore="ContentDescription"
-                tools:layout_editor_absoluteY="47dp" />
+                tools:ignore="ContentDescription" />
 
             <LinearLayout
                 android:id="@+id/links"
@@ -190,22 +193,25 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/openInBrowserButton"
                     style="@style/VectorImageButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/menu_open_in_browser"
                     app:srcCompat="@drawable/ic_baseline_open_in_browser_24" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/favoriteButton"
                     style="@style/VectorImageButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/menu_add_to_favorites"
                     app:srcCompat="@drawable/ic_favorite_border" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/shareButton"
                     style="@style/VectorImageButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/menu_share"
                     app:srcCompat="@drawable/ic_share" />
             </LinearLayout>
 
