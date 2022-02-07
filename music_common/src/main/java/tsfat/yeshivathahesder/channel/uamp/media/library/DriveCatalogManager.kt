@@ -1,17 +1,23 @@
 package tsfat.yeshivathahesder.channel.uamp.media.library
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.content.pm.Signature
 import android.util.Log
+import com.google.common.io.BaseEncoding
 import com.google.firebase.firestore.ServerTimestamp
 import com.google.gson.Gson
 import tsfat.yeshivathahesder.channel.uamp.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.StringBuilder
+import java.lang.RuntimeException
+import java.net.HttpURLConnection
 import java.net.URL
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 /**
  * Attempts to create a catalog from a google drive folder,
@@ -32,7 +38,8 @@ fun downloadCatalogRecursive(context: Context): DriveCatalog {
     val files: MutableList<DriveMusic> = ArrayList<DriveMusic>()
 
     val rootQueryStartTime = System.currentTimeMillis()
-    val root = queryDrive(getQuery(context, context.getString(R.string.google_drive_root_id)))
+    val root =
+        queryDrive(getQuery(context, context.getString(R.string.google_drive_root_id)), context)
     folders.add(root)
     totalQueryTime += (System.currentTimeMillis() - rootQueryStartTime) / 1000.0
     queryCount++
@@ -44,7 +51,7 @@ fun downloadCatalogRecursive(context: Context): DriveCatalog {
             if (file.mimeType.equals("application/vnd.google-apps.folder")) {
 
                 val queryStartTime = System.currentTimeMillis()
-                val query = queryDrive(getQuery(context, file.id))
+                val query = queryDrive(getQuery(context, file.id), context)
                 totalQueryTime += (System.currentTimeMillis() - queryStartTime) / 1000.0
                 queryCount++
 
@@ -86,7 +93,7 @@ fun downloadCatalogLayers(context: Context, rootID: String): DriveCatalog {
     val folderIds: MutableList<String> = ArrayList<String>()
 
     val firstQueryStart = System.currentTimeMillis()
-    val root = queryDrive(getQuery(context, rootID))
+    val root = queryDrive(getQuery(context, rootID), context)
     val firstQueryTime = (System.currentTimeMillis() - firstQueryStart) / 1000.0
 
     for (file in root.files) {
@@ -100,7 +107,7 @@ fun downloadCatalogLayers(context: Context, rootID: String): DriveCatalog {
         }
     }
     val secondQueryStart = System.currentTimeMillis()
-    val filesQuery = queryDrive(getQuery(context, folderIds))
+    val filesQuery = queryDrive(getQuery(context, folderIds), context)
     val secondQueryTime = (System.currentTimeMillis() - secondQueryStart) / 1000.0
 
     for (file in filesQuery.files) {
@@ -127,10 +134,35 @@ fun downloadCatalogLayers(context: Context, rootID: String): DriveCatalog {
     return ret
 }
 
-fun queryDrive(uri: String): DriveQuery {
+fun queryDrive(uri: String, context: Context): DriveQuery {
     val catalogConn = URL(uri)
-    val reader = BufferedReader(InputStreamReader(catalogConn.openStream()))
-    return Gson().fromJson(reader, DriveQuery::class.java)
+
+    val url = URL(uri)
+    val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+    try {
+//        connection.setDoInput(true)
+//        connection.setDoOutput(true)
+//        connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+//        connection.setRequestProperty("Accept", "application/json")
+
+        // add package name to request header
+        val packageName: String = context.packageName
+        connection.setRequestProperty("X-Android-Package", packageName)
+        // add SHA certificate to request header
+        val sig = DriveCatalogHelper.provideApplicationSignature(context)
+        connection.setRequestProperty("X-Android-Cert", sig[0])
+        connection.requestMethod = "GET"
+
+
+        val reader = BufferedReader(InputStreamReader(connection.inputStream))
+        return Gson().fromJson(reader, DriveQuery::class.java)
+    } catch (e: Exception) {
+        Log.e("DriveCatalog",e.stackTraceToString())
+    } finally {
+        connection.disconnect()
+    }
+
+    throw RuntimeException("Could not connect!")
 }
 
 fun getQuery(context: Context, id: String): String {

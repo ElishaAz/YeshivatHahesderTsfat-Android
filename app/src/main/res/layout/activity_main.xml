@@ -196,6 +196,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:contentDescription="@string/menu_open_in_browser"
+                    android:padding="12dp"
                     app:srcCompat="@drawable/ic_baseline_open_in_browser_24" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -204,6 +205,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:contentDescription="@string/menu_add_to_favorites"
+                    android:padding="12dp"
                     app:srcCompat="@drawable/ic_favorite_border" />
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -212,6 +214,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:contentDescription="@string/menu_share"
+                    android:padding="12dp"
                     app:srcCompat="@drawable/ic_share" />
             </LinearLayout>
 

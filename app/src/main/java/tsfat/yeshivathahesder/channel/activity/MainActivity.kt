@@ -12,6 +12,7 @@ import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -374,9 +375,19 @@ class MainActivity : AppCompatActivity() {
                 isAudioAddedToFavorite = isFavorite
 
                 if (isAudioAddedToFavorite) {
-                    binding.favoriteButton.load(R.drawable.ic_favorite_filled)
+                    binding.favoriteButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_favorite_filled
+                        )
+                    )
                 } else {
-                    binding.favoriteButton.load(R.drawable.ic_favorite_border)
+                    binding.favoriteButton.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_favorite_border
+                        )
+                    )
                 }
             })
 
@@ -396,13 +407,23 @@ class MainActivity : AppCompatActivity() {
             )
 
             isAudioAddedToFavorite = if (isAudioAddedToFavorite) {
-                binding.favoriteButton.load(R.drawable.ic_favorite_border)
+                binding.favoriteButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_favorite_border
+                    )
+                )
 
                 favoritesViewModel.removeVideoFromFavorites(favoriteVideo)
                 false
             } else {
                 // Add video to favorites
-                binding.favoriteButton.load(R.drawable.ic_favorite_filled)
+                binding.favoriteButton.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_favorite_filled
+                    )
+                )
                 favoritesViewModel.addVideoToFavorites(favoriteVideo)
                 true
             }
