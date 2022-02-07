@@ -55,7 +55,7 @@ class AppInfoFragment : Fragment() {
 
     private fun onWebsiteClick() {
         binding.ivWebsiteAppInfo.setOnClickListener {
-            context?.openUrl(getString(R.string.text_website_url), R.color.defaultBgColor)
+            context?.openUrl(getString(R.string.text_website_url))
         }
     }
 
@@ -72,8 +72,7 @@ class AppInfoFragment : Fragment() {
             } catch (exception: Throwable) {
                 // Google Play app is not installed. Open URL in the browser.
                 context?.openUrl(
-                    "https://play.google.com/store/apps/dev?id=${getString(R.string.text_google_play_developer_id)}",
-                    R.color.defaultBgColor
+                    "https://play.google.com/store/apps/dev?id=${getString(R.string.text_google_play_developer_id)}"
                 )
             }
         }
@@ -101,8 +100,7 @@ class AppInfoFragment : Fragment() {
                 startActivity(intent)
             } catch (_: android.content.ActivityNotFoundException) {
                 context?.openUrl(
-                    "https://www.facebook.com/${getString(R.string.text_facebook_username)}",
-                    R.color.defaultBgColor
+                    "https://www.facebook.com/${getString(R.string.text_facebook_username)}"
                 )
             }
         }
@@ -147,17 +145,15 @@ class AppInfoFragment : Fragment() {
                     )
                 }
                 R.id.miTosAppInfo -> {
-                    context?.openUrl(getString(R.string.text_tos_url), R.color.defaultBgColor)
+                    context?.openUrl(getString(R.string.text_tos_url))
                 }
                 R.id.miPrivacyPolicyAppInfo -> {
                     context?.openUrl(
-                        getString(R.string.text_privacy_policy_url),
-                        R.color.defaultBgColor
+                        getString(R.string.text_privacy_policy_url)
                     )
                 }
                 R.id.miSourceCodeAppInfo -> {
-                    context?.openUrl(getString(R.string.text_source_code_url),
-                    R.color.defaultBgColor)
+                    context?.openUrl(getString(R.string.text_source_code_url))
                 }
             }
 

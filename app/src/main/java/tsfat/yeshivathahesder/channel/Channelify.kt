@@ -10,7 +10,6 @@ import com.chibatching.kotpref.Kotpref
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
-import saschpe.android.customtabs.CustomTabsActivityLifecycleCallbacks
 import timber.log.Timber
 import java.util.*
 
@@ -30,7 +29,6 @@ class Channelify : Application() {
         setThemeMode()
         initializeTimber()
         initializeKoin()
-        initializeCustomTabs()
     }
 
     private fun setThemeMode() {
@@ -68,9 +66,5 @@ class Channelify : Application() {
                 )
             )
         }
-    }
-
-    private fun initializeCustomTabs() {
-        registerActivityLifecycleCallbacks(CustomTabsActivityLifecycleCallbacks())
     }
 }

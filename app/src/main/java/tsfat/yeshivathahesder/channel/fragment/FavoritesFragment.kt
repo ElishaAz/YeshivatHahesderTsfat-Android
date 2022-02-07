@@ -24,7 +24,6 @@ import com.mikepenz.fastadapter.listeners.ClickEventHook
 import com.mikepenz.itemanimators.AlphaInAnimator
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import tsfat.yeshivathahesder.channel.databinding.FragmentCommentsBinding
 import tsfat.yeshivathahesder.channel.databinding.FragmentFavoritesBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
@@ -78,7 +77,7 @@ class FavoritesFragment : Fragment() {
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.miStoreMainMenu -> {
-                        context.openUrl(getString(R.string.store_url), R.color.defaultBgColor)
+                        context.openUrl(getString(R.string.store_url))
                     }
                     R.id.miSearchMainMenu -> {
                         findNavController().navigate(R.id.action_favoritesFragment_to_searchFragment)

@@ -6,30 +6,21 @@ import androidx.fragment.app.Fragment
 import android.view.View
 
 import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.activity.MainActivity
-import tsfat.yeshivathahesder.channel.locales.LocaleHelper
 import tsfat.yeshivathahesder.channel.model.ChannelInfo
-import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
 import tsfat.yeshivathahesder.channel.utils.Tools
 import tsfat.yeshivathahesder.channel.viewmodel.AboutViewModel
 import tsfat.yeshivathahesder.core.extensions.*
 import tsfat.yeshivathahesder.core.helper.ResultWrapper
-import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import coil.api.load
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.checkbox.checkBoxPrompt
-import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tsfat.yeshivathahesder.channel.Channelify
 import tsfat.yeshivathahesder.channel.databinding.FragmentAboutBinding
@@ -85,7 +76,7 @@ class AboutFragment : Fragment() {
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.miStoreAbout -> {
-                        context.openUrl(getString(R.string.store_url), R.color.defaultBgColor)
+                        context.openUrl(getString(R.string.store_url))
                     }
                     R.id.miCheckUpdate -> {
                         if (Channelify.isUpdateNotifyEnabled)
@@ -183,7 +174,7 @@ class AboutFragment : Fragment() {
 
     /**
      * Opens the YouTube app's Channel screen if YouTube app is installed otherwise opens the URL
-     * in Chrome Custom Tab.
+     * in the browser.
      */
     private fun startYouTubeIntent() {
         try {
@@ -202,8 +193,7 @@ class AboutFragment : Fragment() {
                 getString(
                     R.string.text_youtube_channel_intent_url,
                     getString(R.string.channel_id)
-                ),
-                R.color.defaultBgColor
+                )
             )
         }
     }

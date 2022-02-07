@@ -105,7 +105,7 @@ class HomeFragment : Fragment() {
             setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.miStoreMainMenu -> {
-                        context.openUrl(getString(R.string.store_url), R.color.defaultBgColor)
+                        context.openUrl(getString(R.string.store_url))
                     }
                     R.id.miSearchMainMenu -> {
                         findNavController().navigate(R.id.action_homeFragment_to_searchFragment)

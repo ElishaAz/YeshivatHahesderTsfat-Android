@@ -11,7 +11,6 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
-import androidx.annotation.ColorRes
 import tsfat.yeshivathahesder.core.R
 
 
@@ -31,24 +30,9 @@ fun Context.toast(message: String, length: Int = Toast.LENGTH_SHORT) {
 }
 
 /**
- * Opens the passed URL in the Chrome Custom Tabs
+ * Opens the passed URL in the browser.
  */
-fun Context.openUrl(url: String, @ColorRes toolbarColor: Int) {
-//    val customTabsIntent = CustomTabsIntent.Builder()
-//        .addDefaultShareMenuItem()
-//        .setToolbarColor(ContextCompat.getColor(this, toolbarColor))
-//        .setShowTitle(true)
-//        .build()
-//
-//    // This is optional but recommended
-//    CustomTabsHelper.addKeepAliveExtra(this, customTabsIntent.intent)
-//
-//    CustomTabsHelper.openCustomTab(
-//        this,
-//        customTabsIntent,
-//        Uri.parse(url),
-//        WebViewFallback() // Opens in system browser if Chrome isn't installed on device
-//    )
+fun Context.openUrl(url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     startActivity(intent)
 }
@@ -60,8 +44,7 @@ fun Context.openAppInGooglePlay(appPackageName: String) {
     } catch (exception: android.content.ActivityNotFoundException) {
         // Google Play app is not installed. Open URL in the browser.
         openUrl(
-            "https://play.google.com/store/apps/details?id=$appPackageName",
-            R.color.customTabToolbarColor
+            "https://play.google.com/store/apps/details?id=$appPackageName"
         )
     }
 }
