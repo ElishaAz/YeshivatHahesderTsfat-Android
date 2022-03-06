@@ -7,6 +7,7 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.activity.viewModels
@@ -35,6 +36,7 @@ import tsfat.yeshivathahesder.channel.model.FavoritesEntry
 import tsfat.yeshivathahesder.channel.paging.datasource.PLAYLIST_TYPE_AUDIO
 import tsfat.yeshivathahesder.channel.sharedpref.AppPref
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
+import tsfat.yeshivathahesder.channel.uamp.media.library.UAMP_INFO_ID
 import tsfat.yeshivathahesder.channel.uamp.utils.InjectorUtils
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MainActivityViewModel
 import tsfat.yeshivathahesder.channel.uamp.viewmodels.MediaItemFragmentViewModel
@@ -173,15 +175,24 @@ class MainActivity : AppCompatActivity() {
         // in the app.
         volumeControlStream = AudioManager.STREAM_MUSIC
 
-        mediaItemViewModel.observe(this) {
-            if (it == null) {
+        mediaItemViewModel.observe(this) { mediaItemFragmentViewModel ->
+            if (mediaItemFragmentViewModel == null) {
                 audioConnector.audioItems.value = null
                 audioConnector.playlists.value = null
             } else {
-                it.audioItems.observe(this) {
-                    audioConnector.audioItems.value = it
+                mediaItemFragmentViewModel.audioItems.observe(this) {
+                    Timber.d("%s", it)
+                    if (it.isNotEmpty()) {
+                        audioConnector.hashItems.value = true
+                        audioConnector.audioItems.value =
+                            it.filter { item -> item.mediaId != UAMP_INFO_ID }
+                                .sortedBy { item -> item.publishedAt }
+                    } else {
+                        audioConnector.hashItems.value = false
+                        audioConnector.audioItems.value = it
+                    }
                 }
-                it.mediaPlaylists.observe(this) {
+                mediaItemFragmentViewModel.mediaPlaylists.observe(this) {
                     audioConnector.playlists.value = it
                 }
             }

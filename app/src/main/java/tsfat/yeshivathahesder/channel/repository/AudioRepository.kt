@@ -1,5 +1,6 @@
 package tsfat.yeshivathahesder.channel.repository
 
+import android.util.Log
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.delay
 import retrofit2.Response
@@ -8,6 +9,7 @@ import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.model.*
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import tsfat.yeshivathahesder.channel.uamp.AudioPlaylist
+import java.lang.RuntimeException
 
 class AudioRepository(private val audioConnector: AudioConnector) {
 //    init {
@@ -18,7 +20,7 @@ class AudioRepository(private val audioConnector: AudioConnector) {
 //    }
 
     private suspend fun lockAudioItemsBusy() {
-        while (audioConnector.audioItems.value.isNullOrEmpty()) {
+        while (audioConnector.hashItems.value != true || audioConnector.audioItems.value == null) {
             Timber.d("Waiting for audio items...")
             delay(1000)
         }
@@ -68,6 +70,7 @@ class AudioRepository(private val audioConnector: AudioConnector) {
 
         waitForAudioItems()
         val audioItems = audioConnector.audioItems.value?.asReversed() ?: emptyList()
+        Log.d("AudioRepository", "" + audioItems)
 
         val res = getPage(
             audioPageMap,
@@ -184,7 +187,6 @@ class AudioRepository(private val audioConnector: AudioConnector) {
         }
 
         if (mPageToken == "start") {
-
             for ((index, item) in list.withIndex()) {
                 if (selector(item) < lastMinVal) {
                     pageMap.add(Pair(mPageToken, Pair(0, index)))

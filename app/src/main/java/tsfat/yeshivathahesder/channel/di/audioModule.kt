@@ -7,6 +7,7 @@ import tsfat.yeshivathahesder.channel.uamp.AudioItem
 import tsfat.yeshivathahesder.channel.uamp.AudioPlaylist
 
 class AudioConnector() {
+    var hashItems: MutableLiveData<Boolean> = MutableLiveData()
     var audioItems: MutableLiveData<List<AudioItem>> = MutableLiveData()
     var playlists: MutableLiveData<List<AudioPlaylist>> = MutableLiveData()
     lateinit var playItem: (String) -> Unit

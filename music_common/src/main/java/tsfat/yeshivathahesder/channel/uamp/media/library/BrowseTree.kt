@@ -156,6 +156,8 @@ class BrowseTree(
 const val UAMP_BROWSABLE_ROOT = "/"
 const val UAMP_EMPTY_ROOT = "@empty@"
 
+const val UAMP_INFO_ID = "__INFO__"
+const val UAMP_INFO_TIME_CREATED = "00"
 //const val UAMP_RECOMMENDED_ROOT = "__RECOMMENDED__"
 //const val UAMP_ALBUMS_ROOT = "__ALBUMS__"
 //const val UAMP_RECENT_ROOT = "__RECENT__"

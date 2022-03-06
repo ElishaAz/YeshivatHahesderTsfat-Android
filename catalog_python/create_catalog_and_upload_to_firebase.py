@@ -1,0 +1,1 @@
+../../../Python/YeshivatHaHesderTsfat-JSON/create_catalog_and_upload_to_firebase.py

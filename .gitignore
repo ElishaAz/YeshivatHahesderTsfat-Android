@@ -25,3 +25,4 @@
 # Sensitive information:
 /keys.properties
 google-services.json
+/catalog_python/local_fields.py

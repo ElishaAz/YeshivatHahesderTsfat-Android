@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 //apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION
@@ -20,7 +20,6 @@ android {
     buildTypes {
         debug {
             resValue "string", "youtube_api_key", KEYS.YT_API_KEY
-//            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
         }
 
         release {
@@ -29,7 +28,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             resValue "string", "youtube_api_key", KEYS.YT_API_KEY
-//            resValue "string", "drive_api_key", KEYS.DRIVE_API_KEY
         }
     }
 

@@ -51,7 +51,7 @@
     <!--    <string name="google_drive_query_folder">\'{ID}\'+in+parents</string>-->
 
     <!-- Firebase -->
-    <string name="firebase_catalog_collection" translatable="false">catalog_v0</string>
+    <string name="firebase_catalog_collection" translatable="false">catalog_v1</string>
     <string name="firebase_catalog_document" translatable="false">audio_catalog</string>
-    <string name="firebase_catalog_lock_document" translatable="false">lock</string>
+    <string name="firebase_rest_template" translatable="false">https://firestore.googleapis.com/v1/projects/consummate-atom-323014/databases/(default)/documents/%1$s/%2$s?key=%3$s</string>
 </resources>

@@ -43,6 +43,8 @@ class HomeRepository(
         val audioItems: List<AudioItem> =
             audioRepository.getAudioItems(pageToken, nextPageToken, lastItem?.publishedAt ?: "")
 
-        return joinAudioAndVideoResults(response, audioItems)
+        val ret = joinAudioAndVideoResults(response, audioItems)
+
+        return ret
     }
 }

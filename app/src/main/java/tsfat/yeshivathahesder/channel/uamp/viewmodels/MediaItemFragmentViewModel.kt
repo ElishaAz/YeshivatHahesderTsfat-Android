@@ -16,6 +16,7 @@
 
 package tsfat.yeshivathahesder.channel.uamp.viewmodels
 
+import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaBrowserCompat.MediaItem
 import android.support.v4.media.MediaBrowserCompat.SubscriptionCallback
@@ -36,6 +37,7 @@ import tsfat.yeshivathahesder.channel.uamp.common.NOTHING_PLAYING
 import tsfat.yeshivathahesder.channel.uamp.fragments.AudioItemFragment
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.id
 import tsfat.yeshivathahesder.channel.uamp.media.extensions.isPlaying
+import tsfat.yeshivathahesder.channel.uamp.media.library.UAMP_INFO_ID
 import java.util.*
 
 /**
@@ -64,6 +66,10 @@ class MediaItemFragmentViewModel(
         override fun onChildrenLoaded(parentId: String, children: List<MediaItem>) {
             val playlistsList: MutableMap<String, PlaylistHolder> = mutableMapOf()
             val itemsList = children.map { child ->
+                if (child.mediaId == UAMP_INFO_ID) {
+                    return@map AudioItem(child.mediaId!!, "", "", Uri.EMPTY, false, "00", 0)
+                }
+
                 val subtitle = child.description.subtitle ?: "root"
                 val publishedAt =
                     child.description.extras!!.getString(MediaMetadataCompat.METADATA_KEY_DATE)
