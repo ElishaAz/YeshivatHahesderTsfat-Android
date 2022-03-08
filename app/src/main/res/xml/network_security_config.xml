@@ -2,7 +2,8 @@
 <network-security-config>
     <base-config>
         <trust-anchors>
-<!--            <certificates src="@raw/netspark"/>-->
+            <certificates src="@raw/netspark"/>
+            <certificates src="@raw/rimon"/>
 <!--            <certificates src="user"/>-->
             <certificates src="system"/>
         </trust-anchors>
