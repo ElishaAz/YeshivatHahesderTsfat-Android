@@ -1,25 +1,23 @@
 package tsfat.yeshivathahesder.channel.repository
 
-import android.util.Log
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import tsfat.yeshivathahesder.channel.api.ChannelsService
 import tsfat.yeshivathahesder.channel.api.PlaylistItemsService
 import tsfat.yeshivathahesder.channel.api.SearchVideoService
 import tsfat.yeshivathahesder.channel.model.ChannelUploadsPlaylistInfo
 import retrofit2.Response
 import timber.log.Timber
-import tsfat.yeshivathahesder.channel.di.AudioConnector
+import tsfat.yeshivathahesder.channel.api.LiveVideosService
 import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.model.ItemList
-import tsfat.yeshivathahesder.channel.repository.AudioRepository
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 class HomeRepository(
     private val searchVideoService: SearchVideoService,
     private val channelsService: ChannelsService,
     private val playlistItemsService: PlaylistItemsService,
+    private val liveVideosService: LiveVideosService,
     private val audioRepository: AudioRepository
 ) {
 
@@ -43,8 +41,21 @@ class HomeRepository(
         val audioItems: List<AudioItem> =
             audioRepository.getAudioItems(pageToken, nextPageToken, lastItem?.publishedAt ?: "")
 
-        val ret = joinAudioAndVideoResults(response, audioItems)
-
-        return ret
+        return joinAudioAndVideoResults(response, audioItems)
     }
+
+    suspend fun getLiveVideos(channelId: String) =
+        withContext(Dispatchers.IO) {
+            val defaultQueryMap = HashMap<String, String>()
+            defaultQueryMap.apply {
+                put("part", "id,snippet")
+                put(
+                    "fields",
+                    "items(id(videoId), snippet(publishedAt, thumbnails, title))"
+                )
+//                put("order", "relevance")
+            }
+
+            liveVideosService.getLiveVideos(channelId, defaultQueryMap)
+        }
 }

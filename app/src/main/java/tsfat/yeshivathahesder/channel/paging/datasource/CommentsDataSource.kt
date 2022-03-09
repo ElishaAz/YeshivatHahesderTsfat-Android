@@ -18,7 +18,8 @@ class CommentsDataSource(
 
     private var supervisorJob = SupervisorJob()
     private val networkState = MutableLiveData<NetworkState>()
-    private var retryQuery: (() -> Any)? = null // Keep reference of the last query (to be able to retry it if necessary)
+    private var retryQuery: (() -> Any)? =
+        null // Keep reference of the last query (to be able to retry it if necessary)
     private var nextPageToken: String? = null
 
     override fun loadInitial(
@@ -51,7 +52,14 @@ class CommentsDataSource(
     private fun executeQuery(callback: (List<Comment.Item>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val comment = commentsRepository.getVideoComments(videoId, nextPageToken, sortOrder).body()
+            val response = commentsRepository.getVideoComments(videoId, nextPageToken, sortOrder)
+
+            if (!response.isSuccessful) {
+                networkState.postValue(NetworkState.error(response.message()))
+                return@launch
+            }
+
+            val comment = response.body()
             nextPageToken = comment?.nextPageToken
             val commentsList = comment?.items
             retryQuery = null
@@ -62,7 +70,7 @@ class CommentsDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e(e,"An error happened")
+        Timber.e(e, "An error happened")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

@@ -13,8 +13,10 @@ import androidx.paging.PagedList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import tsfat.yeshivathahesder.channel.model.ItemBase
+import tsfat.yeshivathahesder.channel.model.SearchedList
 
 class HomeViewModel(
     private val homeRepository: HomeRepository,
@@ -26,6 +28,10 @@ class HomeViewModel(
     val uploadsPlaylistIdLiveData: LiveData<ResultWrapper>
         get() = _uploadsPlaylistIdLiveData
 
+    private val _liveVideosLiveData = MutableLiveData<List<SearchedList.Item>>()
+    val liveVideosLiveData: LiveData<List<SearchedList.Item>>
+        get() = _liveVideosLiveData
+
     lateinit var homeDataSourceFactory: HomeDataSourceFactory
     var latestVideoLiveData: LiveData<PagedList<ItemBase>>? = null
     var networkStateLiveData: LiveData<NetworkState>? = null
@@ -35,11 +41,22 @@ class HomeViewModel(
             viewModelScope.launch {
                 _uploadsPlaylistIdLiveData.value = ResultWrapper.Loading
 
-                val uploadsPlaylistIdRequest = async(Dispatchers.IO) { homeRepository.getUploadsPlaylistId(channelId) }
+                launch(Dispatchers.IO) {
+                    val response = homeRepository.getLiveVideos(channelId)
+                    if (response.isSuccessful) {
+                        val liveVideos = response.body()!!.items
+                        _liveVideosLiveData.postValue(liveVideos)
+                    }
+                }
+
+                val uploadsPlaylistIdRequest =
+                    async(Dispatchers.IO) { homeRepository.getUploadsPlaylistId(channelId) }
+
                 val response = uploadsPlaylistIdRequest.await()
 
                 if (response.isSuccessful) {
-                    val playlistId = response.body()!!.items[0].contentDetails.relatedPlaylists.uploads
+                    val playlistId =
+                        response.body()!!.items[0].contentDetails.relatedPlaylists.uploads
                     homeDataSourceFactory =
                         HomeDataSourceFactory(
                             homeRepository,
@@ -47,12 +64,15 @@ class HomeViewModel(
                             playlistId
                         )
 
-                    latestVideoLiveData = LivePagedListBuilder(homeDataSourceFactory, pagedListConfig()).build()
-                    networkStateLiveData = Transformations.switchMap(homeDataSourceFactory.homeDataSourceLiveData) { it.getNetworkState() }
+                    latestVideoLiveData =
+                        LivePagedListBuilder(homeDataSourceFactory, pagedListConfig()).build()
+                    networkStateLiveData =
+                        Transformations.switchMap(homeDataSourceFactory.homeDataSourceLiveData) { it.getNetworkState() }
                     _uploadsPlaylistIdLiveData.value = ResultWrapper.Success("")
                 } else {
                     Timber.e("Error: ${response.raw()}")
-                    _uploadsPlaylistIdLiveData.value = ResultWrapper.Error(context.getString(R.string.error_fetch_videos))
+                    _uploadsPlaylistIdLiveData.value =
+                        ResultWrapper.Error(context.getString(R.string.error_fetch_videos))
                 }
             }
         }

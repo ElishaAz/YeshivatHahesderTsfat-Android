@@ -51,7 +51,14 @@ class HomeDataSource(
     private fun executeQuery(callback: (List<ItemBase>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val playlistItemInfo = homeRepository.getLatestVideos(playlistId, nextPageToken).body()
+            val response = homeRepository.getLatestVideos(playlistId, nextPageToken)
+
+            if (!response.isSuccessful){
+                networkState.postValue(NetworkState.error(response.message()))
+                return@launch
+            }
+
+            val playlistItemInfo = response.body()
             nextPageToken = playlistItemInfo?.nextPageToken
             val latestVideosList = playlistItemInfo?.items
 

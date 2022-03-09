@@ -112,7 +112,7 @@ private fun provideOkHttpClient(
                 Response.Builder().code(404).body(e.message?.toResponseBody())
                     .request(request)
                     .protocol(Protocol.HTTP_1_1)
-                    .message(e.message ?: "")
+                    .message(e.localizedMessage ?: "")
                     .build()
             }
 

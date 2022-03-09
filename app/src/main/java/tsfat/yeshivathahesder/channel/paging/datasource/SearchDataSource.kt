@@ -53,8 +53,15 @@ class SearchDataSource(
     private fun executeQuery(callback: (List<SearchedList.SearchItem>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val searchVideoResult =
-                searchRepository.searchVideos(searchQuery, channelId, nextPageToken).body()
+            val response =
+                searchRepository.searchVideos(searchQuery, channelId, nextPageToken)
+
+            if (!response.isSuccessful) {
+                networkState.postValue(NetworkState.error(response.message()))
+                return@launch
+            }
+
+            val searchVideoResult = response.body()
             nextPageToken = searchVideoResult?.nextPageToken
             val videoList = searchVideoResult?.items
             retryQuery = null
@@ -65,7 +72,7 @@ class SearchDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e("An error happened: ${e.stackTraceToString()}")
+        Timber.e(e, "An error happened")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

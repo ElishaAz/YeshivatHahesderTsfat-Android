@@ -79,10 +79,12 @@
         <entry key="app/src/main/res/layout/item_comment.xml" value="0.10869565217391304" />
         <entry key="app/src/main/res/layout/item_favorite.xml" value="0.2015625" />
         <entry key="app/src/main/res/layout/item_home.xml" value="0.1671195652173913" />
+        <entry key="app/src/main/res/layout/item_live_video.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_playlist.xml" value="0.1" />
         <entry key="app/src/main/res/menu/app_info_menu.xml" value="0.19846153846153847" />
         <entry key="app/src/main/res/menu/bab_menu_video_details.xml" value="0.2015625" />
         <entry key="app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2015625" />
+        <entry key="app/src/main/res/menu/main_menu.xml" value="0.2015625" />
         <entry key="app/src/main/res/menu/toolbar_menu_about.xml" value="0.2015625" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.1" />
         <entry key="app/src/main/res/xml/settings_preferences.xml" value="0.1" />

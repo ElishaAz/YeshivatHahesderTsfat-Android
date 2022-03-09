@@ -46,6 +46,7 @@
     <string name="text_videos">Videos</string>
     <string name="text_views">Views</string>
     <string name="text_empty_comments">No comments found on this video</string>
+    <string name="text_live_stream">Live Stream</string>
 
     <!-- Button -->
     <string name="btn_retry">Retry</string>

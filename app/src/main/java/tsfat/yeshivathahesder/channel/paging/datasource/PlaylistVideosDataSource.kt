@@ -52,8 +52,14 @@ class PlaylistVideosDataSource(
     private fun executeQuery(callback: (List<ItemBase>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val playlistItemInfo =
-                repository.getPlaylistVideos(playlistId, playlistType, nextPageToken)?.body()
+            val response = repository.getPlaylistVideos(playlistId, playlistType, nextPageToken)
+
+            if (response == null || !response.isSuccessful) {
+                networkState.postValue(NetworkState.error(response?.message()))
+                return@launch
+            }
+
+            val playlistItemInfo = response.body()
             nextPageToken = playlistItemInfo?.nextPageToken
             val playlistVideosList = playlistItemInfo?.items
 
@@ -65,7 +71,7 @@ class PlaylistVideosDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e(e,"An error happened")
+        Timber.e(e, "An error happened")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

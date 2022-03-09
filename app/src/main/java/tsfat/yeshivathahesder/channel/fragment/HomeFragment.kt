@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.map
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -34,6 +35,7 @@ import timber.log.Timber
 import tsfat.yeshivathahesder.channel.databinding.FragmentHomeBinding
 import tsfat.yeshivathahesder.channel.di.AudioConnector
 import tsfat.yeshivathahesder.channel.di.PlayVideo
+import tsfat.yeshivathahesder.channel.fastadapteritems.LiveVideoItem
 import tsfat.yeshivathahesder.channel.model.ItemBase
 import tsfat.yeshivathahesder.channel.model.VideoItem
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
@@ -46,6 +48,7 @@ class HomeFragment : Fragment() {
     private var homeAdapter: GenericFastAdapter? = null
     private lateinit var homePagedModelAdapter: PagedModelAdapter<ItemBase, HomeItem>
     private lateinit var footerAdapter: GenericItemAdapter
+    private lateinit var liveAdapter: GenericItemAdapter
     private var isFirstPageLoading = true
     private var retrySnackbar: Snackbar? = null
 
@@ -140,11 +143,14 @@ class HomeFragment : Fragment() {
             }
 
         footerAdapter = ItemAdapter.items()
+        liveAdapter = ItemAdapter.items()
 
         homeAdapter = FastAdapter()
 
-        homeAdapter = FastAdapter.with(listOf(homePagedModelAdapter, footerAdapter))
-        homeAdapter?.registerTypeInstance(HomeItem(null))
+        homeAdapter = FastAdapter.with(listOf(liveAdapter, homePagedModelAdapter, footerAdapter))
+//        homeAdapter?.registerTypeInstance(HomeItem(null))
+        HomeItem(null).let { homeAdapter?.registerItemFactory(it.type, it) }
+
         homeAdapter?.withSavedInstanceState(savedInstanceState)
 
         binding.rvHome.layoutManager = LinearLayoutManager(context)
@@ -212,6 +218,13 @@ class HomeFragment : Fragment() {
             })
     }
 
+    private fun setUpLiveVideosObservables() {
+        viewModel.liveVideosLiveData.observe(viewLifecycleOwner) {
+            liveAdapter.clear()
+            viewModel.liveVideosLiveData.value?.let { liveAdapter.set(it.map { LiveVideoItem(it) }) }
+        }
+    }
+
     private fun showRecyclerViewProgressIndicator() {
         footerAdapter.clear()
         val progressIndicatorItem = ProgressIndicatorItem()
@@ -266,7 +279,11 @@ class HomeFragment : Fragment() {
 
     private fun createRetrySnackbar() {
         retrySnackbar =
-            Snackbar.make(binding.clHome, R.string.error_load_more_videos, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(
+                binding.clHome,
+                R.string.error_load_more_videos,
+                Snackbar.LENGTH_INDEFINITE
+            )
                 .setAnchorView(activity?.findViewById(R.id.bottomNavView) as BottomNavigationView)
                 .setAction(R.string.btn_retry) {
                     viewModel.refreshFailedRequest()

@@ -1,6 +1,5 @@
 package tsfat.yeshivathahesder.channel.paging.datasource
 
-import tsfat.yeshivathahesder.channel.model.Playlists
 import tsfat.yeshivathahesder.channel.paging.NetworkState
 import tsfat.yeshivathahesder.channel.repository.PlaylistsRepository
 import androidx.lifecycle.LiveData
@@ -52,9 +51,16 @@ class PlaylistsDataSource(
     private fun executeQuery(callback: (List<PlaylistBase>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val response = repository.getPlaylists(channelId, nextPageToken).body()
-            nextPageToken = response?.nextPageToken
-            val playlistList = response?.items
+            val response = repository.getPlaylists(channelId, nextPageToken)
+
+            if (!response.isSuccessful) {
+                networkState.postValue(NetworkState.error(response.message()))
+                return@launch
+            }
+
+            val body = response.body()
+            nextPageToken = body?.nextPageToken
+            val playlistList = body?.items
 
             retryQuery = null
             networkState.postValue(NetworkState.LOADED)
@@ -64,7 +70,7 @@ class PlaylistsDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e(e,"An error happened")
+        Timber.e(e, "An error happened")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

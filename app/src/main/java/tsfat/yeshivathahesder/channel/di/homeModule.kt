@@ -1,8 +1,5 @@
 package tsfat.yeshivathahesder.channel.di
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.api.ChannelsService
 import tsfat.yeshivathahesder.channel.api.PlaylistItemsService
@@ -12,15 +9,15 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import tsfat.yeshivathahesder.channel.uamp.AudioItem
-import java.util.concurrent.Callable
+import tsfat.yeshivathahesder.channel.api.LiveVideosService
 
 val homeModule = module {
 
     factory { provideChannelsService(get()) }
     factory { providePlaylistItemsService(get()) }
+    factory { provideLiveVideosService(get()) }
 
-    single { HomeRepository(get(), get(), get(), get()) }
+    single { HomeRepository(get(), get(), get(), get(),get()) }
 
     viewModel {
         HomeViewModel(
@@ -36,3 +33,6 @@ private fun provideChannelsService(retrofit: Retrofit) =
 
 private fun providePlaylistItemsService(retrofit: Retrofit) =
     retrofit.create(PlaylistItemsService::class.java)
+
+private fun provideLiveVideosService(retrofit: Retrofit) =
+    retrofit.create(LiveVideosService::class.java)

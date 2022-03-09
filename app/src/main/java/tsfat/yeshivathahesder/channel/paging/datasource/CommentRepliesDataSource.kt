@@ -51,8 +51,14 @@ class CommentRepliesDataSource(
     private fun executeQuery(callback: (List<CommentReply.Item>) -> Unit) {
         networkState.postValue(NetworkState.LOADING)
         coroutineScope.launch(getJobErrorHandler() + supervisorJob) {
-            val commentReply =
-                commentRepliesRepository.getCommentReplies(commentId, nextPageToken).body()
+            val response = commentRepliesRepository.getCommentReplies(commentId, nextPageToken)
+
+            if (!response.isSuccessful){
+                networkState.postValue(NetworkState.error(response.message()))
+                return@launch
+            }
+
+            val commentReply = response.body()
             nextPageToken = commentReply?.nextPageToken
             val commentRepliesList = commentReply?.items
             retryQuery = null
@@ -63,7 +69,7 @@ class CommentRepliesDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e(e,"An error happened")
+        Timber.e(e, "An error happened")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage

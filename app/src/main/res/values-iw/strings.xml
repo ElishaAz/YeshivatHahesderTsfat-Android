@@ -72,6 +72,12 @@
     <string name="duration_unknown">--:--</string>
     <string name="duration_format">%d:%02d</string>
     <string name="menu_audio">אודיו</string>
+    <plurals name="btn_view_replies">
+        <item quantity="one">View %1$d reply</item>
+        <item quantity="other">View %1$d replies</item>
+        <item quantity="many"></item>
+        <item quantity="two"></item>
+    </plurals>
 
     <plurals name="text_playlist_video_count">
         <item quantity="one">סרטון אחד</item>
@@ -98,4 +104,5 @@
     <string name="menu_call">התקשר</string>
     <string name="menu_facebook">פייסבוק</string>
     <string name="menu_email">אימייל</string>
+    <string name="text_live_stream">שידור חי</string>
 </resources>
