@@ -9,15 +9,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.room.Room
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Response
+import kotlinx.coroutines.CancellationException
+import okhttp3.*
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
+import java.io.IOError
 import java.security.MessageDigest
 
 
@@ -102,7 +103,20 @@ private fun provideOkHttpClient(
                 .addHeader("X-Android-Cert", signatureList[0])
             val request = requestBuilder.build()
 
-            return chain.proceed(request)
+            // Intercept low network exceptions like [UnknownHostException] and
+            // [SocketTimeoutException] to prevent crashes
+            val ret = try {
+                chain.proceed(request)
+            } catch (e: java.lang.Exception) {
+                Timber.e(e, "Exception in interceptor")
+                Response.Builder().code(404).body(e.message?.toResponseBody())
+                    .request(request)
+                    .protocol(Protocol.HTTP_1_1)
+                    .message(e.message ?: "")
+                    .build()
+            }
+
+            return ret
         }
     })
 

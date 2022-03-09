@@ -65,7 +65,7 @@ class PlaylistVideosDataSource(
     }
 
     private fun getJobErrorHandler() = CoroutineExceptionHandler { _, e ->
-        Timber.e("An error happened: ${e.stackTraceToString()}")
+        Timber.e(e,"An error happened")
         networkState.postValue(
             NetworkState.error(
                 e.localizedMessage
