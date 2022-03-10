@@ -18,8 +18,8 @@
             android:id="@+id/action_commentsFragment_to_commentRepliesFragment"
             app:destination="@id/commentRepliesFragment"
             app:enterAnim="@anim/slide_in_bottom"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@animator/nav_default_exit_anim"
+            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
@@ -34,8 +34,8 @@
             android:id="@+id/action_videoDetailsFragment_to_commentsFragment"
             app:destination="@id/commentsFragment"
             app:enterAnim="@anim/slide_in_bottom"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@animator/nav_default_exit_anim"
+            app:popEnterAnim="@animator/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment

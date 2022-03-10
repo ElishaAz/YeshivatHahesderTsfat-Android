@@ -47,13 +47,17 @@ class FirebaseSource(private val context: Context, private val serviceScope: Cor
                 if (song.source.isBlank()) {
                     song.source = fileIdToUri(context, song.id)
                 }
+                val jsonImageUri = Uri.parse(song.image)
+                val imageUri = AlbumArtContentProvider.mapUri(jsonImageUri)
+
 
                 MediaMetadataCompat.Builder()
                     .from(song)
                     .apply {
-                        val imageUri = AlbumArtContentProvider.mapUri(Uri.parse(song.image))
                         displayIconUri = imageUri.toString() // Used by ExoPlayer and Notification
-                        albumArtUri = imageUri.toString()
+                        albumArtUri =
+                            imageUri.toString() // Keep the original artwork URI for being included in Cast metadata object.
+                        putString(JsonSource.ORIGINAL_ARTWORK_URI_KEY, jsonImageUri.toString())
                     }
                     .build()
             }.toMutableList()

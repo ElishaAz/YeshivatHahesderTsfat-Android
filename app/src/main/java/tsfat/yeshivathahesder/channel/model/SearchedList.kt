@@ -2,6 +2,7 @@ package tsfat.yeshivathahesder.channel.model
 
 import timber.log.Timber
 import tsfat.yeshivathahesder.channel.uamp.AudioItem
+import java.lang.NullPointerException
 
 
 /**
@@ -27,9 +28,9 @@ data class SearchedList<T : SearchedList.SearchItem>(
             val title: String
         ) {
             data class Thumbnails(
-                val default: Default,
-                val high: High,
-                val medium: Medium,
+                val default: Default?,
+                val high: High?,
+                val medium: Medium?,
                 val standard: Standard?
 
             ) {
@@ -56,6 +57,10 @@ data class SearchedList<T : SearchedList.SearchItem>(
                     val url: String,
                     val width: Int
                 )
+
+                val resUrl
+                    get() = standard?.url ?: high?.url ?: default?.url ?: medium?.url
+                    ?: throw NullPointerException("No resolution!")
             }
         }
 

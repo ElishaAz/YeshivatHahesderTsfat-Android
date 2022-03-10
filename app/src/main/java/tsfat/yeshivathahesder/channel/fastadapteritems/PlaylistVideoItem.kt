@@ -39,7 +39,7 @@ class PlaylistVideoItem(val playlistItem: ItemBase?) :
             val playlistItem: ItemBase = item.playlistItem!!
             if (playlistItem is VideoItem) {
                 playlistItem.snippet.let {
-                    thumbnail.load(it.thumbnails.standard?.url ?: it.thumbnails.high.url)
+                    thumbnail.load(it.thumbnails.resUrl)
                     videoTitle.text = it.title
 
                 }

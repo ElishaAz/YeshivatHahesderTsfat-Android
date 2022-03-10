@@ -52,7 +52,11 @@ import java.util.concurrent.TimeUnit
  * The definition of the JSON is specified in the docs of [JsonMusic] in this file,
  * which is the object representation of it.
  */
-class JsonSource(private val source: Uri) : AbstractMusicSource() {
+internal class JsonSource(private val source: Uri) : AbstractMusicSource() {
+
+    companion object {
+        const val ORIGINAL_ARTWORK_URI_KEY = "com.example.android.uamp.JSON_ARTWORK_URI"
+    }
 
     private var catalog: List<MediaMetadataCompat> = emptyList()
 
@@ -98,13 +102,17 @@ class JsonSource(private val source: Uri) : AbstractMusicSource() {
                         song.image = baseUri + song.image
                     }
                 }
-                val imageUri = AlbumArtContentProvider.mapUri(Uri.parse(song.image))
+                val jsonImageUri = Uri.parse(song.image)
+                val imageUri = AlbumArtContentProvider.mapUri(jsonImageUri)
+
 
                 MediaMetadataCompat.Builder()
                     .from(song)
                     .apply {
                         displayIconUri = imageUri.toString() // Used by ExoPlayer and Notification
-                        albumArtUri = imageUri.toString()
+                        albumArtUri =
+                            imageUri.toString() // Keep the original artwork URI for being included in Cast metadata object.
+                        putString(ORIGINAL_ARTWORK_URI_KEY, jsonImageUri.toString())
                     }
                     .build()
             }.toList()

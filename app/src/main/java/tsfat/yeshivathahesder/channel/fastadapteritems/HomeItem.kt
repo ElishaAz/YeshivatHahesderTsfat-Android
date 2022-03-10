@@ -40,7 +40,7 @@ class HomeItem(val playlistItem: ItemBase?) :
             val mediaItem: ItemBase = item.playlistItem!!
             if (mediaItem is VideoItem) {
                 mediaItem.snippet.let {
-                    thumbnail.load(it.thumbnails.standard?.url ?: it.thumbnails.high.url)
+                    thumbnail.load(it.thumbnails.resUrl)
                     mediaTitle.text = it.title
                 }
                 mediaPublishedAt.text =

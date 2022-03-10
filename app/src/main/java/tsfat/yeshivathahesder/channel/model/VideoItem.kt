@@ -1,5 +1,7 @@
 package tsfat.yeshivathahesder.channel.model
 
+import java.lang.NullPointerException
+
 data class VideoItem(
     val contentDetails: ContentDetails,
     val snippet: Snippet
@@ -14,12 +16,13 @@ data class VideoItem(
         val title: String
     ) {
         data class Thumbnails(
-            val default: Default,
-            val high: High,
-            val maxres: Maxres,
-            val medium: Medium,
+            val default: Default?,
+            val high: High?,
+            val maxres: Maxres?,
+            val medium: Medium?,
             val standard: Standard?
         ) {
+
             data class Default(
                 val height: Int,
                 val url: String,
@@ -49,6 +52,10 @@ data class VideoItem(
                 val url: String,
                 val width: Int
             )
+
+            val resUrl
+                get() = standard?.url ?: high?.url ?: default?.url ?: medium?.url ?: maxres?.url
+                ?: throw NullPointerException("No resolution!")
         }
     }
 

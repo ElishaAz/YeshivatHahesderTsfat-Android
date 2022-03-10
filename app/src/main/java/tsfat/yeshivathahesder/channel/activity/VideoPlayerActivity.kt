@@ -1,47 +1,44 @@
 package tsfat.yeshivathahesder.channel.activity
 
-import tsfat.yeshivathahesder.channel.Channelify
-import tsfat.yeshivathahesder.channel.R
-import tsfat.yeshivathahesder.channel.fragment.VideoDetailsFragment
-import tsfat.yeshivathahesder.channel.locales.LocaleHelper
-import tsfat.yeshivathahesder.channel.utils.FullScreenHelper
-import tsfat.yeshivathahesder.channel.utils.media.MediaSessionController
-import tsfat.yeshivathahesder.channel.viewmodel.VideoPlayerViewModel
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.app.PictureInPictureParams
+import android.app.RemoteAction
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.session.MediaSessionCompat
-import android.view.View
+import android.util.Rational
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.loadOrCueVideo
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import android.app.PictureInPictureParams
-import android.app.RemoteAction
-import android.content.BroadcastReceiver
-import android.content.IntentFilter
-import android.content.res.Configuration
-import android.graphics.drawable.Icon
-import android.util.Log
-import android.util.Rational
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import androidx.core.app.RemoteActionCompat
-import androidx.core.graphics.drawable.IconCompat
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.ui.DefaultPlayerUiController
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import tsfat.yeshivathahesder.channel.Channelify
+import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.databinding.ActivityVideoPlayerBinding
+import tsfat.yeshivathahesder.channel.fragment.VideoDetailsFragment
+import tsfat.yeshivathahesder.channel.locales.LocaleHelper
 import tsfat.yeshivathahesder.channel.sharedpref.AppPref
+import tsfat.yeshivathahesder.channel.utils.FullScreenHelper
+import tsfat.yeshivathahesder.channel.utils.media.MediaSessionController
+import tsfat.yeshivathahesder.channel.viewmodel.VideoPlayerViewModel
 
 
 class VideoPlayerActivity : AppCompatActivity() {
@@ -171,7 +168,7 @@ class VideoPlayerActivity : AppCompatActivity() {
             ytVideoPlayerView.enableBackgroundPlayback(true)
         }
 
-        ytVideoPlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+        val listener = object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
                 youTubePlayer.loadOrCueVideo(lifecycle, videoId, 0f)
                 addFullScreenListenerToPlayer()
@@ -195,7 +192,12 @@ class VideoPlayerActivity : AppCompatActivity() {
                     setPictureInPictureParams(createPIPParams())
                 }
             }
-        })
+        }
+
+//        // disable iframe ui
+//        val options: IFramePlayerOptions = IFramePlayerOptions.Builder().controls(0).build()
+//        ytVideoPlayerView.initialize(listener, options)
+        ytVideoPlayerView.addYouTubePlayerListener(listener)
 
         if (Channelify.isBackgroundViewEnabled) {
             mediaSession = MediaSessionCompat(this, "YouTube")
@@ -311,11 +313,11 @@ class VideoPlayerActivity : AppCompatActivity() {
             ACTION_PLAY -> player.play()
             ACTION_PAUSE -> player.pause()
             ACTION_REPLAY -> {
-                videoElapsedTimeInSeconds -= R.integer.video_rewind_seconds
+                videoElapsedTimeInSeconds -= resources.getInteger(R.integer.video_rewind_seconds)
                 player.seekTo(videoElapsedTimeInSeconds)
             }
             ACTION_FORWARD -> {
-                videoElapsedTimeInSeconds += R.integer.video_forward_seconds
+                videoElapsedTimeInSeconds += resources.getInteger(R.integer.video_forward_seconds)
                 player.seekTo(videoElapsedTimeInSeconds)
             }
             ACTION_PLAY_PAUSE -> if (isPlaying) player.pause() else player.play()
@@ -326,17 +328,25 @@ class VideoPlayerActivity : AppCompatActivity() {
      * Adds the forward and rewind action button to the Player
      */
     private fun setupCustomActions(youTubePlayer: YouTubePlayer) {
-        ytVideoPlayerView.getPlayerUiController()
+        val defaultPlayerUiController = DefaultPlayerUiController(ytVideoPlayerView, youTubePlayer)
+        ytVideoPlayerView.setCustomPlayerUi(defaultPlayerUiController.rootView)
+
+        defaultPlayerUiController.showFullscreenButton(true)
+        defaultPlayerUiController.showYouTubeButton(false)
+
+        defaultPlayerUiController
             .setCustomAction1(
                 ContextCompat.getDrawable(this, R.drawable.ic_rewind)!!
             ) {
-                videoElapsedTimeInSeconds -= R.integer.video_rewind_seconds
+                videoElapsedTimeInSeconds -= resources.getInteger(R.integer.video_rewind_seconds)
+                Timber.d("Seeking to $videoElapsedTimeInSeconds")
                 youTubePlayer.seekTo(videoElapsedTimeInSeconds)
             }
             .setCustomAction2(
                 ContextCompat.getDrawable(this, R.drawable.ic_forward)!!
             ) {
-                videoElapsedTimeInSeconds += R.integer.video_forward_seconds
+                videoElapsedTimeInSeconds += resources.getInteger(R.integer.video_forward_seconds)
+                Timber.d("Seeking to $videoElapsedTimeInSeconds")
                 youTubePlayer.seekTo(videoElapsedTimeInSeconds)
             }
     }

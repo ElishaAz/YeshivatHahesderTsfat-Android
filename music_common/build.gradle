@@ -24,8 +24,6 @@ android {
     compileSdkVersion COMPILE_SDK_VERSION
 
     defaultConfig {
-        versionCode VERSION_CODE
-        versionName VERSION_NAME
 
         minSdkVersion MIN_SDK_VERSION
         targetSdkVersion TARGET_SDK_VERSION
@@ -62,7 +60,7 @@ dependencies {
 
     // Declare the dependency for the Cloud Firestore library
     // When NOT using the BoM, you must specify versions in Firebase library dependencies
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.0.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.0.1'
 
     // ExoPlayer dependencies
 
@@ -89,4 +87,8 @@ dependencies {
     // Testing
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.robolectric:robolectric:$robolectric_version"
+}
+repositories {
+    mavenCentral()
+    google()
 }

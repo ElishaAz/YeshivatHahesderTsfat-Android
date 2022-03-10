@@ -235,8 +235,7 @@ class PlaylistsFragment : Fragment() {
                             it.id,
                             it.snippet.description,
                             it.contentDetails.itemCount.toFloat(),
-                            it.snippet.thumbnails.standard?.url
-                                ?: it.snippet.thumbnails.high.url,
+                            it.snippet.thumbnails.resUrl,
                             it.snippet.publishedAt
                         )
                     } else if (it is AudioPlaylist) {

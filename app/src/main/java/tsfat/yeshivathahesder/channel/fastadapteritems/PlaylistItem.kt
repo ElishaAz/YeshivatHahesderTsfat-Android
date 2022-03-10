@@ -34,8 +34,7 @@ class PlaylistItem(val playlistItem: PlaylistBase?) :
         override fun bindView(item: PlaylistItem, payloads: List<Any>) {
             if (item.playlistItem is Playlists.VideoPlaylist) {
                 thumbnail.load(
-                    item.playlistItem.snippet.thumbnails.standard?.url
-                        ?: item.playlistItem.snippet.thumbnails.high.url
+                    item.playlistItem.snippet.thumbnails.resUrl
                 )
                 playlistName.text = item.playlistItem.snippet.title
                 videoCount.text = view.context.resources.getQuantityString(

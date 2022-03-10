@@ -146,11 +146,11 @@ class MainActivityViewModel(
         musicServiceConnection.transportControls.seekTo(duration)
     }
 
-    fun skipBy(duration: Long) {
-        musicServiceConnection.transportControls.seekTo(
-            musicServiceConnection.playbackState.value?.position ?: 0 + duration
-        )
-    }
+//    fun skipBy(duration: Long) {
+//        musicServiceConnection.transportControls.seekTo(
+//            musicServiceConnection.playbackState.value?.position ?: 0 + duration
+//        )
+//    }
 
     fun skipToNext() {
         musicServiceConnection.transportControls.skipToNext()

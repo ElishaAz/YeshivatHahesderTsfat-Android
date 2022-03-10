@@ -317,8 +317,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.stopButtonMax.setOnClickListener { viewModel.stop() }
-        binding.forwardButtonMax.setOnClickListener { viewModel.skipBy(10 * 1000) }
-        binding.replayButtonMax.setOnClickListener { viewModel.skipBy(10 * 1000) }
+        binding.forwardButtonMax.setOnClickListener { viewModel.seekTo((binding.seekBar.progress + 10 * 1000).toLong()) }
+        binding.replayButtonMax.setOnClickListener { viewModel.seekTo((binding.seekBar.progress - 10 * 1000).toLong()) }
 
         binding.skipNextButtonMax.setOnClickListener { viewModel.skipToNext() }
         binding.skipPrevButtonMax.setOnClickListener { viewModel.skipToPrevious() }

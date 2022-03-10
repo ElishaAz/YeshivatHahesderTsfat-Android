@@ -34,7 +34,7 @@ class SearchItem(val searchedList: SearchedList.SearchItem?) :
         override fun bindView(item: SearchItem, payloads: List<Any>) {
             if (item.searchedList is SearchedList.Item) {
                 item.searchedList.snippet.let {
-                    thumbnail.load(it.thumbnails.standard?.url ?: it.thumbnails.high.url)
+                    thumbnail.load(it.thumbnails.resUrl)
                     videoTitle.text = it.title
                     videoPublishedAt.text = DateTimeUtils.getTimeAgo(it.publishedAt)
                 }

@@ -1,5 +1,7 @@
 package tsfat.yeshivathahesder.channel.model
 
+import java.lang.NullPointerException
+
 
 data class Playlists<T : PlaylistBase>(
     val items: List<T>,
@@ -21,9 +23,9 @@ data class Playlists<T : PlaylistBase>(
             val title: String
         ) {
             data class Thumbnails(
-                val default: Default,
-                val high: High,
-                val medium: Medium,
+                val default: Default?,
+                val high: High?,
+                val medium: Medium?,
                 val standard: Standard?
             ) {
                 data class Default(
@@ -49,6 +51,10 @@ data class Playlists<T : PlaylistBase>(
                     val url: String,
                     val width: Int
                 )
+
+                val resUrl
+                    get() = standard?.url ?: high?.url ?: default?.url ?: medium?.url
+                    ?: throw NullPointerException("No resolution!")
             }
         }
 

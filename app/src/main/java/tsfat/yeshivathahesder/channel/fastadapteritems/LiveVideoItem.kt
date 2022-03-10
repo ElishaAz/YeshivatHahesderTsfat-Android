@@ -41,7 +41,7 @@ class LiveVideoItem(val videoItem: SearchedList.Item) :
         override fun bindView(item: LiveVideoItem, payloads: List<Any>) {
             val mediaItem = item.videoItem
             mediaItem.snippet.let {
-                thumbnail.load(it.thumbnails.standard?.url ?: it.thumbnails.high.url)
+                thumbnail.load(it.thumbnails.resUrl)
                 mediaTitle.text = it.title
             }
             mediaPublishedAt.text =
