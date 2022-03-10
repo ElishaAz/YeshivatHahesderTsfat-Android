@@ -6,8 +6,8 @@ buildscript {
 
     ext {
         KEYS = keys
-        VERSION_NAME = "v1.0.0-b1"
-        VERSION_CODE = 7
+        VERSION_NAME = "v1.0.0-b2"
+        VERSION_CODE = 8
 
         MIN_SDK_VERSION = 21
         COMPILE_SDK_VERSION = 31
