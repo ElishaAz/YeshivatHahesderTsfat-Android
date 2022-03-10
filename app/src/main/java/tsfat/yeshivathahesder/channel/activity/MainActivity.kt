@@ -317,8 +317,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.stopButtonMax.setOnClickListener { viewModel.stop() }
-        binding.forwardButtonMax.setOnClickListener { viewModel.seekTo((binding.seekBar.progress + 10 * 1000).toLong()) }
-        binding.replayButtonMax.setOnClickListener { viewModel.seekTo((binding.seekBar.progress - 10 * 1000).toLong()) }
+        binding.forwardButtonMax.setOnClickListener {
+            val progress = nowPlayingViewModel.mediaPosition.value ?: 0
+            viewModel.seekTo(
+                progress +
+                        resources.getInteger(R.integer.audio_forward_seconds) * 1000
+            )
+        }
+        binding.replayButtonMax.setOnClickListener {
+            val progress = nowPlayingViewModel.mediaPosition.value ?: 0
+            viewModel.seekTo(
+                progress -
+                        resources.getInteger(R.integer.audio_rewind_seconds) * 1000
+            )
+        }
 
         binding.skipNextButtonMax.setOnClickListener { viewModel.skipToNext() }
         binding.skipPrevButtonMax.setOnClickListener { viewModel.skipToPrevious() }

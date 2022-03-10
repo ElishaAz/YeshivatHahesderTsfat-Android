@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.10555555555555556" />
+        <entry key="../../../.gradle/caches/transforms-3/c0bc58679bb2ecc83249c4cdef555cb4/transformed/jetified-play-services-cast-framework-20.0.0/res/drawable/cast_ic_notification_rewind.xml" value="0.209" />
+        <entry key="../../../.gradle/caches/transforms-3/c0bc58679bb2ecc83249c4cdef555cb4/transformed/jetified-play-services-cast-framework-20.0.0/res/drawable/cast_ic_notification_rewind10.xml" value="0.209" />
         <entry key="../../../.gradle/caches/transforms-3/e7f094deea21f5d4e6dffdb5515daa06/transformed/jetified-exoplayer-ui-2.11.5/res/drawable-anydpi-v21/exo_icon_next.xml" value="0.1" />
         <entry key="../../../.gradle/caches/transforms-3/e7f094deea21f5d4e6dffdb5515daa06/transformed/jetified-exoplayer-ui-2.11.5/res/drawable-anydpi-v21/exo_icon_rewind.xml" value="0.1" />
         <entry key="..\:/Users/Elisha Azaria/Programming/Android/YeshivatHahesderTsfat-Android/app/src/main/res/drawable/bg_splash.xml" value="0.18796296296296297" />
@@ -42,6 +44,7 @@
         <entry key="app/src/main/res/drawable/ic_favorite_filled.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_favorite_filled_border.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_forward.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_forward_video_player.xml" value="0.178" />
         <entry key="app/src/main/res/drawable/ic_github.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/drawable/ic_mic.xml" value="0.21770833333333334" />
@@ -50,6 +53,7 @@
         <entry key="app/src/main/res/drawable/ic_playlists.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/drawable/ic_privacy_policy.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_rewind.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_rewind_video_player.xml" value="0.178" />
         <entry key="app/src/main/res/drawable/ic_share.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_video.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/drawable/ic_website.xml" value="0.1" />

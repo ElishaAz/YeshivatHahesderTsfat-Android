@@ -106,7 +106,7 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         ytVideoPlayerView = binding.ytVideoPlayerView
 
-        fullScreenHelper = FullScreenHelper(this)
+        fullScreenHelper = FullScreenHelper(this, ytVideoPlayerView)
         videoId = intent.getStringExtra(VIDEO_ID)!!
 
         autoEnterPIP = AppPref.autoEnterPIP
@@ -194,10 +194,10 @@ class VideoPlayerActivity : AppCompatActivity() {
             }
         }
 
-//        // disable iframe ui
-//        val options: IFramePlayerOptions = IFramePlayerOptions.Builder().controls(0).build()
-//        ytVideoPlayerView.initialize(listener, options)
-        ytVideoPlayerView.addYouTubePlayerListener(listener)
+        // disable iframe ui
+        val options: IFramePlayerOptions = IFramePlayerOptions.Builder().controls(0).build()
+        ytVideoPlayerView.initialize(listener, options)
+//        ytVideoPlayerView.addYouTubePlayerListener(listener)
 
         if (Channelify.isBackgroundViewEnabled) {
             mediaSession = MediaSessionCompat(this, "YouTube")
@@ -336,14 +336,14 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         defaultPlayerUiController
             .setCustomAction1(
-                ContextCompat.getDrawable(this, R.drawable.ic_rewind)!!
+                ContextCompat.getDrawable(this, R.drawable.ic_rewind_video_player)!!
             ) {
                 videoElapsedTimeInSeconds -= resources.getInteger(R.integer.video_rewind_seconds)
                 Timber.d("Seeking to $videoElapsedTimeInSeconds")
                 youTubePlayer.seekTo(videoElapsedTimeInSeconds)
             }
             .setCustomAction2(
-                ContextCompat.getDrawable(this, R.drawable.ic_forward)!!
+                ContextCompat.getDrawable(this, R.drawable.ic_forward_video_player)!!
             ) {
                 videoElapsedTimeInSeconds += resources.getInteger(R.integer.video_forward_seconds)
                 Timber.d("Seeking to $videoElapsedTimeInSeconds")
@@ -360,14 +360,24 @@ class VideoPlayerActivity : AppCompatActivity() {
         ytVideoPlayerView.addFullScreenListener(object : YouTubePlayerFullScreenListener {
             override fun onYouTubePlayerEnterFullScreen() {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                fullScreenHelper.enterFullScreen()
+//                fullScreenHelper.enterFullScreen()
             }
 
             override fun onYouTubePlayerExitFullScreen() {
                 requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                fullScreenHelper.exitFullScreen()
+//                fullScreenHelper.exitFullScreen()
             }
         })
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            fullScreenHelper.enterFullScreen()
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            fullScreenHelper.exitFullScreen()
+        }
     }
 
     // Locale changes

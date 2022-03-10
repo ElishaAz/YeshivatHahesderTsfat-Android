@@ -2,4 +2,6 @@
 <resources>
     <integer name="video_rewind_seconds">10</integer>
     <integer name="video_forward_seconds">10</integer>
+    <integer name="audio_rewind_seconds">10</integer>
+    <integer name="audio_forward_seconds">10</integer>
 </resources>

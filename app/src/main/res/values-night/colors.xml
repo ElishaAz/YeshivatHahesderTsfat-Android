@@ -4,7 +4,8 @@
     <color name="colorPrimaryDark">#3656F4</color>
     <color name="colorSecondary">#73CAE5</color>
 
-    <color name="buttonColor">#FFFFFFFF</color>
+    <color name="foregroundColor">#FFFFFFFF</color>
+    <color name="inverseForegroundColor">#FF000000</color>
 
     <color name="defaultBgColor">#121212</color>
 
