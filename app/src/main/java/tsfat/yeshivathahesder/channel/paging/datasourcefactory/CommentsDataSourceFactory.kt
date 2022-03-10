@@ -26,7 +26,7 @@ class CommentsDataSourceFactory(
                     videoId,
                     sortOrder
                 )
-            commentsDataSourceLiveData.postValue(commentsDataSource)
+            commentsDataSourceLiveData.postValue(commentsDataSource!!)
 
         return commentsDataSource!!
     }

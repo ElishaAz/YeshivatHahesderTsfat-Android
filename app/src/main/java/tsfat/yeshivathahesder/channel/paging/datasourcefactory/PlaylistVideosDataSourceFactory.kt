@@ -26,7 +26,7 @@ class PlaylistVideosDataSourceFactory(
                     playlistId,
                     playlistType
                 )
-            playlistVideosDataSourceLiveData.postValue(playlistVideosDataSource)
+            playlistVideosDataSourceLiveData.postValue(playlistVideosDataSource!!)
         }
         return playlistVideosDataSource!!
     }

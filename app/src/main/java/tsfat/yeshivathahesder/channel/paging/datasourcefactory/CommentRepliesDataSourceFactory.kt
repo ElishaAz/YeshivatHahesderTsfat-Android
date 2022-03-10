@@ -24,7 +24,7 @@ class CommentRepliesDataSourceFactory(
                 coroutineScope,
                 commentId
             )
-        commentRepliesDataSourceLiveData.postValue(commentRepliesDataSource)
+        commentRepliesDataSourceLiveData.postValue(commentRepliesDataSource!!)
 
         return commentRepliesDataSource!!
     }

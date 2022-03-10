@@ -25,7 +25,7 @@ class PlaylistsDataSourceFactory(
                     coroutineScope,
                     channelId
                 )
-            playlistsDataSourceLiveData.postValue(playlistsDataSource)
+            playlistsDataSourceLiveData.postValue(playlistsDataSource!!)
         }
         return playlistsDataSource!!
     }

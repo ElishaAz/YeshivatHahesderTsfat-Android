@@ -24,7 +24,7 @@ class HomeDataSourceFactory(
                     coroutineScope,
                     playlistId
                 )
-            homeDataSourceLiveData.postValue(homeDataSource)
+            homeDataSourceLiveData.postValue(homeDataSource!!)
         }
         return homeDataSource!!
     }

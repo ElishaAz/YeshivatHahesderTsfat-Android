@@ -28,7 +28,7 @@ class SearchDataSourceFactory(
                 searchQuery,
                 emptySearchResultText
             )
-        searchDataSourceLiveData.postValue(searchDataSource)
+        searchDataSourceLiveData.postValue(searchDataSource!!)
 
         return searchDataSource!!
     }

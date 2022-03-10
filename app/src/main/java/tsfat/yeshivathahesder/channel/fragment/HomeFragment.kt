@@ -216,6 +216,7 @@ class HomeFragment : Fragment() {
             Observer<PagedList<ItemBase>> { latestVideoList ->
                 Timber.d("Got home list")
                 homePagedModelAdapter.submitList(latestVideoList)
+                binding.rvHome.scrollToPosition(0)
             })
     }
 
@@ -223,6 +224,7 @@ class HomeFragment : Fragment() {
         viewModel.liveVideosLiveData.observe(viewLifecycleOwner) {
             liveAdapter.clear()
             viewModel.liveVideosLiveData.value?.let { liveAdapter.set(it.map { LiveVideoItem(it) }) }
+            binding.rvHome.scrollToPosition(0)
         }
     }
 
