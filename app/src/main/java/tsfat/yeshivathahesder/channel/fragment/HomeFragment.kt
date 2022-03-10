@@ -77,6 +77,7 @@ class HomeFragment : Fragment() {
         }
 
         setupUploadsPlaylistIdObservables()
+        setUpLiveVideosObservables()
         setupRecyclerView(savedInstanceState)
         onRetryButtonClick()
     }

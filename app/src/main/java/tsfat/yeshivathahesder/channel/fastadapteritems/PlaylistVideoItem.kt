@@ -1,5 +1,7 @@
 package tsfat.yeshivathahesder.channel.fastadapteritems
 
+import android.os.Build
+import android.text.Html
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
 import android.view.View
@@ -40,7 +42,11 @@ class PlaylistVideoItem(val playlistItem: ItemBase?) :
             if (playlistItem is VideoItem) {
                 playlistItem.snippet.let {
                     thumbnail.load(it.thumbnails.resUrl)
-                    videoTitle.text = it.title
+                    videoTitle.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Html.fromHtml(it.title, Html.FROM_HTML_MODE_COMPACT)
+                    } else {
+                        Html.fromHtml(it.title)
+                    }
 
                 }
                 videoPublishedAt.text =

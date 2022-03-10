@@ -1,5 +1,7 @@
 package tsfat.yeshivathahesder.channel.fastadapteritems
 
+import android.os.Build
+import android.text.Html
 import tsfat.yeshivathahesder.channel.R
 import tsfat.yeshivathahesder.channel.model.SearchedList
 import tsfat.yeshivathahesder.channel.utils.DateTimeUtils
@@ -35,7 +37,11 @@ class SearchItem(val searchedList: SearchedList.SearchItem?) :
             if (item.searchedList is SearchedList.Item) {
                 item.searchedList.snippet.let {
                     thumbnail.load(it.thumbnails.resUrl)
-                    videoTitle.text = it.title
+                    videoTitle.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Html.fromHtml(it.title, Html.FROM_HTML_MODE_COMPACT)
+                    }else{
+                        Html.fromHtml(it.title)
+                    }
                     videoPublishedAt.text = DateTimeUtils.getTimeAgo(it.publishedAt)
                 }
             } else if (item.searchedList is SearchedList.AudioSearchItem) {

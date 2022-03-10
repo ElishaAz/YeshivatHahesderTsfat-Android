@@ -1,5 +1,7 @@
 package tsfat.yeshivathahesder.channel.fastadapteritems
 
+import android.os.Build
+import android.text.Html
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
@@ -42,7 +44,11 @@ class LiveVideoItem(val videoItem: SearchedList.Item) :
             val mediaItem = item.videoItem
             mediaItem.snippet.let {
                 thumbnail.load(it.thumbnails.resUrl)
-                mediaTitle.text = it.title
+                mediaTitle.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(it.title, Html.FROM_HTML_MODE_COMPACT)
+                } else {
+                    Html.fromHtml(it.title)
+                }
             }
             mediaPublishedAt.text =
                 DateTimeUtils.getTimeAgo(mediaItem.publishedAt)
